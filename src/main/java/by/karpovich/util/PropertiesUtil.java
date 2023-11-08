@@ -1,9 +1,12 @@
 package by.karpovich.util;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Properties;
 
-public class PropertiesUtil {
+public final class PropertiesUtil {
 
     private static final Properties PROPERTIES = new Properties();
 
@@ -19,7 +22,7 @@ public class PropertiesUtil {
     }
 
     private static void loadProperties() {
-        try (var inputStream = PropertiesUtil.class.getClassLoader().getResourceAsStream("D:\\petProjects\\ServletJDBC\\dataDb.txt")) {
+        try (InputStream inputStream = Files.newInputStream(Paths.get("D:\\petProjects\\ServletJDBC\\application.properties"))) {
             PROPERTIES.load(inputStream);
         } catch (IOException e) {
             throw new RuntimeException(e);
