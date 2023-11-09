@@ -5,6 +5,9 @@ public class BaseEntity {
     private Long id;
     private String name;
 
+    public BaseEntity() {
+    }
+
     public BaseEntity(Long id, String name) {
         this.id = id;
         this.name = name;
@@ -24,5 +27,13 @@ public class BaseEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "BaseEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }
