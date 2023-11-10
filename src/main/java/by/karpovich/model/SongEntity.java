@@ -1,12 +1,9 @@
 package by.karpovich.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class SongEntity extends BaseEntity {
 
     //Many to one
-    private SingerEntity singers;
+    private SingerEntity singer;
 //    //Many to one
 //    private AlbumEntity album;
 //    //One to many
@@ -49,14 +46,14 @@ public class SongEntity extends BaseEntity {
 
     public SongEntity(Long id, String name, SingerEntity singers) {
         super(id, name);
-        this.singers = singers;
+        this.singer = singers;
     }
 
-    public SingerEntity getSingers() {
-        return singers;
+    public SingerEntity getSinger() {
+        return singer;
     }
 
-    public void setSingers(SingerEntity singers) {
-        this.singers = singers;
+    public void setSinger(SingerEntity singer) {
+        this.singer = singer;
     }
 }

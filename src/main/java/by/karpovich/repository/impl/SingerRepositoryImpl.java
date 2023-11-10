@@ -50,12 +50,22 @@ public class SingerRepositoryImpl implements BaseRepository<SingerEntity, Long> 
             FROM singers;
             """;
 
+    @Override
+    public Optional<SingerEntity> findById(Long id) {
+        try (var connection = ConnectionManagerImpl.getConnection()) {
+            return findById(id, connection);
+        } catch (SQLException e) {
+            throw new DaoException("IN FIND BY ID");
+        }
+    }
+
     public Optional<SingerEntity> findById(Long id, Connection connection) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
 
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             SingerEntity singerEntity = null;
+
             if (resultSet.next()) {
                 singerEntity = buildSingerEntity(resultSet);
             }
@@ -64,33 +74,6 @@ public class SingerRepositoryImpl implements BaseRepository<SingerEntity, Long> 
             throw new DaoException("IN FIND BY ID");
         }
     }
-
-    @Override
-    public Optional<SingerEntity> findById(Long id) {
-        try (var connection = ConnectionManagerImpl.getConnection()) {
-            return findById(id, connection);
-        } catch (
-                SQLException e) {
-            throw new DaoException("IN FIND BY ID");
-        }
-    }
-
-//    @Override
-//    public Optional<SingerEntity> findById(Long id) {
-//        try (var connection = ConnectionManagerImpl.getConnection();
-//             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
-//
-//            preparedStatement.setLong(1, id);
-//            ResultSet resultSet = preparedStatement.executeQuery();
-//            SingerEntity singerEntity = null;
-//            if (resultSet.next()) {
-//                singerEntity = buildSingerEntity(resultSet);
-//            }
-//            return Optional.ofNullable(singerEntity);
-//        } catch (SQLException e) {
-//            throw new DaoException("IN FIND BY ID");
-//        }
-//    }
 
     @Override
     public List<SingerEntity> findAll() {
@@ -112,6 +95,7 @@ public class SingerRepositoryImpl implements BaseRepository<SingerEntity, Long> 
     public boolean deleteById(Long id) {
         try (var connection = ConnectionManagerImpl.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_SQL)) {
+
             preparedStatement.setLong(1, id);
 
             return preparedStatement.executeUpdate() > 0;
