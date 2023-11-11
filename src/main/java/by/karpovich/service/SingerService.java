@@ -1,16 +1,18 @@
 package by.karpovich.service;
 
+import by.karpovich.servlet.dto.SingerDto;
+
 import java.util.List;
 
-public interface SingerService<T, K> {
+public interface SingerService extends BaseService<SingerDto, Long> {
 
-    T findById(K id);
+    SingerDto findById(Long id);
 
-    List<T> findAll();
+    List<SingerDto> findAll();
 
-    boolean deleteById(K id);
+    boolean deleteById(Long id);
 
-    T save(T t);
+    SingerDto save(SingerDto t);
 
-    void update(T t, K k);
+    void update(SingerDto t, Long k);
 }

@@ -12,32 +12,29 @@ import java.util.Optional;
 
 public class SingerRepositoryImpl implements BaseRepository<SingerEntity, Long> {
 
-    private static SingerRepositoryImpl instance;
+    private static final SingerRepositoryImpl INSTANCE = new SingerRepositoryImpl();
 
     private SingerRepositoryImpl() {
     }
 
     public static SingerRepositoryImpl getInstance() {
-        if (instance == null) {
-            instance = new SingerRepositoryImpl();
-        }
-        return instance;
+        return INSTANCE;
     }
 
     private static final String SAVE_SQL = """
                INSERT INTO  singers(name) 
-            VALUES (?);
+            VALUES (?)
             """;
 
     private static final String DELETE_SQL = """
                DELETE FROM singers 
-               WHERE id = ?;
+               WHERE id = ?
             """;
 
     private static final String UPDATE_SQL = """
             UPDATE singers 
             SET name = ? 
-            WHERE id = ?;
+            WHERE id = ?
             """;
 
     private static final String FIND_BY_ID_SQL = """  
@@ -50,7 +47,7 @@ public class SingerRepositoryImpl implements BaseRepository<SingerEntity, Long> 
     private static final String FIND_ALL_SQL = """
              SELECT id, 
             name 
-            FROM singers;
+            FROM singers
             """;
 
     private static final String FIND_BY_NAME_SQL = """
@@ -136,7 +133,7 @@ public class SingerRepositoryImpl implements BaseRepository<SingerEntity, Long> 
         try (var connection = ConnectionManagerImpl.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
 
-            preparedStatement.setString(1, singerEntity.getName());
+            preparedStatement.setString(1, singerEntity.getSurname());
             preparedStatement.executeUpdate();
 
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
@@ -155,7 +152,7 @@ public class SingerRepositoryImpl implements BaseRepository<SingerEntity, Long> 
         try (var connection = ConnectionManagerImpl.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
 
-            preparedStatement.setString(1, singerEntity.getName());
+            preparedStatement.setString(1, singerEntity.getSurname());
             preparedStatement.setLong(2, singerEntity.getId());
 
             preparedStatement.executeUpdate();
@@ -167,7 +164,7 @@ public class SingerRepositoryImpl implements BaseRepository<SingerEntity, Long> 
     private SingerEntity buildSingerEntity(ResultSet resultSet) throws SQLException {
         return new SingerEntity(
                 resultSet.getLong("id"),
-                resultSet.getString("name")
+                resultSet.getString("surname")
         );
     }
 }

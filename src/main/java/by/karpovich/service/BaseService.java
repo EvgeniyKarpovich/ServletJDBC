@@ -1,11 +1,10 @@
 package by.karpovich.service;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface BaseService<T,K> {
+public interface BaseService<T, K> {
 
-    Optional<T> findById(K id);
+    T findById(K id);
 
     List<T> findAll();
 
@@ -13,5 +12,5 @@ public interface BaseService<T,K> {
 
     T save(T t);
 
-    void update(T t);
+    void update(T t, K k);
 }

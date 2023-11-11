@@ -13,6 +13,10 @@ public class BaseEntity {
         this.name = name;
     }
 
+    public BaseEntity(String name) {
+        this.name = name;
+    }
+
     public Long getId() {
         return id;
     }

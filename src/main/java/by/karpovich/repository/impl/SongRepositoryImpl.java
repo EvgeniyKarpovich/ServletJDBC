@@ -67,7 +67,7 @@ public class SongRepositoryImpl implements BaseRepository<SongEntity, Long> {
             songs.id,
             songs.name,
             singers.id,
-            singers.name
+            singers.surname
             FROM songs
             JOIN singers
                 ON songs.singer_id = singers.id
@@ -103,24 +103,12 @@ public class SongRepositoryImpl implements BaseRepository<SongEntity, Long> {
             ResultSet resultSet = preparedStatement.executeQuery();
             List<SongEntity> result = new ArrayList<>();
             while (resultSet.next()) {
-                result.add(buildSongEntity2(resultSet));
+                result.add(buildSongEntity(resultSet));
             }
             return result;
         } catch (SQLException e) {
             throw new DaoException("IN FIND ALL");
         }
-    }
-
-    private SongEntity buildSongEntity2(ResultSet resultSet) throws SQLException {
-        SingerEntity singerEntity = new SingerEntity(
-                resultSet.getLong("id"),
-                resultSet.getString("name")
-        );
-        return new SongEntity(
-                resultSet.getLong("id"),
-                resultSet.getString("name"),
-                singerEntity
-        );
     }
 
     @Override
@@ -184,4 +172,18 @@ public class SongRepositoryImpl implements BaseRepository<SongEntity, Long> {
                         resultSet.getStatement().getConnection()).orElse(null)
         );
     }
+
+
+    private SongEntity buildSongEntity2(ResultSet resultSet) throws SQLException {
+        SingerEntity singerEntity = new SingerEntity(
+                resultSet.getLong("id"),
+                resultSet.getString("surname")
+        );
+        return new SongEntity(
+                resultSet.getLong("id"),
+                resultSet.getString("name"),
+                singerEntity
+        );
+    }
+
 }

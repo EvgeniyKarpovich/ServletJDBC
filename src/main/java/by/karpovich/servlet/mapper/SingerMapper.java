@@ -22,7 +22,7 @@ public class SingerMapper {
         return Optional.ofNullable(dto)
                 .map(singerDto -> {
                     SingerEntity singerEntity = new SingerEntity();
-                    singerEntity.setName(dto.name());
+                    singerEntity.setSurname(dto.name());
                     return singerEntity;
                 })
                 .orElse(null);
@@ -32,7 +32,7 @@ public class SingerMapper {
         return Optional.ofNullable(entity)
                 .map(singerEntity -> {
                     return new SingerDto(
-                            entity.getName());
+                            entity.getSurname());
                 }).orElse(null);
     }
 

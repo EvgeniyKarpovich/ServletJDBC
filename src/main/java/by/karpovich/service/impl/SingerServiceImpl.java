@@ -4,27 +4,24 @@ import by.karpovich.exception.DuplicateException;
 import by.karpovich.exception.NotFoundEntityException;
 import by.karpovich.model.SingerEntity;
 import by.karpovich.repository.impl.SingerRepositoryImpl;
+import by.karpovich.service.BaseService;
 import by.karpovich.servlet.dto.SingerDto;
 import by.karpovich.servlet.mapper.SingerMapper;
 
 import java.util.List;
 import java.util.Optional;
 
-public class SingerServiceImpl implements by.karpovich.service.SingerService<SingerDto, Long> {
+public class SingerServiceImpl implements BaseService<SingerDto, Long> {
 
-    private static SingerServiceImpl instance;
+    private static final SingerServiceImpl INSTANCE = new SingerServiceImpl();
     private final SingerRepositoryImpl singerRepository = SingerRepositoryImpl.getInstance();
     private final SingerMapper singerMapper = SingerMapper.getInstance();
 
     private SingerServiceImpl() {
-        // Private constructor to prevent instantiation.
     }
 
     public static SingerServiceImpl getInstance() {
-        if (instance == null) {
-            return instance = new SingerServiceImpl();
-        }
-        return instance;
+        return INSTANCE;
     }
 
     @Override
@@ -64,6 +61,11 @@ public class SingerServiceImpl implements by.karpovich.service.SingerService<Sin
         SingerEntity singerEntity = singerMapper.mapEntityFromDto(singerDto);
         singerEntity.setId(id);
         singerRepository.update(singerEntity);
+    }
+
+    public SingerEntity findSingerByIdWhichWillReturnModel(Long id) {
+        return singerRepository.findById(id).orElseThrow(
+                () -> new NotFoundEntityException("IN SERVICE findSingerByIdWhichWillReturnModel"));
     }
 
     private void validateAlreadyExists(SingerDto singerDto, Long id) {
