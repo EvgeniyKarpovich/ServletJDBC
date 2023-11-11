@@ -49,21 +49,12 @@ public class SongEntity /*extends BaseEntity*/ {
         this.singer = singer;
     }
 
-    //    public SongEntity(Long id, String name, SingerEntity singers) {
-//        super(id, name);
-//        this.singer = singers;
-//    }
-//
-//    public SongEntity(String name, SingerEntity singers) {
-//        super(name);
-//        this.singer = singers;
-//    }
-//
-//    public SingerEntity getSinger() {
-//        return singer;
-//    }
-//
-//    public void setSinger(SingerEntity singer) {
-//        this.singer = singer;
-//    }
+    @Override
+    public String toString() {
+        return "SongEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", singer=" + singer +
+                '}';
+    }
 }

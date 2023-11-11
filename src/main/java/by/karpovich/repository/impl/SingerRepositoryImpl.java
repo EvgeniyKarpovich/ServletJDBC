@@ -3,16 +3,18 @@ package by.karpovich.repository.impl;
 import by.karpovich.db.ConnectionManagerImpl;
 import by.karpovich.exception.DaoException;
 import by.karpovich.model.SingerEntity;
-import by.karpovich.repository.BaseRepository;
+import by.karpovich.repository.SingerRepository;
+import by.karpovich.repository.mapper.SingerResultSetMapperImpl;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class SingerRepositoryImpl implements BaseRepository<SingerEntity, Long> {
+public class SingerRepositoryImpl implements SingerRepository {
 
     private static final SingerRepositoryImpl INSTANCE = new SingerRepositoryImpl();
+    private final SingerResultSetMapperImpl resultSetMapper = new SingerResultSetMapperImpl();
 
     private SingerRepositoryImpl() {
     }
@@ -22,39 +24,39 @@ public class SingerRepositoryImpl implements BaseRepository<SingerEntity, Long> 
     }
 
     private static final String SAVE_SQL = """
-               INSERT INTO  singers(name) 
+               INSERT INTO  singers(surname)
             VALUES (?)
             """;
 
     private static final String DELETE_SQL = """
-               DELETE FROM singers 
+               DELETE FROM singers
                WHERE id = ?
             """;
 
     private static final String UPDATE_SQL = """
-            UPDATE singers 
-            SET name = ? 
+            UPDATE singers
+            SET surname = ?
             WHERE id = ?
             """;
 
     private static final String FIND_BY_ID_SQL = """  
-            SELECT id, 
-            name 
-            FROM singers 
+            SELECT id,
+            surname
+            FROM singers
             WHERE id = ?
              """;
 
     private static final String FIND_ALL_SQL = """
-             SELECT id, 
-            name 
+             SELECT id,
+            surname
             FROM singers
             """;
 
     private static final String FIND_BY_NAME_SQL = """
             SELECT id,
-            name 
+            surname
             FROM singers
-            WHERE name = ?
+            WHERE surname = ?
             """;
 
     @Override
@@ -66,6 +68,23 @@ public class SingerRepositoryImpl implements BaseRepository<SingerEntity, Long> 
         }
     }
 
+    public Optional<SingerEntity> findById(Long id, Connection connection) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
+
+            preparedStatement.setLong(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            SingerEntity singerEntity = null;
+
+            if (resultSet.next()) {
+                singerEntity = resultSetMapper.map(resultSet);
+            }
+            return Optional.ofNullable(singerEntity);
+        } catch (SQLException e) {
+            throw new DaoException("IN FIND BY ID");
+        }
+    }
+
+    @Override
     public Optional<SingerEntity> findByName(String name) {
         try (var connection = ConnectionManagerImpl.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_NAME_SQL)) {
@@ -75,27 +94,11 @@ public class SingerRepositoryImpl implements BaseRepository<SingerEntity, Long> 
             SingerEntity singerEntity = null;
 
             if (resultSet.next()) {
-                singerEntity = buildSingerEntity(resultSet);
+                singerEntity = resultSetMapper.map(resultSet);
             }
             return Optional.ofNullable(singerEntity);
         } catch (SQLException e) {
             throw new DaoException("IN FIND BY NAME");
-        }
-    }
-
-    public Optional<SingerEntity> findById(Long id, Connection connection) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
-
-            preparedStatement.setLong(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            SingerEntity singerEntity = null;
-
-            if (resultSet.next()) {
-                singerEntity = buildSingerEntity(resultSet);
-            }
-            return Optional.ofNullable(singerEntity);
-        } catch (SQLException e) {
-            throw new DaoException("IN FIND BY ID");
         }
     }
 
@@ -107,7 +110,7 @@ public class SingerRepositoryImpl implements BaseRepository<SingerEntity, Long> 
             ResultSet resultSet = preparedStatement.executeQuery();
             List<SingerEntity> result = new ArrayList<>();
             while (resultSet.next()) {
-                result.add(buildSingerEntity(resultSet));
+                result.add(resultSetMapper.map(resultSet));
             }
             return result;
         } catch (SQLException e) {
@@ -159,12 +162,5 @@ public class SingerRepositoryImpl implements BaseRepository<SingerEntity, Long> 
         } catch (SQLException e) {
             throw new DaoException("IN UPDATE");
         }
-    }
-
-    private SingerEntity buildSingerEntity(ResultSet resultSet) throws SQLException {
-        return new SingerEntity(
-                resultSet.getLong("id"),
-                resultSet.getString("surname")
-        );
     }
 }

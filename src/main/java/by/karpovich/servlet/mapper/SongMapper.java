@@ -5,7 +5,9 @@ import by.karpovich.service.impl.SingerServiceImpl;
 import by.karpovich.servlet.dto.SongDto;
 import by.karpovich.servlet.dto.SongDtoOut;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class SongMapper {
     private final SingerServiceImpl singerService = SingerServiceImpl.getInstance();
@@ -19,12 +21,12 @@ public class SongMapper {
                 .orElse(null);
     }
 
-    public SongDtoOut mapSongDtoOutFromEntity(SongEntity songEntity) {
-        return Optional.ofNullable(songEntity)
-                .map(entity -> new SongDtoOut(
-                        entity.getId(),
-                        entity.getName(),
-                        entity.getSinger().getSurname()))
+    public SongDtoOut mapSongDtoOutFromEntity(SongEntity entity) {
+        return Optional.ofNullable(entity)
+                .map(songEntity -> new SongDtoOut(
+                        songEntity.getId(),
+                        songEntity.getName(),
+                        songEntity.getSinger().getSurname()))
                 .orElse(null);
     }
 
@@ -34,6 +36,14 @@ public class SongMapper {
                         entity.getName(),
                         entity.getSinger().getId()
                 ))
+                .orElse(null);
+    }
+
+    public List<SongDto> mapListSongDtoFromSongEntity(List<SongEntity> entities) {
+        return Optional.ofNullable(entities)
+                .map(listEntity -> listEntity.stream()
+                        .map(this::mapSongDtoFromEntity)
+                        .collect(Collectors.toList()))
                 .orElse(null);
     }
 }

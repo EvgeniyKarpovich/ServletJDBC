@@ -2,9 +2,9 @@ package by.karpovich.repository.impl;
 
 import by.karpovich.db.ConnectionManagerImpl;
 import by.karpovich.exception.DaoException;
-import by.karpovich.model.SingerEntity;
 import by.karpovich.model.SongEntity;
-import by.karpovich.repository.BaseRepository;
+import by.karpovich.repository.SongRepository;
+import by.karpovich.repository.mapper.SongResultSetMapperImpl;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,55 +14,43 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class SongRepositoryImpl implements BaseRepository<SongEntity, Long> {
-
-    private static SongRepositoryImpl instance;
-    private final SingerRepositoryImpl singerRepository = SingerRepositoryImpl.getInstance();
+public class SongRepositoryImpl implements SongRepository {
+    private static final SongRepositoryImpl INSTANCE = new SongRepositoryImpl();
+    private final SongResultSetMapperImpl resultSetMapper = new SongResultSetMapperImpl();
 
     private SongRepositoryImpl() {
     }
 
     public static SongRepositoryImpl getInstance() {
-        if (instance == null) {
-            instance = new SongRepositoryImpl();
-        }
-        return instance;
+        return INSTANCE;
     }
 
-    private static final String CREATE_SQL = """
-            INSERT INTO  songs(name, singer_id) 
+    private static final String SAVE_SQL = """
+            INSERT INTO  songs(name, singer_id)
             VALUES (?, ?)
             """;
 
     private static final String DELETE_SQL = """
-               DELETE FROM songs 
+               DELETE FROM songs
                WHERE id = ?
             """;
 
     private static final String UPDATE_SQL = """
-            UPDATE songs 
+            UPDATE songs
             SET name = ?,
             singer_id = ?,
             WHERE id = ?
             """;
 
-    private static final String FIND_BY_ID_SQL = """
+    private static final String FIND_BY_NAME_SQL = """
             SELECT
             id,
             name
             FROM songs
-            WHERE id = ?
+            WHERE name = ?
             """;
 
     private static final String FIND_ALL_SQL = """
-            SELECT
-            id,
-            name
-            FROM songs
-            WHERE id = ?
-            """;
-
-    private static final String FIND_ALL_SQL2 = """
             SELECT
             songs.id,
             songs.name,
@@ -73,21 +61,39 @@ public class SongRepositoryImpl implements BaseRepository<SongEntity, Long> {
                 ON songs.singer_id = singers.id
             """;
 
-    private static final String FIND_BY_ID_SQL2 = FIND_ALL_SQL2 + """
+    private static final String FIND_BY_ID_SQL = FIND_ALL_SQL + """
             WHERE songs.id = ?
             """;
 
     @Override
     public Optional<SongEntity> findById(Long id) {
         try (var connection = ConnectionManagerImpl.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL2)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
             preparedStatement.setLong(1, id);
 
             ResultSet resultSet = preparedStatement.executeQuery();
             SongEntity songEntity = null;
 
             if (resultSet.next()) {
-                songEntity = buildSongEntity2(resultSet);
+                songEntity = resultSetMapper.map(resultSet);
+            }
+            return Optional.ofNullable(songEntity);
+        } catch (SQLException e) {
+            throw new DaoException("IN FIND BY ID");
+        }
+    }
+
+    @Override
+    public Optional<SongEntity> findByName(String name) {
+        try (var connection = ConnectionManagerImpl.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_NAME_SQL)) {
+            preparedStatement.setString(1, name);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            SongEntity songEntity = null;
+
+            if (resultSet.next()) {
+                songEntity = resultSetMapper.map(resultSet);
             }
             return Optional.ofNullable(songEntity);
         } catch (SQLException e) {
@@ -98,12 +104,12 @@ public class SongRepositoryImpl implements BaseRepository<SongEntity, Long> {
     @Override
     public List<SongEntity> findAll() {
         try (var connection = ConnectionManagerImpl.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_SQL2)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
 
             ResultSet resultSet = preparedStatement.executeQuery();
             List<SongEntity> result = new ArrayList<>();
             while (resultSet.next()) {
-                result.add(buildSongEntity(resultSet));
+                result.add(resultSetMapper.map(resultSet));
             }
             return result;
         } catch (SQLException e) {
@@ -127,7 +133,7 @@ public class SongRepositoryImpl implements BaseRepository<SongEntity, Long> {
     @Override
     public SongEntity save(SongEntity songEntity) {
         try (var connection = ConnectionManagerImpl.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(CREATE_SQL, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, songEntity.getName());
             preparedStatement.setLong(2, songEntity.getSinger().getId());
@@ -163,27 +169,4 @@ public class SongRepositoryImpl implements BaseRepository<SongEntity, Long> {
             throw new DaoException("IN UPDATE");
         }
     }
-
-    private SongEntity buildSongEntity(ResultSet resultSet) throws SQLException {
-        return new SongEntity(
-                resultSet.getLong("id"),
-                resultSet.getString("name"),
-                singerRepository.findById(resultSet.getLong("singer_id"),
-                        resultSet.getStatement().getConnection()).orElse(null)
-        );
-    }
-
-
-    private SongEntity buildSongEntity2(ResultSet resultSet) throws SQLException {
-        SingerEntity singerEntity = new SingerEntity(
-                resultSet.getLong("id"),
-                resultSet.getString("surname")
-        );
-        return new SongEntity(
-                resultSet.getLong("id"),
-                resultSet.getString("name"),
-                singerEntity
-        );
-    }
-
 }

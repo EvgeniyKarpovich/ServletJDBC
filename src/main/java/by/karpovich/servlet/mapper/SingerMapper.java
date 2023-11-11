@@ -9,36 +9,22 @@ import java.util.stream.Collectors;
 
 public class SingerMapper {
 
-    private static final SingerMapper INSTANCE = new SingerMapper();
-
-    private SingerMapper() {
-    }
-
-    public static SingerMapper getInstance() {
-        return INSTANCE;
-    }
-
     public SingerEntity mapEntityFromDto(SingerDto dto) {
         return Optional.ofNullable(dto)
-                .map(singerDto -> {
-                    SingerEntity singerEntity = new SingerEntity();
-                    singerEntity.setSurname(dto.name());
-                    return singerEntity;
-                })
+                .map(singerDto -> new SingerEntity(singerDto.name())
+                )
                 .orElse(null);
     }
 
     public SingerDto mapDtoFromEntity(SingerEntity entity) {
         return Optional.ofNullable(entity)
-                .map(singerEntity -> {
-                    return new SingerDto(
-                            entity.getSurname());
-                }).orElse(null);
+                .map(singerEntity ->
+                        new SingerDto(entity.getSurname())).orElse(null);
     }
 
     public List<SingerDto> mapListDtoFromListEntity(List<SingerEntity> entities) {
         return Optional.ofNullable(entities)
-                .map(listDto -> entities.stream()
+                .map(listEntity -> entities.stream()
                         .map(this::mapDtoFromEntity)
                         .collect(Collectors.toList()))
                 .orElse(null);

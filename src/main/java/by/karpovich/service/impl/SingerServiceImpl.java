@@ -4,18 +4,18 @@ import by.karpovich.exception.DuplicateException;
 import by.karpovich.exception.NotFoundEntityException;
 import by.karpovich.model.SingerEntity;
 import by.karpovich.repository.impl.SingerRepositoryImpl;
-import by.karpovich.service.BaseService;
+import by.karpovich.service.SingerService;
 import by.karpovich.servlet.dto.SingerDto;
 import by.karpovich.servlet.mapper.SingerMapper;
 
 import java.util.List;
 import java.util.Optional;
 
-public class SingerServiceImpl implements BaseService<SingerDto, Long> {
+public class SingerServiceImpl implements SingerService {
 
     private static final SingerServiceImpl INSTANCE = new SingerServiceImpl();
     private final SingerRepositoryImpl singerRepository = SingerRepositoryImpl.getInstance();
-    private final SingerMapper singerMapper = SingerMapper.getInstance();
+    private final SingerMapper singerMapper = new SingerMapper();
 
     private SingerServiceImpl() {
     }
@@ -68,8 +68,8 @@ public class SingerServiceImpl implements BaseService<SingerDto, Long> {
                 () -> new NotFoundEntityException("IN SERVICE findSingerByIdWhichWillReturnModel"));
     }
 
-    private void validateAlreadyExists(SingerDto singerDto, Long id) {
-        Optional<SingerEntity> entity = singerRepository.findByName(singerDto.name());
+    private void validateAlreadyExists(SingerDto dto, Long id) {
+        Optional<SingerEntity> entity = singerRepository.findByName(dto.name());
 
         if (entity.isPresent() && !entity.get().getId().equals(id)) {
             throw new DuplicateException("IN validateAlreadyExists");
