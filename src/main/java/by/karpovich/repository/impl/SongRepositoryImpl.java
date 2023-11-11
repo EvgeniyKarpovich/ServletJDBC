@@ -16,14 +16,17 @@ import java.util.Optional;
 
 public class SongRepositoryImpl implements BaseRepository<SongEntity, Long> {
 
-    private static final SongRepositoryImpl INSTANCE = new SongRepositoryImpl();
+    private static SongRepositoryImpl instance;
     private final SingerRepositoryImpl singerRepository = SingerRepositoryImpl.getInstance();
 
     private SongRepositoryImpl() {
     }
 
     public static SongRepositoryImpl getInstance() {
-        return INSTANCE;
+        if (instance == null) {
+            instance = new SongRepositoryImpl();
+        }
+        return instance;
     }
 
     private static final String CREATE_SQL = """
