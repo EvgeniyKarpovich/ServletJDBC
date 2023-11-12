@@ -1,25 +1,39 @@
 package by.karpovich.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class AlbumEntity {
-    //One to many
-    private List<SongEntity> songs = new ArrayList<>();
-    //Many to one
+
+    private Long id;
+    private String albumName;
     private SingerEntity singer;
 
-    public AlbumEntity(List<SongEntity> songs, SingerEntity singer) {
-        this.songs = songs;
+    public AlbumEntity() {
+    }
+
+    public AlbumEntity(Long id, String name, SingerEntity singer) {
+        this.id = id;
+        this.albumName = name;
         this.singer = singer;
     }
 
-    public List<SongEntity> getSongs() {
-        return songs;
+    public AlbumEntity(String name, SingerEntity singer) {
+        this.albumName = name;
+        this.singer = singer;
     }
 
-    public void setSongs(List<SongEntity> songs) {
-        this.songs = songs;
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getAlbumName() {
+        return albumName;
+    }
+
+    public void setAlbumName(String albumName) {
+        this.albumName = albumName;
     }
 
     public SingerEntity getSinger() {
@@ -28,5 +42,14 @@ public class AlbumEntity {
 
     public void setSinger(SingerEntity singer) {
         this.singer = singer;
+    }
+
+    @Override
+    public String toString() {
+        return "AlbumEntity{" +
+                "id=" + id +
+                ", albumName='" + albumName + '\'' +
+                ", singer=" + singer +
+                '}';
     }
 }

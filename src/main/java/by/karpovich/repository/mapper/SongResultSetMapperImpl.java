@@ -1,5 +1,6 @@
 package by.karpovich.repository.mapper;
 
+import by.karpovich.model.AlbumEntity;
 import by.karpovich.model.SingerEntity;
 import by.karpovich.model.SongEntity;
 import by.karpovich.repository.impl.SingerRepositoryImpl;
@@ -17,10 +18,16 @@ public class SongResultSetMapperImpl implements SongResultSetMapper {
                 resultSet.getLong("id"),
                 resultSet.getString("surname")
         );
+        AlbumEntity albumEntity = new AlbumEntity(
+                resultSet.getLong("id"),
+                resultSet.getString("album_name"),
+                singerEntity
+        );
         return new SongEntity(
                 resultSet.getLong("id"),
                 resultSet.getString("name"),
-                singerEntity
+                singerEntity,
+                albumEntity
         );
     }
 

@@ -2,13 +2,11 @@ package by.karpovich.model;
 
 public class SongEntity /*extends BaseEntity*/ {
 
-    //Many to one
     private Long id;
     private String name;
     private SingerEntity singer;
-//    //Many to one
-//    private AlbumEntity album;
-//    //One to many
+    private AlbumEntity album;
+//    //Many to many
 //    private List<AuthorEntity> authors = new ArrayList<>();
 
     public SongEntity() {
@@ -17,6 +15,19 @@ public class SongEntity /*extends BaseEntity*/ {
     public SongEntity(String name, SingerEntity singer) {
         this.name = name;
         this.singer = singer;
+    }
+
+    public SongEntity(Long id, String name, SingerEntity singer, AlbumEntity album) {
+        this.id = id;
+        this.name = name;
+        this.singer = singer;
+        this.album = album;
+    }
+
+    public SongEntity(String name, SingerEntity singer, AlbumEntity album) {
+        this.name = name;
+        this.singer = singer;
+        this.album = album;
     }
 
     public Long getId() {
@@ -41,6 +52,14 @@ public class SongEntity /*extends BaseEntity*/ {
 
     public void setSinger(SingerEntity singer) {
         this.singer = singer;
+    }
+
+    public AlbumEntity getAlbum() {
+        return album;
+    }
+
+    public void setAlbum(AlbumEntity album) {
+        this.album = album;
     }
 
     public SongEntity(Long id, String name, SingerEntity singer) {

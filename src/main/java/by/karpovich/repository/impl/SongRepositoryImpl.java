@@ -26,8 +26,8 @@ public class SongRepositoryImpl implements SongRepository {
     }
 
     private static final String SAVE_SQL = """
-            INSERT INTO  songs(name, singer_id)
-            VALUES (?, ?)
+            INSERT INTO  songs(name, singer_id, album_id)
+            VALUES (?, ?, ?)
             """;
 
     private static final String DELETE_SQL = """
@@ -55,10 +55,14 @@ public class SongRepositoryImpl implements SongRepository {
             songs.id,
             songs.name,
             singers.id,
-            singers.surname
+            singers.surname,
+            albums.id,
+            albums.album_name
             FROM songs
             JOIN singers
                 ON songs.singer_id = singers.id
+            JOIN albums
+                ON songs.album_id = albums.id
             """;
 
     private static final String FIND_BY_ID_SQL = FIND_ALL_SQL + """
@@ -137,6 +141,7 @@ public class SongRepositoryImpl implements SongRepository {
 
             preparedStatement.setString(1, songEntity.getName());
             preparedStatement.setLong(2, songEntity.getSinger().getId());
+            preparedStatement.setLong(3, songEntity.getAlbum().getId());
             preparedStatement.executeUpdate();
 
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
