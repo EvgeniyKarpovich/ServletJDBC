@@ -14,6 +14,11 @@ public class SongEntity {
     public SongEntity() {
     }
 
+    public SongEntity(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public SongEntity(String name, SingerEntity singer) {
         this.name = name;
         this.singer = singer;

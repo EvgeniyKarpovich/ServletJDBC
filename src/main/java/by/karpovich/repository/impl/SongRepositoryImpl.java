@@ -53,17 +53,23 @@ public class SongRepositoryImpl implements SongRepository {
 
     private static final String FIND_ALL_SQL = """
             SELECT
-            songs.id,
-            songs.name,
-            singers.id,
-            singers.surname,
-            albums.id,
-            albums.album_name
-            FROM songs
+            songs.id song_id,
+            songs.name song_name,
+            singers.id sr_id,
+            singers.surname sr_surname,
+            albums.id al_id,
+            albums.album_name al_name,
+            authors.id au_id,
+            authors.author_name au_name
+            FROM songs 
             JOIN singers
                 ON songs.singer_id = singers.id
             JOIN albums
                 ON songs.album_id = albums.id
+            JOIN song_author
+                ON songs.id = song_author.song_id
+            JOIN authors
+                ON song_author.author_id = authors.id
             """;
 
     private static final String FIND_BY_ID_SQL = FIND_ALL_SQL + """
@@ -73,6 +79,28 @@ public class SongRepositoryImpl implements SongRepository {
     private static final String INSERT_SONG_AUTHOR_SQL = """
             INSERT INTO song_author (author_id, song_id)
             VALUES (?, ?)
+            """;
+
+    private static final String FIND_BY_AUTHOR_ID_SQL = """
+            SELECT
+            songs.id,
+            songs.name
+            FROM songs
+            JOIN song_author sa 
+                ON songs.id = sa.song_id
+            WHERE sa.author_id = ?;
+            """;
+
+    private static final String FIND_BY_AUTHOR_NAME_SQL = """
+            SELECT
+            songs.id,
+            songs.name
+            FROM songs
+            JOIN song_author sa 
+                ON songs.id = sa.song_id
+            JOIN authors a 
+                ON sa.author_id = a.id
+            WHERE a.author_name = ?;
             """;
 
 
@@ -91,6 +119,40 @@ public class SongRepositoryImpl implements SongRepository {
             return Optional.ofNullable(songEntity);
         } catch (SQLException e) {
             throw new DaoException("IN FIND BY ID");
+        }
+    }
+
+//    public List<SongEntity> findByAuthorId(Long id) {
+//        try (var connection = ConnectionManagerImpl.getConnection();
+//             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_AUTHOR_ID_SQL)) {
+//            preparedStatement.setLong(1, id);
+//
+//            ResultSet resultSet = preparedStatement.executeQuery();
+//            List<SongEntity> entities = new ArrayList<>();
+//
+//            while (resultSet.next()) {
+//                entities.add(resultSetMapper.mapForFindByAuthorId(resultSet));
+//            }
+//            return entities;
+//        } catch (SQLException e) {
+//            throw new DaoException("IN FIND BY ID");
+//        }
+//    }
+
+    public List<SongEntity> findByAuthorName(String name) {
+        try (var connection = ConnectionManagerImpl.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_AUTHOR_NAME_SQL)) {
+            preparedStatement.setString(1, name);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<SongEntity> entities = new ArrayList<>();
+
+            while (resultSet.next()) {
+                entities.add(resultSetMapper.mapForFindByAuthorName(resultSet));
+            }
+            return entities;
+        } catch (SQLException e) {
+            throw new DaoException("IN FIND BY NAME");
         }
     }
 

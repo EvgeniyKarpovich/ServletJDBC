@@ -3,6 +3,7 @@ package by.karpovich.repository.impl;
 import by.karpovich.db.ConnectionManagerImpl;
 import by.karpovich.exception.DaoException;
 import by.karpovich.model.AuthorEntity;
+import by.karpovich.model.SongEntity;
 import by.karpovich.repository.AuthorRepository;
 import by.karpovich.repository.mapper.AuthorResultSetMapperImpl;
 
@@ -31,19 +32,24 @@ public class AuthorRepositoryImpl implements AuthorRepository {
             """;
 
     private static final String DELETE_SQL = """
-        
+                    
             """;
 
     private static final String UPDATE_SQL = """
-         
+                     
             """;
 
     private static final String FIND_ALL_SQL = """
-          
+                      
             """;
 
     private static final String FIND_BY_ID_SQL = FIND_ALL_SQL + """
-          
+                      
+            """;
+
+    private static final String INSERT_SONG_AUTHOR_SQL = """
+            INSERT INTO song_author (author_id, song_id)
+            VALUES (?, ?)
             """;
 
     @Override
@@ -74,10 +80,14 @@ public class AuthorRepositoryImpl implements AuthorRepository {
         return false;
     }
 
+    //Перебрать потом. Сохранение СОНГОВ
     @Override
     public AuthorEntity save(AuthorEntity authorEntity) {
         try (var connection = ConnectionManagerImpl.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS);
+             PreparedStatement songAuthorStatement = connection.prepareStatement(INSERT_SONG_AUTHOR_SQL)) {
+
+            connection.setAutoCommit(false);
 
             preparedStatement.setString(1, authorEntity.getAuthorName());
             preparedStatement.executeUpdate();
@@ -87,6 +97,17 @@ public class AuthorRepositoryImpl implements AuthorRepository {
             if (resultSet.next()) {
                 authorEntity.setId(resultSet.getLong("id"));
             }
+
+            for (SongEntity song : authorEntity.getSongs()) {
+                songAuthorStatement.setLong(1, song.getId());
+                songAuthorStatement.setLong(2, authorEntity.getId());
+//                songAuthorStatement.executeUpdate();
+                songAuthorStatement.addBatch();
+            }
+            songAuthorStatement.executeBatch();
+
+            connection.commit();
+
             return authorEntity;
         } catch (SQLException e) {
             throw new DaoException("IN SAVE");
