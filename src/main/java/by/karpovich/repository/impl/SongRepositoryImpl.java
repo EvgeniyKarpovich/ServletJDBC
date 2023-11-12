@@ -2,6 +2,7 @@ package by.karpovich.repository.impl;
 
 import by.karpovich.db.ConnectionManagerImpl;
 import by.karpovich.exception.DaoException;
+import by.karpovich.model.AuthorEntity;
 import by.karpovich.model.SongEntity;
 import by.karpovich.repository.SongRepository;
 import by.karpovich.repository.mapper.SongResultSetMapperImpl;
@@ -68,6 +69,12 @@ public class SongRepositoryImpl implements SongRepository {
     private static final String FIND_BY_ID_SQL = FIND_ALL_SQL + """
             WHERE songs.id = ?
             """;
+
+    private static final String INSERT_SONG_AUTHOR_SQL = """
+            INSERT INTO song_author (author_id, song_id)
+            VALUES (?, ?)
+            """;
+
 
     @Override
     public Optional<SongEntity> findById(Long id) {
@@ -137,7 +144,10 @@ public class SongRepositoryImpl implements SongRepository {
     @Override
     public SongEntity save(SongEntity songEntity) {
         try (var connection = ConnectionManagerImpl.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS);
+             PreparedStatement songAuthorStatement = connection.prepareStatement(INSERT_SONG_AUTHOR_SQL)) {
+
+            connection.setAutoCommit(false);
 
             preparedStatement.setString(1, songEntity.getName());
             preparedStatement.setLong(2, songEntity.getSinger().getId());
@@ -149,6 +159,14 @@ public class SongRepositoryImpl implements SongRepository {
             if (resultSet.next()) {
                 songEntity.setId(resultSet.getLong("id"));
             }
+
+            for (AuthorEntity author : songEntity.getAuthors()) {
+                songAuthorStatement.setLong(1, author.getId());
+                songAuthorStatement.setLong(2, songEntity.getId());
+                songAuthorStatement.executeUpdate();
+            }
+            connection.commit();
+
             return songEntity;
         } catch (SQLException e) {
             throw new DaoException("IN SAVE");

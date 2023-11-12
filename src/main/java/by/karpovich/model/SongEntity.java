@@ -1,13 +1,15 @@
 package by.karpovich.model;
 
-public class SongEntity /*extends BaseEntity*/ {
+import java.util.ArrayList;
+import java.util.List;
+
+public class SongEntity {
 
     private Long id;
     private String name;
     private SingerEntity singer;
     private AlbumEntity album;
-//    //Many to many
-//    private List<AuthorEntity> authors = new ArrayList<>();
+    private List<AuthorEntity> authors = new ArrayList<>();
 
     public SongEntity() {
     }
@@ -28,6 +30,21 @@ public class SongEntity /*extends BaseEntity*/ {
         this.name = name;
         this.singer = singer;
         this.album = album;
+    }
+
+    public SongEntity(Long id, String name, SingerEntity singer, AlbumEntity album, List<AuthorEntity> authors) {
+        this.id = id;
+        this.name = name;
+        this.singer = singer;
+        this.album = album;
+        this.authors = authors;
+    }
+
+    public SongEntity(String name, SingerEntity singer, AlbumEntity album, List<AuthorEntity> authors) {
+        this.name = name;
+        this.singer = singer;
+        this.album = album;
+        this.authors = authors;
     }
 
     public Long getId() {
@@ -62,6 +79,14 @@ public class SongEntity /*extends BaseEntity*/ {
         this.album = album;
     }
 
+    public List<AuthorEntity> getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(List<AuthorEntity> authors) {
+        this.authors = authors;
+    }
+
     public SongEntity(Long id, String name, SingerEntity singer) {
         this.id = id;
         this.name = name;
@@ -74,6 +99,8 @@ public class SongEntity /*extends BaseEntity*/ {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", singer=" + singer +
+                ", album=" + album +
+                ", authors=" + authors +
                 '}';
     }
 }

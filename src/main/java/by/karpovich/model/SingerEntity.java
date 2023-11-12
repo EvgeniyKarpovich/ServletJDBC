@@ -1,6 +1,6 @@
 package by.karpovich.model;
 
-public class SingerEntity /*extends BaseEntity*/ {
+public class SingerEntity {
 
     private Long id;
     private String surname;
