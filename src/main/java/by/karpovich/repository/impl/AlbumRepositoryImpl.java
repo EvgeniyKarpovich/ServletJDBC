@@ -85,7 +85,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
             ResultSet resultSet = preparedStatement.executeQuery();
             List<AlbumEntity> result = new ArrayList<>();
             while (resultSet.next()) {
-                result.add(resultSetMapper.map2(resultSet));
+                result.add(resultSetMapper.map(resultSet));
             }
             return result;
         } catch (SQLException e) {

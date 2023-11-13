@@ -19,10 +19,4 @@ public class AlbumResultSetMapperImpl implements AlbumResultSetMapper {
                 resultSet.getString("album_name"),
                 singerEntity);
     }
-
-    public AlbumEntity map2(ResultSet resultSet) throws SQLException {
-        return new AlbumEntity(
-                resultSet.getLong("id"),
-                resultSet.getString("album_name"));
-    }
 }
