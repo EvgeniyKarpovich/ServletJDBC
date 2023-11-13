@@ -29,7 +29,6 @@ public class SingerServiceImpl implements SingerService {
         SingerEntity singerEntity = singerRepository.findById(id).orElseThrow(
                 () -> new NotFoundEntityException("IN SERVICE FIND BY ID")
         );
-
         return singerMapper.mapDtoFromEntity(singerEntity);
     }
 
@@ -49,7 +48,6 @@ public class SingerServiceImpl implements SingerService {
     @Override
     public SingerDto save(SingerDto singerDto) {
         validateAlreadyExists(singerDto, null);
-
         SingerEntity singerEntity = singerMapper.mapEntityFromDto(singerDto);
         SingerEntity save = singerRepository.save(singerEntity);
         return singerMapper.mapDtoFromEntity(save);
@@ -70,7 +68,6 @@ public class SingerServiceImpl implements SingerService {
 
     private void validateAlreadyExists(SingerDto dto, Long id) {
         Optional<SingerEntity> entity = singerRepository.findByName(dto.name());
-
         if (entity.isPresent() && !entity.get().getId().equals(id)) {
             throw new DuplicateException("IN validateAlreadyExists");
         }

@@ -58,6 +58,24 @@ public class AuthorRepositoryImpl implements AuthorRepository {
             authors.id  = ?
             """;
 
+    private static final String FIND_BY_SONG_NAME_SQL = """
+            SELECT
+            authors.id au_id,
+            authors.author_name au_name
+            FROM authors
+            JOIN song_author sa
+                ON authors.id = sa.author_id
+            JOIN songs s
+                ON sa.song_id = s.id
+            WHERE s.name = ?
+            """;
+
+    private static final String INSERT_SONG_AUTHOR_SQL = """
+            INSERT INTO song_author (author_id, song_id)
+            VALUES (?, ?)
+            """;
+
+
 //    @Override
 //    public Optional<AuthorEntity> findById(Long id) {
 //        AuthorEntity authorEntity = null;
@@ -86,6 +104,24 @@ public class AuthorRepositoryImpl implements AuthorRepository {
 //        }
 //    }
 
+    public List<AuthorEntity> findByName(String name) {
+        try (var connection = ConnectionManagerImpl.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_SONG_NAME_SQL)) {
+            preparedStatement.setString(1, name);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<AuthorEntity> entities = new ArrayList<>();
+
+            while (resultSet.next()) {
+                entities.add(resultSetMapper.map2(resultSet));
+            }
+
+            return entities;
+        } catch (SQLException e) {
+            throw new DaoException("IN FIND BY NAME");
+        }
+    }
+
     @Override
     public Optional<AuthorEntity> findById(Long id) {
         AuthorEntity authorEntity = null;
@@ -101,7 +137,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
             }
             return Optional.ofNullable(authorEntity);
         } catch (SQLException e) {
-            throw new DaoException("IN SAVE");
+            throw new DaoException("IN findById");
         }
     }
 
@@ -116,6 +152,26 @@ public class AuthorRepositoryImpl implements AuthorRepository {
     }
 
 
+//    @Override
+//    public AuthorEntity save(AuthorEntity authorEntity) {
+//        try (var connection = ConnectionManagerImpl.getConnection();
+//             PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
+//
+//            preparedStatement.setString(1, authorEntity.getAuthorName());
+//            preparedStatement.executeUpdate();
+//
+//            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+//
+//            if (resultSet.next()) {
+//                authorEntity.setId(resultSet.getLong("id"));
+//            }
+//
+//            return authorEntity;
+//        } catch (SQLException e) {
+//            throw new DaoException("IN SAVE");
+//        }
+//    }
+
     @Override
     public AuthorEntity save(AuthorEntity authorEntity) {
         try (var connection = ConnectionManagerImpl.getConnection();
@@ -129,7 +185,6 @@ public class AuthorRepositoryImpl implements AuthorRepository {
             if (resultSet.next()) {
                 authorEntity.setId(resultSet.getLong("id"));
             }
-
             return authorEntity;
         } catch (SQLException e) {
             throw new DaoException("IN SAVE");

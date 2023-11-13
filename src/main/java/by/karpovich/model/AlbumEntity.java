@@ -1,10 +1,14 @@
 package by.karpovich.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AlbumEntity {
 
     private Long id;
     private String albumName;
     private SingerEntity singer;
+    private List<SongEntity> songs = new ArrayList<>();
 
     public AlbumEntity() {
     }

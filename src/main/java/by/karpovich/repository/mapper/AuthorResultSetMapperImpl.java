@@ -29,4 +29,10 @@ public class AuthorResultSetMapperImpl implements AuthorResultSetMapper {
 
         return authorEntity;
     }
+
+    public AuthorEntity map2(ResultSet resultSet) throws SQLException {
+        return new AuthorEntity(
+                resultSet.getLong("au_id"),
+                resultSet.getString("au_name"));
+    }
 }
