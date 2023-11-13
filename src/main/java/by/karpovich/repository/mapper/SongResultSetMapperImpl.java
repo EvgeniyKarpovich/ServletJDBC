@@ -4,7 +4,6 @@ import by.karpovich.model.AlbumEntity;
 import by.karpovich.model.AuthorEntity;
 import by.karpovich.model.SingerEntity;
 import by.karpovich.model.SongEntity;
-import by.karpovich.repository.impl.SingerRepositoryImpl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,8 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SongResultSetMapperImpl implements SongResultSetMapper {
-
-    private final SingerRepositoryImpl singerRepository = SingerRepositoryImpl.getInstance();
 
     @Override
     public SongEntity map(ResultSet resultSet) throws SQLException {

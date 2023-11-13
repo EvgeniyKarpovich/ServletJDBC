@@ -1,5 +1,8 @@
 package by.karpovich;
 
+import by.karpovich.model.AlbumEntity;
+import by.karpovich.model.SingerEntity;
+import by.karpovich.model.SongEntity;
 import by.karpovich.repository.impl.AlbumRepositoryImpl;
 import by.karpovich.repository.impl.AuthorRepositoryImpl;
 import by.karpovich.repository.impl.SingerRepositoryImpl;
@@ -8,8 +11,11 @@ import by.karpovich.service.impl.AlbumServiceImpl;
 import by.karpovich.service.impl.AuthorServiceImpl;
 import by.karpovich.service.impl.SingerServiceImpl;
 import by.karpovich.service.impl.SongServiceImpl;
+import by.karpovich.servlet.dto.AlbumDto;
 import by.karpovich.servlet.dto.SingerDto;
+import by.karpovich.servlet.dto.SongDto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ServletJDBCApplication {
@@ -56,32 +62,28 @@ public class ServletJDBCApplication {
 //        songEntities.add(byId2.get());
 
 
-//        SingerEntity singerEntity = new SingerEntity("7777777");
-//        SingerEntity save1 = singerRepository.save(singerEntity);
-//
-//        AlbumEntity albumEntity = new AlbumEntity("KKKK", save1);
-//        AlbumEntity saveAlbumEntity = albumRepository.save(albumEntity);
-//
-//        SongEntity song = new SongEntity("NNNNNNNNNNN!!!", save1, saveAlbumEntity);
-//        songRepository.save(song);
-
-//        SongEntity songEntity = new SongEntity("KKKK", saveSingerEntity, saveAlbumEntity, authorEntities);
-//        SongEntity save1 = songRepository.save(songEntity);
-//        System.out.println(save1);
+        SingerEntity singerEntity = new SingerEntity("44444");
+        SingerEntity save1 = singerRepository.save(singerEntity);
 
         SingerServiceImpl singerService = SingerServiceImpl.getInstance();
         AlbumServiceImpl albumService = AlbumServiceImpl.getInstance();
         SongServiceImpl songService = SongServiceImpl.getInstance();
         AuthorServiceImpl authorService = AuthorServiceImpl.getInstance();
 
-        SingerDto singerDto = new SingerDto("2UP");
-//        SingerDto save = singerService.save(singerDto);
-//        System.out.println(save);
-        singerService.findById(1L);
-        List<SingerDto> all = singerService.findAll();
+        SongEntity songEntity = new SongEntity("NEW SONG", save1);
+//        SongEntity save = songRepository.save(songEntity);
+
+        AlbumDto albumDto = new AlbumDto("ALBUN MEGA POP TRASH", 2L);
+        //ОСТАЛСЯ FIND ALL в АЛЬБУМ
+        List<AlbumDto> all = albumService.findAll();
         System.out.println(all);
-//        singerService.update(singerDto, 7L);
-        singerRepository.deleteById(7L);
+
+//        AlbumEntity albumEntity = new AlbumEntity("NEW ALBUM", save1, entities);
+//        AlbumEntity save2 = albumRepository.save(albumEntity);
+
+//        System.out.println(save2);
+
+
 //        SingerEntity singerEntity = new SingerEntity("&&&&&&&");
 //        SingerEntity saveSingerEntity = singerRepository.save(singerEntity);
 //        AlbumEntity albumEntity = new AlbumEntity(".........", singerEntity);

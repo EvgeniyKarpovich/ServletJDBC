@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +18,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 
     private static final AlbumRepositoryImpl INSTANCE = new AlbumRepositoryImpl();
     private final AlbumResultSetMapperImpl resultSetMapper = new AlbumResultSetMapperImpl();
+    private final SongRepositoryImpl songRepository = SongRepositoryImpl.getInstance();
 
     private AlbumRepositoryImpl() {
     }
@@ -38,7 +40,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
     private static final String UPDATE_SQL = """
             UPDATE albums
             SET album_name = ?,
-            singer_id = ?,
+            singer_id = ?
             WHERE id = ?
             """;
 
@@ -77,12 +79,31 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 
     @Override
     public List<AlbumEntity> findAll() {
-        return null;
+        try (var connection = ConnectionManagerImpl.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<AlbumEntity> result = new ArrayList<>();
+            while (resultSet.next()) {
+                result.add(resultSetMapper.map2(resultSet));
+            }
+            return result;
+        } catch (SQLException e) {
+            throw new DaoException("IN FIND ALL");
+        }
     }
 
     @Override
     public boolean deleteById(Long id) {
-        return false;
+        try (var connection = ConnectionManagerImpl.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_SQL)) {
+
+            preparedStatement.setLong(1, id);
+
+            return preparedStatement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            throw new DaoException("IN DELETE");
+        }
     }
 
     @Override
@@ -99,6 +120,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
             if (resultSet.next()) {
                 albumEntity.setId(resultSet.getLong("id"));
             }
+
             return albumEntity;
         } catch (SQLException e) {
             throw new DaoException("IN REPOSITORY SAVE");
@@ -107,6 +129,16 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 
     @Override
     public void update(AlbumEntity albumEntity) {
+        try (var connection = ConnectionManagerImpl.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
 
+            preparedStatement.setString(1, albumEntity.getAlbumName());
+            preparedStatement.setLong(2, albumEntity.getSinger().getId());
+            preparedStatement.setLong(3, albumEntity.getId());
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DaoException("IN UPDATE");
+        }
     }
 }

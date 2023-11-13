@@ -32,11 +32,14 @@ public class AlbumServiceImpl implements AlbumService {
 
     @Override
     public List<AlbumDto> findAll() {
-        return null;
+        return albumMapper.mapListDtoFromListEntity(albumRepository.findAll());
     }
 
     @Override
     public boolean deleteById(Long id) {
+        if (albumRepository.findById(id).isPresent()) {
+            albumRepository.deleteById(id);
+        }
         return false;
     }
 
@@ -49,8 +52,10 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     @Override
-    public void update(AlbumDto dto, Long aLong) {
-
+    public void update(AlbumDto dto, Long id) {
+        AlbumEntity albumEntity = albumMapper.mapEntityFromDto(dto);
+        albumEntity.setId(id);
+        albumRepository.update(albumEntity);
     }
 
     public AlbumEntity findSingerByIdWhichWillReturnModel(Long id) {
