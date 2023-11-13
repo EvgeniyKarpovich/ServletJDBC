@@ -18,6 +18,7 @@ public class SongResultSetMapperImpl implements SongResultSetMapper {
     @Override
     public SongEntity map(ResultSet resultSet) throws SQLException {
         List<AuthorEntity> authors = new ArrayList<>();
+
         if (resultSet.next()) {
             AuthorEntity authorEntity = new AuthorEntity();
             authorEntity.setId(resultSet.getLong("au_id"));

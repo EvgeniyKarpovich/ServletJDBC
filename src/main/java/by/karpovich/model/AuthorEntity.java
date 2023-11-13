@@ -22,6 +22,11 @@ public class AuthorEntity {
         this.songs = songs;
     }
 
+    public AuthorEntity(Long id, String authorName) {
+        this.id = id;
+        this.authorName = authorName;
+    }
+
     public AuthorEntity(String authorName) {
         this.authorName = authorName;
     }

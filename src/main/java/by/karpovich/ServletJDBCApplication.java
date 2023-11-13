@@ -13,6 +13,8 @@ import by.karpovich.service.impl.AuthorServiceImpl;
 import by.karpovich.service.impl.SingerServiceImpl;
 import by.karpovich.service.impl.SongServiceImpl;
 import by.karpovich.servlet.dto.AuthorDto;
+import by.karpovich.servlet.dto.SongDto;
+import by.karpovich.servlet.dto.SongDtoOut;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +55,14 @@ public class ServletJDBCApplication {
         AuthorServiceImpl authorService = AuthorServiceImpl.getInstance();
 
         songRepository.findByAuthorName("KKKK");
+
+//        AuthorEntity authorEntity = new AuthorEntity("SHEKSPIRy54645654645");
+//        Optional<AuthorEntity> byId = authorRepository.findById(5L);
+//        System.out.println(byId.get());
+
+        SongDtoOut byIdFullDtoOut = songService.findByIdFullDtoOut(5L);
+        System.out.println(byIdFullDtoOut);
+
 
         List<Long> songsId = new ArrayList<>();
         songsId.add(1L);
