@@ -6,5 +6,4 @@ import java.util.Optional;
 
 public interface SongRepository extends BaseRepository<SongEntity, Long> {
 
-    Optional<SongEntity> findByName(String name);
 }

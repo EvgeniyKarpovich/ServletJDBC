@@ -11,10 +11,7 @@ import by.karpovich.service.impl.AlbumServiceImpl;
 import by.karpovich.service.impl.AuthorServiceImpl;
 import by.karpovich.service.impl.SingerServiceImpl;
 import by.karpovich.service.impl.SongServiceImpl;
-import by.karpovich.servlet.dto.AlbumDto;
-import by.karpovich.servlet.dto.AuthorDto;
-import by.karpovich.servlet.dto.SingerDto;
-import by.karpovich.servlet.dto.SongDto;
+import by.karpovich.servlet.dto.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,10 +38,12 @@ public class ServletJDBCApplication {
 //        albumService.save(albumDto);
         List<Long> authors = new ArrayList<>();
         authors.add(1L);
-        authors.add(4L);
+//        authors.add(9L);
 
-        SongDto songDto = new SongDto("way 32312!!!!434!! Song", 3L,1L, authors);
+        SongDto songDto = new SongDto("way 32312!!!", 2L, 1L, authors);
         songService.save(songDto);
+//        SongDtoOut byIdFullDtoOut = songService.findByIdFullDtoOut(7L);
+//        System.out.println(byIdFullDtoOut);
 //        Optional<SongEntity> byId = songRepository.findById(1L);
 //        System.out.println(byId.get());
 
@@ -83,9 +82,6 @@ public class ServletJDBCApplication {
 //
 //        List<SongEntity> songEntities = new ArrayList<>();
 //        songEntities.add(byId2.get());
-
-
-
 
 
 //        AlbumEntity albumEntity = new AlbumEntity("NEW ALBUM", save1, entities);

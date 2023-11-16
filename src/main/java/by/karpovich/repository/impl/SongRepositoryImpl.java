@@ -40,12 +40,13 @@ public class SongRepositoryImpl implements SongRepository {
             WHERE id = ?
             """;
 
-    private static final String FIND_BY_NAME_SQL = """
+    private static final String FIND_BY_NAME_AND_SINGER_ID_SQL = """
             SELECT
             id,
             name
             FROM songs
             WHERE name = ?
+            AND singer_id = ?
             """;
 
     private static final String FIND_ALL_SQL = """
@@ -93,7 +94,7 @@ public class SongRepositoryImpl implements SongRepository {
             songs.id,
             songs.name
             FROM songs
-            JOIN song_author sa 
+            JOIN song_author sa
                 ON songs.id = sa.song_id
             JOIN authors a 
                 ON sa.author_id = a.id
@@ -153,11 +154,11 @@ public class SongRepositoryImpl implements SongRepository {
         }
     }
 
-    @Override
-    public Optional<SongEntity> findByName(String name) {
+    public Optional<SongEntity> findByName(String name, Long id) {
         try (var connection = ConnectionManagerImpl.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_NAME_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_NAME_AND_SINGER_ID_SQL)) {
             preparedStatement.setString(1, name);
+            preparedStatement.setLong(2, id);
 
             ResultSet resultSet = preparedStatement.executeQuery();
             SongEntity songEntity = null;
@@ -167,7 +168,7 @@ public class SongRepositoryImpl implements SongRepository {
             }
             return Optional.ofNullable(songEntity);
         } catch (SQLException e) {
-            throw new DaoException("IN FIND BY ID");
+            throw new DaoException("IN FIND BY ID !!!!!!!");
         }
     }
 

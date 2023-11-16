@@ -74,7 +74,7 @@ public class SongServiceImpl implements SongService {
     }
 
     private void validateAlreadyExists(SongDto dto, Long id) {
-        Optional<SongEntity> entity = songRepository.findByName(dto.name());
+        Optional<SongEntity> entity = songRepository.findByName(dto.name(), dto.singerId());
 
         if (entity.isPresent() && !entity.get().getId().equals(id)) {
             throw new DuplicateException("IN validateAlreadyExists");
