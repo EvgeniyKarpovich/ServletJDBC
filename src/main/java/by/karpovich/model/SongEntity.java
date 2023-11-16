@@ -19,6 +19,8 @@ public class SongEntity {
         this.name = name;
     }
 
+
+
     public SongEntity(String name, SingerEntity singer) {
         this.name = name;
         this.singer = singer;
@@ -29,6 +31,10 @@ public class SongEntity {
         this.name = name;
         this.singer = singer;
         this.album = album;
+    }
+
+    public SongEntity(String name) {
+        this.name = name;
     }
 
     public SongEntity(String name, SingerEntity singer, AlbumEntity album) {

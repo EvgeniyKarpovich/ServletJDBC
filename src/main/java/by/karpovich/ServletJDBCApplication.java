@@ -1,5 +1,6 @@
 package by.karpovich;
 
+import by.karpovich.model.AuthorEntity;
 import by.karpovich.repository.impl.AlbumRepositoryImpl;
 import by.karpovich.repository.impl.AuthorRepositoryImpl;
 import by.karpovich.repository.impl.SingerRepositoryImpl;
@@ -41,8 +42,10 @@ public class ServletJDBCApplication {
 
         SongDto songDto = new SongDto("3213123121", 1L, 1L, authors);
 
-        AuthorFullDtoOut byIdFullDtoOut = authorService.findByIdFullDtoOut(1L);
-        System.out.println(byIdFullDtoOut);
+//        List<AuthorDto> all = authorService.findAll();
+        List<AuthorEntity> all1 = authorRepository.findAll();
+        System.out.println(all1);
+//        System.out.println(all);
 
 
         // author find by id/findAll

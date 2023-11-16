@@ -1,14 +1,18 @@
 package by.karpovich.service.impl;
 
+import by.karpovich.exception.DuplicateException;
 import by.karpovich.exception.NotFoundEntityException;
 import by.karpovich.model.AuthorEntity;
+import by.karpovich.model.SongEntity;
 import by.karpovich.repository.impl.AuthorRepositoryImpl;
 import by.karpovich.service.AuthorService;
 import by.karpovich.servlet.dto.AuthorDto;
 import by.karpovich.servlet.dto.AuthorFullDtoOut;
+import by.karpovich.servlet.dto.SongDto;
 import by.karpovich.servlet.mapper.AuthorMapper;
 
 import java.util.List;
+import java.util.Optional;
 
 public class AuthorServiceImpl implements AuthorService {
 
@@ -53,6 +57,8 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public AuthorDto save(AuthorDto dto) {
+        validateAlreadyExists(dto, null);
+
         AuthorEntity authorEntity = authorMapper.mapEntityFromDto(dto);
         AuthorEntity saved = authorRepository.save(authorEntity);
 
@@ -61,8 +67,18 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public void update(AuthorDto dto, Long id) {
+        validateAlreadyExists(dto, id);
+
         AuthorEntity authorEntity = authorMapper.mapEntityFromDto(dto);
         authorEntity.setId(id);
-        AuthorEntity save = authorRepository.save(authorEntity);
+        authorRepository.save(authorEntity);
+    }
+
+    private void validateAlreadyExists(AuthorDto dto, Long id) {
+        Optional<AuthorEntity> entity = authorRepository.findByAuthorName(dto.name());
+
+        if (entity.isPresent() && !entity.get().getId().equals(id)) {
+            throw new DuplicateException("IN validateAlreadyExists");
+        }
     }
 }

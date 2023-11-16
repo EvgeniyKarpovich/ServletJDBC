@@ -7,5 +7,4 @@ import java.sql.SQLException;
 
 public interface AuthorResultSetMapper {
 
-    AuthorEntity map(ResultSet resultSet) throws SQLException;
 }

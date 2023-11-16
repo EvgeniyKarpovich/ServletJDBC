@@ -46,107 +46,103 @@ public class AuthorRepositoryImpl implements AuthorRepository {
     private static final String FIND_ALL_SQL = """
             SELECT
             authors.id au_id,
+            authors.author_name au_name
+            FROM authors
+            """;
+
+    private static final String FIND_BY_ID_SQL = """
+            SELECT
+            authors.id au_id,
             authors.author_name au_name,
             songs.id song_id,
             songs.name song_name
             FROM authors
             LEFT JOIN song_author
-                ON authors.id = song_author.author_id
+            ON authors.id = song_author.author_id
             LEFT JOIN songs
-                ON song_author.song_id = songs.id
-            """;
+            ON song_author.song_id = songs.id
+                    WHERE
+                    authors.id  = ?
+                    """;
 
-    private static final String FIND_BY_ID_SQL = FIND_ALL_SQL + """
-            WHERE
-            authors.id  = ?
-            """;
-
-    private static final String FIND_BY_SONG_NAME_SQL = """
+    private static final String FIND_BY_NAME_SQL = """
             SELECT
             authors.id au_id,
-            authors.author_name au_name
+            authors.name au_name
             FROM authors
-            JOIN song_author sa
-                ON authors.id = sa.author_id
-            JOIN songs s
-                ON sa.song_id = s.id
-            WHERE s.surname = ?
+            WHERE authors.name = ?
             """;
 
-    private static final String INSERT_SONG_AUTHOR_SQL = """
-            INSERT INTO song_author (author_id, song_id)
-            VALUES (?, ?)
-            """;
+    public Optional<AuthorEntity> findByAuthorName(String name) {
+        AuthorEntity authorEntity = null;
 
-
-//    @Override
-//    public Optional<AuthorEntity> findById(Long id) {
-//        AuthorEntity authorEntity = null;
-//        List<SongEntity> songs = new ArrayList<>();
-//        try (var connection = ConnectionManagerImpl.getConnection();
-//             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
-//
-//            preparedStatement.setLong(1, id);
-//            ResultSet resultSet = preparedStatement.executeQuery();
-//
-//            if (resultSet.next()) {
-//                authorEntity = new AuthorEntity();
-//                authorEntity.setId(resultSet.getLong("au_id"));
-//                authorEntity.setAuthorName(resultSet.getString("au_name"));
-//                while (resultSet.next()) {
-//                    SongEntity songEntity = new SongEntity();
-//                    songEntity.setId(resultSet.getLong("song_id"));
-//                    songEntity.setName(resultSet.getString("song_name"));
-//                    songs.add(songEntity);
-//                }
-//                authorEntity.setSongs(songs);
-//            }
-//            return Optional.ofNullable(authorEntity);
-//        } catch (SQLException e) {
-//            throw new DaoException("IN SAVE");
-//        }
-//    }
-
-    public List<AuthorEntity> findByName(String name) {
         try (var connection = ConnectionManagerImpl.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_SONG_NAME_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_NAME_SQL)) {
+
             preparedStatement.setString(1, name);
-
             ResultSet resultSet = preparedStatement.executeQuery();
-            List<AuthorEntity> entities = new ArrayList<>();
 
-            while (resultSet.next()) {
-                entities.add(resultSetMapper.map2(resultSet));
+            if (resultSet.next()) {
+                authorEntity = resultSetMapper.mapAuthor(resultSet);
             }
 
-            return entities;
+            return Optional.ofNullable(authorEntity);
         } catch (SQLException e) {
-            throw new DaoException("IN FIND BY NAME");
+            throw new DaoException("IN findByAuthorName");
         }
     }
 
     @Override
     public Optional<AuthorEntity> findById(Long id) {
+        AuthorEntity authorEntity = null;
+        List<SongEntity> songs = new ArrayList<>();
+
         try (var connection = ConnectionManagerImpl.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
 
             preparedStatement.setLong(1, id);
-            AuthorEntity authorEntity = null;
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            if (resultSet.next()) {
-                authorEntity = resultSetMapper.map(resultSet);
+            while (resultSet.next()) {
+                if (authorEntity == null) {
+                    authorEntity = resultSetMapper.mapAuthor(resultSet);
+                }
+
+                Long songId = resultSet.getLong("song_id");
+                if (songId != 0) {
+                    SongEntity songEntity = resultSetMapper.mapSong(resultSet);
+                    songs.add(songEntity);
+                }
             }
-            return Optional.ofNullable(authorEntity);
+
+            if (authorEntity != null) {
+                authorEntity.setSongs(songs);
+            }
+
         } catch (SQLException e) {
             throw new DaoException("IN findById");
         }
+
+        return Optional.ofNullable(authorEntity);
     }
 
     @Override
     public List<AuthorEntity> findAll() {
-        return null;
+        List<AuthorEntity> authorEntities = new ArrayList<>();
+
+        try (var connection = ConnectionManagerImpl.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                authorEntities.add(resultSetMapper.mapAuthor(resultSet));
+            }
+            return authorEntities;
+        } catch (SQLException e) {
+            throw new DaoException("IN findAll");
+        }
     }
 
     @Override

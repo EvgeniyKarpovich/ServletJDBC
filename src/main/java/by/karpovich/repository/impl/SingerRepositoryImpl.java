@@ -114,11 +114,12 @@ public class SingerRepositoryImpl implements SingerRepository {
 
     @Override
     public List<SingerEntity> findAll() {
+        List<SingerEntity> result = new ArrayList<>();
+
         try (var connection = ConnectionManagerImpl.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
 
             ResultSet resultSet = preparedStatement.executeQuery();
-            List<SingerEntity> result = new ArrayList<>();
             while (resultSet.next()) {
                 result.add(resultSetMapper.mapSinger(resultSet));
             }
