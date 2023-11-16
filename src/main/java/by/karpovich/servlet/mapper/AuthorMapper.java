@@ -24,8 +24,8 @@ public class AuthorMapper {
         return Optional.ofNullable(entity)
                 .map(authorEntity ->
                         new AuthorDto(
-                                authorEntity.getAuthorName(),
-                                authorEntity.getSongs().stream().map(SongEntity::getId).collect(Collectors.toList())
+                                authorEntity.getAuthorName()/*,
+                                authorEntity.getSongs().stream().map(SongEntity::getId).collect(Collectors.toList())*/
                         ))
                 .orElse(null);
     }

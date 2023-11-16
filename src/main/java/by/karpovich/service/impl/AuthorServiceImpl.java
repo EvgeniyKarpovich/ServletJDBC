@@ -33,6 +33,9 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public boolean deleteById(Long id) {
+        if (authorRepository.findById(id).isPresent()) {
+            authorRepository.deleteById(id);
+        }
         return false;
     }
 
@@ -45,7 +48,9 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public void update(AuthorDto dto, Long aLong) {
-
+    public void update(AuthorDto dto, Long id) {
+        AuthorEntity authorEntity = authorMapper.mapEntityFromDto(dto);
+        authorEntity.setId(id);
+        AuthorEntity save = authorRepository.save(authorEntity);
     }
 }

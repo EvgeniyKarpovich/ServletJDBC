@@ -33,11 +33,14 @@ public class AuthorRepositoryImpl implements AuthorRepository {
             """;
 
     private static final String DELETE_SQL = """
-                    
-            """;
+            DELETE FROM authors
+            WHERE id = ?
+             """;
 
     private static final String UPDATE_SQL = """
-                     
+            UPDATE authors
+            SET author_name = ?,
+            WHERE id = ?
             """;
 
     private static final String FIND_ALL_SQL = """
@@ -148,7 +151,15 @@ public class AuthorRepositoryImpl implements AuthorRepository {
 
     @Override
     public boolean deleteById(Long id) {
-        return false;
+        try (var connection = ConnectionManagerImpl.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_SQL)) {
+
+            preparedStatement.setLong(1, id);
+
+            return preparedStatement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            throw new DaoException("IN DELETE");
+        }
     }
 
 
@@ -193,6 +204,19 @@ public class AuthorRepositoryImpl implements AuthorRepository {
 
     @Override
     public void update(AuthorEntity authorEntity) {
+        try (var connection = ConnectionManagerImpl.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
 
+            preparedStatement.setString(1, authorEntity.getAuthorName());
+            preparedStatement.executeUpdate();
+
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+
+            if (resultSet.next()) {
+                authorEntity.setId(resultSet.getLong("id"));
+            }
+        } catch (SQLException e) {
+            throw new DaoException("IN UPDATE");
+        }
     }
 }

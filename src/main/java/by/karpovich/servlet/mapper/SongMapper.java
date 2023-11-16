@@ -8,6 +8,7 @@ import by.karpovich.service.impl.SingerServiceImpl;
 import by.karpovich.servlet.dto.SongDto;
 import by.karpovich.servlet.dto.SongDtoOut;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,7 +24,7 @@ public class SongMapper {
                         new SongEntity(songDto.name(),
                                 singerService.findSingerByIdWhichWillReturnModel(songDto.singerId()),
                                 albumService.findSingerByIdWhichWillReturnModel(songDto.AlbumId()),
-                                authorRepository.findByName(songDto.name())))
+                                getAuthorEntities(songDto.authorsId())))
                 .orElse(null);
     }
 
@@ -55,4 +56,14 @@ public class SongMapper {
                         .collect(Collectors.toList()))
                 .orElse(null);
     }
+
+    public List<AuthorEntity> getAuthorEntities(List<Long> authorsId) {
+        List<AuthorEntity> authorEntities = new ArrayList<>();
+        for (Long id : authorsId) {
+            authorEntities.add(authorRepository.findById(id).orElse(null));
+        }
+
+        return authorEntities;
+    }
+
 }

@@ -12,11 +12,13 @@ import by.karpovich.service.impl.AuthorServiceImpl;
 import by.karpovich.service.impl.SingerServiceImpl;
 import by.karpovich.service.impl.SongServiceImpl;
 import by.karpovich.servlet.dto.AlbumDto;
+import by.karpovich.servlet.dto.AuthorDto;
 import by.karpovich.servlet.dto.SingerDto;
 import by.karpovich.servlet.dto.SongDto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ServletJDBCApplication {
 
@@ -26,6 +28,27 @@ public class ServletJDBCApplication {
         SongRepositoryImpl songRepository = SongRepositoryImpl.getInstance();
         AuthorRepositoryImpl authorRepository = AuthorRepositoryImpl.getInstance();
 
+        SingerServiceImpl singerService = SingerServiceImpl.getInstance();
+        AlbumServiceImpl albumService = AlbumServiceImpl.getInstance();
+        SongServiceImpl songService = SongServiceImpl.getInstance();
+        AuthorServiceImpl authorService = AuthorServiceImpl.getInstance();
+
+        AuthorDto authorDto = new AuthorDto("Karpovich MEGA BUM 22");
+//        authorService.save(authorDto);
+        SingerDto singerDto = new SingerDto("Kaprovich SInger MEGA 22");
+//        singerService.save(singerDto);
+        AlbumDto albumDto = new AlbumDto("Second album 22", 1L);
+//        albumService.save(albumDto);
+        List<Long> authors = new ArrayList<>();
+        authors.add(1L);
+        authors.add(4L);
+
+        SongDto songDto = new SongDto("way 32312!!!!434!! Song", 3L,1L, authors);
+        songService.save(songDto);
+//        Optional<SongEntity> byId = songRepository.findById(1L);
+//        System.out.println(byId.get());
+
+        // author find by id/findAll
 //        AuthorEntity authorEntity = new AuthorEntity("Evgeniy Karpovich");
 //        AuthorEntity authorEntity2 = new AuthorEntity("Artem Shpak");
 //
@@ -62,21 +85,8 @@ public class ServletJDBCApplication {
 //        songEntities.add(byId2.get());
 
 
-        SingerEntity singerEntity = new SingerEntity("44444");
-        SingerEntity save1 = singerRepository.save(singerEntity);
 
-        SingerServiceImpl singerService = SingerServiceImpl.getInstance();
-        AlbumServiceImpl albumService = AlbumServiceImpl.getInstance();
-        SongServiceImpl songService = SongServiceImpl.getInstance();
-        AuthorServiceImpl authorService = AuthorServiceImpl.getInstance();
 
-        SongEntity songEntity = new SongEntity("NEW SONG", save1);
-//        SongEntity save = songRepository.save(songEntity);
-
-        AlbumDto albumDto = new AlbumDto("ALBUN MEGA POP TRASH", 2L);
-        //ОСТАЛСЯ FIND ALL в АЛЬБУМ
-        List<AlbumDto> all = albumService.findAll();
-        System.out.println(all);
 
 //        AlbumEntity albumEntity = new AlbumEntity("NEW ALBUM", save1, entities);
 //        AlbumEntity save2 = albumRepository.save(albumEntity);

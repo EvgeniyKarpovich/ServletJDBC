@@ -74,7 +74,7 @@ public class SongRepositoryImpl implements SongRepository {
             """;
 
     private static final String INSERT_SONG_AUTHOR_SQL = """
-            INSERT INTO song_author (author_id, song_id)
+            INSERT INTO song_author (song_id, author_id)
             VALUES (?, ?)
             """;
 
@@ -210,6 +210,7 @@ public class SongRepositoryImpl implements SongRepository {
 
             preparedStatement.setString(1, songEntity.getName());
             preparedStatement.setLong(2, songEntity.getSinger().getId());
+            preparedStatement.setLong(3, songEntity.getAlbum().getId());
             preparedStatement.executeUpdate();
 
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
@@ -219,10 +220,11 @@ public class SongRepositoryImpl implements SongRepository {
             }
 
             for (AuthorEntity author : songEntity.getAuthors()) {
-                songAuthorStatement.setLong(1, author.getId());
-                songAuthorStatement.setLong(2, songEntity.getId());
-                songAuthorStatement.executeUpdate();
+                songAuthorStatement.setLong(1, songEntity.getId());
+                songAuthorStatement.setLong(2, author.getId());
+                songAuthorStatement.addBatch();
             }
+            songAuthorStatement.executeBatch();
             connection.commit();
 
             return songEntity;
@@ -230,37 +232,6 @@ public class SongRepositoryImpl implements SongRepository {
             throw new DaoException("IN SAVE");
         }
     }
-
-//
-//    public SongEntity save(SongEntity songEntity, Connection connection) {
-//        try (PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS);
-//             PreparedStatement songAuthorStatement = connection.prepareStatement(INSERT_SONG_AUTHOR_SQL)) {
-//
-//            connection.setAutoCommit(false);
-//
-//            preparedStatement.setString(1, songEntity.getName());
-//            preparedStatement.setLong(2, songEntity.getSinger().getId());
-//            preparedStatement.executeUpdate();
-//
-//            ResultSet resultSet = preparedStatement.getGeneratedKeys();
-//
-//            if (resultSet.next()) {
-//                songEntity.setId(resultSet.getLong("id"));
-//            }
-//
-//            for (AuthorEntity author : songEntity.getAuthors()) {
-//                songAuthorStatement.setLong(1, author.getId());
-//                songAuthorStatement.setLong(2, songEntity.getId());
-//                preparedStatement.setLong(3, songEntity.getAlbum().getId());
-//                songAuthorStatement.executeUpdate();
-//            }
-//            connection.commit();
-//
-//            return songEntity;
-//        } catch (SQLException e) {
-//            throw new DaoException("IN SAVE");
-//        }
-//    }
 
     @Override
     public void update(SongEntity songEntity) {
