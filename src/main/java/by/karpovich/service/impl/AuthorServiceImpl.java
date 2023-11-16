@@ -1,9 +1,11 @@
 package by.karpovich.service.impl;
 
+import by.karpovich.exception.NotFoundEntityException;
 import by.karpovich.model.AuthorEntity;
 import by.karpovich.repository.impl.AuthorRepositoryImpl;
 import by.karpovich.service.AuthorService;
 import by.karpovich.servlet.dto.AuthorDto;
+import by.karpovich.servlet.dto.AuthorFullDtoOut;
 import by.karpovich.servlet.mapper.AuthorMapper;
 
 import java.util.List;
@@ -23,12 +25,22 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public AuthorDto findById(Long id) {
-        return null;
+        AuthorEntity authorEntity = authorRepository.findById(id).orElseThrow(
+                () -> new NotFoundEntityException("IN SERVICE FIND BY ID"));
+
+        return authorMapper.mapDtoFromEntity(authorEntity);
+    }
+
+    public AuthorFullDtoOut findByIdFullDtoOut(Long id) {
+        AuthorEntity authorEntity = authorRepository.findById(id).orElseThrow(
+                () -> new NotFoundEntityException("IN SERVICE FIND BY ID"));
+
+        return authorMapper.mapFullDtoFromEntity(authorEntity);
     }
 
     @Override
     public List<AuthorDto> findAll() {
-        return null;
+        return authorMapper.mapListDtoFromListEntity(authorRepository.findAll());
     }
 
     @Override

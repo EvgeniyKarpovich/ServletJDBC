@@ -1,9 +1,10 @@
-package by.karpovich.repository.mapper;
+package by.karpovich.repository.mapper.impl;
 
 import by.karpovich.model.AlbumEntity;
 import by.karpovich.model.AuthorEntity;
 import by.karpovich.model.SingerEntity;
 import by.karpovich.model.SongEntity;
+import by.karpovich.repository.mapper.SongResultSetMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

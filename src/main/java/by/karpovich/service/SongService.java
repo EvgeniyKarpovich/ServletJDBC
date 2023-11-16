@@ -1,9 +1,9 @@
 package by.karpovich.service;
 
 import by.karpovich.servlet.dto.SongDto;
-import by.karpovich.servlet.dto.SongDtoOut;
+import by.karpovich.servlet.dto.SongFullDtoOut;
 
 public interface SongService extends BaseService<SongDto, Long> {
 
-    SongDtoOut findByIdFullDtoOut(Long id);
+    SongFullDtoOut findByIdFullDtoOut(Long id);
 }

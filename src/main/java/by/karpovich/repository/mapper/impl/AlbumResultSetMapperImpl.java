@@ -1,7 +1,8 @@
-package by.karpovich.repository.mapper;
+package by.karpovich.repository.mapper.impl;
 
 import by.karpovich.model.AlbumEntity;
 import by.karpovich.model.SingerEntity;
+import by.karpovich.repository.mapper.AlbumResultSetMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,4 +20,6 @@ public class AlbumResultSetMapperImpl implements AlbumResultSetMapper {
                 resultSet.getString("album_name"),
                 singerEntity);
     }
+
+
 }

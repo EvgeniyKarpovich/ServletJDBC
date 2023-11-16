@@ -37,7 +37,7 @@ public class BaseEntity {
     public String toString() {
         return "BaseEntity{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", surname='" + name + '\'' +
                 '}';
     }
 }

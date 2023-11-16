@@ -6,7 +6,7 @@ import by.karpovich.repository.impl.AuthorRepositoryImpl;
 import by.karpovich.service.impl.AlbumServiceImpl;
 import by.karpovich.service.impl.SingerServiceImpl;
 import by.karpovich.servlet.dto.SongDto;
-import by.karpovich.servlet.dto.SongDtoOut;
+import by.karpovich.servlet.dto.SongFullDtoOut;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +28,9 @@ public class SongMapper {
                 .orElse(null);
     }
 
-    public SongDtoOut mapSongDtoOutFromEntity(SongEntity entity) {
+    public SongFullDtoOut mapSongDtoOutFromEntity(SongEntity entity) {
         return Optional.ofNullable(entity)
-                .map(songEntity -> new SongDtoOut(
+                .map(songEntity -> new SongFullDtoOut(
                         songEntity.getId(),
                         songEntity.getName(),
                         songEntity.getSinger().getId(),

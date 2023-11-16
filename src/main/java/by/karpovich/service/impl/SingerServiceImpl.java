@@ -6,6 +6,7 @@ import by.karpovich.model.SingerEntity;
 import by.karpovich.repository.impl.SingerRepositoryImpl;
 import by.karpovich.service.SingerService;
 import by.karpovich.servlet.dto.SingerDto;
+import by.karpovich.servlet.dto.SingerFullDtoOut;
 import by.karpovich.servlet.mapper.SingerMapper;
 
 import java.util.List;
@@ -30,6 +31,14 @@ public class SingerServiceImpl implements SingerService {
                 () -> new NotFoundEntityException("IN SERVICE FIND BY ID")
         );
         return singerMapper.mapDtoFromEntity(singerEntity);
+    }
+
+    public SingerFullDtoOut findByIdReturnFullDto(Long id) {
+        SingerEntity singerEntity = singerRepository.findById(id).orElseThrow(
+                () -> new NotFoundEntityException("IN SERVICE FIND BY ID")
+        );
+
+        return singerMapper.mapFullDtoOutFromEntity(singerEntity);
     }
 
     @Override
@@ -67,7 +76,7 @@ public class SingerServiceImpl implements SingerService {
     }
 
     private void validateAlreadyExists(SingerDto dto, Long id) {
-        Optional<SingerEntity> entity = singerRepository.findByName(dto.name());
+        Optional<SingerEntity> entity = singerRepository.findByName(dto.surname());
         if (entity.isPresent() && !entity.get().getId().equals(id)) {
             throw new DuplicateException("IN validateAlreadyExists");
         }

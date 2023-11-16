@@ -5,7 +5,7 @@ import by.karpovich.exception.DaoException;
 import by.karpovich.model.AuthorEntity;
 import by.karpovich.model.SongEntity;
 import by.karpovich.repository.SongRepository;
-import by.karpovich.repository.mapper.SongResultSetMapperImpl;
+import by.karpovich.repository.mapper.impl.SongResultSetMapperImpl;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -35,8 +35,9 @@ public class SongRepositoryImpl implements SongRepository {
 
     private static final String UPDATE_SQL = """
             UPDATE songs
-            SET name = ?,
+            SET surname = ?,
             singer_id = ?,
+            album_id = ?
             WHERE id = ?
             """;
 
@@ -52,7 +53,7 @@ public class SongRepositoryImpl implements SongRepository {
     private static final String FIND_ALL_SQL = """
             SELECT
             songs.id song_id,
-            songs.name song_name,
+            songs.surname song_name,
             singers.id sr_id,
             singers.surname sr_surname,
             albums.id al_id,
@@ -64,9 +65,9 @@ public class SongRepositoryImpl implements SongRepository {
                 ON songs.singer_id = singers.id
             JOIN albums
                 ON songs.album_id = albums.id
-            JOIN song_author
+            LEFT JOIN song_author
                 ON songs.id = song_author.song_id
-            JOIN authors
+            LEFT  JOIN authors
                 ON song_author.author_id = authors.id
             """;
 
@@ -82,9 +83,9 @@ public class SongRepositoryImpl implements SongRepository {
     private static final String FIND_BY_AUTHOR_ID_SQL = """
             SELECT
             songs.id,
-            songs.name
+            songs.surname
             FROM songs
-            JOIN song_author sa 
+            JOIN song_author sa
                 ON songs.id = sa.song_id
             WHERE sa.author_id = ?;
             """;
@@ -96,7 +97,7 @@ public class SongRepositoryImpl implements SongRepository {
             FROM songs
             JOIN song_author sa
                 ON songs.id = sa.song_id
-            JOIN authors a 
+            JOIN authors a
                 ON sa.author_id = a.id
             WHERE a.author_name = ?;
             """;
@@ -150,7 +151,7 @@ public class SongRepositoryImpl implements SongRepository {
             }
             return entities;
         } catch (SQLException e) {
-            throw new DaoException("IN FIND BY NAME");
+            throw new DaoException("IN findByAuthorName");
         }
     }
 
@@ -168,7 +169,7 @@ public class SongRepositoryImpl implements SongRepository {
             }
             return Optional.ofNullable(songEntity);
         } catch (SQLException e) {
-            throw new DaoException("IN FIND BY ID !!!!!!!");
+            throw new DaoException("IN findByName");
         }
     }
 
@@ -241,7 +242,8 @@ public class SongRepositoryImpl implements SongRepository {
 
             preparedStatement.setString(1, songEntity.getName());
             preparedStatement.setLong(2, songEntity.getSinger().getId());
-            preparedStatement.setLong(2, songEntity.getId());
+            preparedStatement.setLong(3, songEntity.getAlbum().getId());
+            preparedStatement.setLong(4, songEntity.getId());
             preparedStatement.executeUpdate();
 
             ResultSet resultSet = preparedStatement.getGeneratedKeys();

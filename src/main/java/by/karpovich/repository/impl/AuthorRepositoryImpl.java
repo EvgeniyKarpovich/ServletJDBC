@@ -5,7 +5,7 @@ import by.karpovich.exception.DaoException;
 import by.karpovich.model.AuthorEntity;
 import by.karpovich.model.SongEntity;
 import by.karpovich.repository.AuthorRepository;
-import by.karpovich.repository.mapper.AuthorResultSetMapperImpl;
+import by.karpovich.repository.mapper.impl.AuthorResultSetMapperImpl;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -70,7 +70,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
                 ON authors.id = sa.author_id
             JOIN songs s
                 ON sa.song_id = s.id
-            WHERE s.name = ?
+            WHERE s.surname = ?
             """;
 
     private static final String INSERT_SONG_AUTHOR_SQL = """
@@ -127,12 +127,12 @@ public class AuthorRepositoryImpl implements AuthorRepository {
 
     @Override
     public Optional<AuthorEntity> findById(Long id) {
-        AuthorEntity authorEntity = null;
-        List<SongEntity> songs = new ArrayList<>();
         try (var connection = ConnectionManagerImpl.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
 
             preparedStatement.setLong(1, id);
+            AuthorEntity authorEntity = null;
+
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
@@ -161,27 +161,6 @@ public class AuthorRepositoryImpl implements AuthorRepository {
             throw new DaoException("IN DELETE");
         }
     }
-
-
-//    @Override
-//    public AuthorEntity save(AuthorEntity authorEntity) {
-//        try (var connection = ConnectionManagerImpl.getConnection();
-//             PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
-//
-//            preparedStatement.setString(1, authorEntity.getAuthorName());
-//            preparedStatement.executeUpdate();
-//
-//            ResultSet resultSet = preparedStatement.getGeneratedKeys();
-//
-//            if (resultSet.next()) {
-//                authorEntity.setId(resultSet.getLong("id"));
-//            }
-//
-//            return authorEntity;
-//        } catch (SQLException e) {
-//            throw new DaoException("IN SAVE");
-//        }
-//    }
 
     @Override
     public AuthorEntity save(AuthorEntity authorEntity) {

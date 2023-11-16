@@ -1,8 +1,5 @@
 package by.karpovich;
 
-import by.karpovich.model.AlbumEntity;
-import by.karpovich.model.SingerEntity;
-import by.karpovich.model.SongEntity;
 import by.karpovich.repository.impl.AlbumRepositoryImpl;
 import by.karpovich.repository.impl.AuthorRepositoryImpl;
 import by.karpovich.repository.impl.SingerRepositoryImpl;
@@ -15,7 +12,6 @@ import by.karpovich.servlet.dto.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class ServletJDBCApplication {
 
@@ -30,26 +26,24 @@ public class ServletJDBCApplication {
         SongServiceImpl songService = SongServiceImpl.getInstance();
         AuthorServiceImpl authorService = AuthorServiceImpl.getInstance();
 
-        AuthorDto authorDto = new AuthorDto("Karpovich MEGA BUM 22");
+        AuthorDto authorDto = new AuthorDto("Karpovich MEGA BdsdUM 223232");
         AuthorDto authorDto3 = new AuthorDto("Karpovich MEGA BUM 33");
 //        authorService.save(authorDto);
 //        authorService.save(authorDto3);
-        SingerDto singerDto = new SingerDto("Kaprovich SInger MEGA 22");
+        SingerDto singerDto = new SingerDto("Kaprovich");
 //        singerService.save(singerDto);
         AlbumDto albumDto = new AlbumDto("Second album 22", 1L);
-//        albumService.save(albumDto);
+        AlbumDto albumDto2 = new AlbumDto("!!!! album 22", 1L);
+//        albumService.save(albumDto2);
         List<Long> authors = new ArrayList<>();
         authors.add(1L);
         authors.add(2L);
 
-        SongDto songDto = new SongDto("way 323!", 1L, 1L, authors);
-        SongDtoOut byIdFullDtoOut = songService.findByIdFullDtoOut(1L);
+        SongDto songDto = new SongDto("3213123121", 1L, 1L, authors);
+
+        AuthorFullDtoOut byIdFullDtoOut = authorService.findByIdFullDtoOut(1L);
         System.out.println(byIdFullDtoOut);
-//        songService.save(songDto);
-//        SongDtoOut byIdFullDtoOut = songService.findByIdFullDtoOut(7L);
-//        System.out.println(byIdFullDtoOut);
-//        Optional<SongEntity> byId = songRepository.findById(1L);
-//        System.out.println(byId.get());
+
 
         // author find by id/findAll
 //        AuthorEntity authorEntity = new AuthorEntity("Evgeniy Karpovich");

@@ -4,7 +4,7 @@ import by.karpovich.db.ConnectionManagerImpl;
 import by.karpovich.exception.DaoException;
 import by.karpovich.model.AlbumEntity;
 import by.karpovich.repository.AlbumRepository;
-import by.karpovich.repository.mapper.AlbumResultSetMapperImpl;
+import by.karpovich.repository.mapper.impl.AlbumResultSetMapperImpl;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
