@@ -31,17 +31,21 @@ public class ServletJDBCApplication {
         AuthorServiceImpl authorService = AuthorServiceImpl.getInstance();
 
         AuthorDto authorDto = new AuthorDto("Karpovich MEGA BUM 22");
+        AuthorDto authorDto3 = new AuthorDto("Karpovich MEGA BUM 33");
 //        authorService.save(authorDto);
+//        authorService.save(authorDto3);
         SingerDto singerDto = new SingerDto("Kaprovich SInger MEGA 22");
 //        singerService.save(singerDto);
         AlbumDto albumDto = new AlbumDto("Second album 22", 1L);
 //        albumService.save(albumDto);
         List<Long> authors = new ArrayList<>();
         authors.add(1L);
-//        authors.add(9L);
+        authors.add(2L);
 
-        SongDto songDto = new SongDto("way 32312!!!", 2L, 1L, authors);
-        songService.save(songDto);
+        SongDto songDto = new SongDto("way 323!", 1L, 1L, authors);
+        SongDtoOut byIdFullDtoOut = songService.findByIdFullDtoOut(1L);
+        System.out.println(byIdFullDtoOut);
+//        songService.save(songDto);
 //        SongDtoOut byIdFullDtoOut = songService.findByIdFullDtoOut(7L);
 //        System.out.println(byIdFullDtoOut);
 //        Optional<SongEntity> byId = songRepository.findById(1L);

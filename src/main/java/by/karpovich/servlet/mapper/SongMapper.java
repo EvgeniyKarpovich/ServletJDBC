@@ -33,7 +33,9 @@ public class SongMapper {
                 .map(songEntity -> new SongDtoOut(
                         songEntity.getId(),
                         songEntity.getName(),
+                        songEntity.getSinger().getId(),
                         songEntity.getSinger().getSurname(),
+                        songEntity.getAlbum().getId(),
                         songEntity.getAlbum().getAlbumName(),
                         songEntity.getAuthors().stream().map(AuthorEntity::getAuthorName).collect(Collectors.toList())))
                 .orElse(null);

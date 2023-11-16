@@ -61,15 +61,8 @@ public class SingerRepositoryImpl implements SingerRepository {
 
     @Override
     public Optional<SingerEntity> findById(Long id) {
-        try (var connection = ConnectionManagerImpl.getConnection()) {
-            return findById(id, connection);
-        } catch (SQLException e) {
-            throw new DaoException("IN FIND BY ID");
-        }
-    }
-
-    public Optional<SingerEntity> findById(Long id, Connection connection) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
+        try (var connection = ConnectionManagerImpl.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
 
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
