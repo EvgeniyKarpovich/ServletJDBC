@@ -28,7 +28,7 @@ public class SongServiceImpl implements SongService {
     @Override
     public SongDto findById(Long id) {
         SongEntity songEntity = songRepository.findById(id).orElseThrow(
-                () -> new NotFoundEntityException("IN SERVICE FIND BY ID"));
+                () -> new NotFoundEntityException(String.format("Song with id = %s not found", id)));
 
         return songMapper.mapSongDtoFromEntity(songEntity);
     }
@@ -36,7 +36,7 @@ public class SongServiceImpl implements SongService {
     @Override
     public SongFullDtoOut findByIdFullDtoOut(Long id) {
         SongEntity songEntity = songRepository.findById(id).orElseThrow(
-                () -> new NotFoundEntityException("IN SERVICE FIND BY ID "));
+                () -> new NotFoundEntityException(String.format("Song with id = %s not found", id)));
 
         return songMapper.mapSongDtoOutFromEntity(songEntity);
     }
@@ -77,7 +77,7 @@ public class SongServiceImpl implements SongService {
         Optional<SongEntity> entity = songRepository.findByNameAndSingerId(dto.name(), dto.singerId());
 
         if (entity.isPresent() && !entity.get().getId().equals(id)) {
-            throw new DuplicateException("IN validateAlreadyExists");
+            throw new DuplicateException(String.format("Song with name = %s already exist", dto.name()));
         }
     }
 }

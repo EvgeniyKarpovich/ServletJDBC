@@ -28,16 +28,13 @@ public class SingerServiceImpl implements SingerService {
     @Override
     public SingerDto findById(Long id) {
         SingerEntity singerEntity = singerRepository.findById(id).orElseThrow(
-                () -> new NotFoundEntityException("IN SERVICE FIND BY ID")
-        );
+                () -> new NotFoundEntityException(String.format("Singer with id = %s not found", id)));
         return singerMapper.mapDtoFromEntity(singerEntity);
     }
 
     public SingerFullDtoOut findByIdReturnFullDto(Long id) {
         SingerEntity singerEntity = singerRepository.findById(id).orElseThrow(
-                () -> new NotFoundEntityException("IN SERVICE FIND BY ID")
-        );
-
+                () -> new NotFoundEntityException(String.format("Singer with id = %s not found", id)));
         return singerMapper.mapFullDtoOutFromEntity(singerEntity);
     }
 
@@ -57,28 +54,32 @@ public class SingerServiceImpl implements SingerService {
     @Override
     public SingerDto save(SingerDto singerDto) {
         validateAlreadyExists(singerDto, null);
+
         SingerEntity singerEntity = singerMapper.mapEntityFromDto(singerDto);
         SingerEntity save = singerRepository.save(singerEntity);
+
         return singerMapper.mapDtoFromEntity(save);
     }
 
     @Override
     public void update(SingerDto singerDto, Long id) {
         validateAlreadyExists(singerDto, id);
+
         SingerEntity singerEntity = singerMapper.mapEntityFromDto(singerDto);
         singerEntity.setId(id);
+
         singerRepository.update(singerEntity);
     }
 
     public SingerEntity findSingerByIdWhichWillReturnModel(Long id) {
         return singerRepository.findById(id).orElseThrow(
-                () -> new NotFoundEntityException("IN SERVICE findSingerByIdWhichWillReturnModel"));
+                () -> new NotFoundEntityException(String.format("Singer with id = %s not found", id)));
     }
 
     private void validateAlreadyExists(SingerDto dto, Long id) {
         Optional<SingerEntity> entity = singerRepository.findByName(dto.surname());
         if (entity.isPresent() && !entity.get().getId().equals(id)) {
-            throw new DuplicateException("IN validateAlreadyExists");
+            throw new DuplicateException(String.format("Song with name = %s already exist", dto.surname()));
         }
     }
 }

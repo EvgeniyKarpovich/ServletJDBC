@@ -5,6 +5,7 @@ import by.karpovich.exception.DaoException;
 import by.karpovich.model.AuthorEntity;
 import by.karpovich.model.SongEntity;
 import by.karpovich.repository.SongRepository;
+import by.karpovich.repository.mapper.impl.AuthorResultSetMapperImpl;
 import by.karpovich.repository.mapper.impl.SongResultSetMapperImpl;
 import by.karpovich.sqlRequest.SongSql;
 
@@ -18,7 +19,8 @@ import java.util.Optional;
 
 public class SongRepositoryImpl implements SongRepository {
     private static final SongRepositoryImpl INSTANCE = new SongRepositoryImpl();
-    private final SongResultSetMapperImpl resultSetMapper = new SongResultSetMapperImpl();
+    private final SongResultSetMapperImpl songResultSetMapper = new SongResultSetMapperImpl();
+    private final AuthorResultSetMapperImpl authorResultSetMapper = new AuthorResultSetMapperImpl();
 
     private SongRepositoryImpl() {
     }
@@ -29,6 +31,7 @@ public class SongRepositoryImpl implements SongRepository {
 
     @Override
     public Optional<SongEntity> findById(Long id) {
+        List<AuthorEntity> authors = new ArrayList<>();
         try (var connection = ConnectionManagerImpl.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SongSql.FIND_BY_ID_SQL)) {
             preparedStatement.setLong(1, id);
@@ -36,47 +39,62 @@ public class SongRepositoryImpl implements SongRepository {
             ResultSet resultSet = preparedStatement.executeQuery();
             SongEntity songEntity = null;
 
-            if (resultSet.next()) {
-                songEntity = resultSetMapper.map(resultSet);
+            while (resultSet.next()) {
+                if (songEntity == null) {
+                    songEntity = songResultSetMapper.mapSongWithAlbumAndSinger(resultSet);
+                }
+                Long auId = resultSet.getLong("au_id");
+                if (auId != 0) {
+                    AuthorEntity authorEntity = authorResultSetMapper.mapAuthor(resultSet);
+                    authors.add(authorEntity);
+                }
             }
+            if (songEntity != null) {
+                songEntity.setAuthors(authors);
+            }
+
             return Optional.ofNullable(songEntity);
         } catch (SQLException e) {
             throw new DaoException("IN FIND BY ID");
         }
     }
 
-    public List<SongEntity> findByAuthorName(String name) {
-        try (var connection = ConnectionManagerImpl.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SongSql.FIND_BY_AUTHOR_NAME_SQL)) {
-            preparedStatement.setString(1, name);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-            List<SongEntity> entities = new ArrayList<>();
-
-            while (resultSet.next()) {
-                entities.add(resultSetMapper.mapForFindByAuthorName(resultSet));
-            }
-            return entities;
-        } catch (SQLException e) {
-            throw new DaoException("IN findByAuthorName");
-        }
-    }
-
-    public Optional<SongEntity> findByNameAndSingerId(String name, Long id) {
+    public Optional<SongEntity> findByNameAndSingerId(String songName, Long singerId) {
         try (var connection = ConnectionManagerImpl.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SongSql.FIND_BY_NAME_AND_SINGER_ID_SQL)) {
-            preparedStatement.setString(1, name);
-            preparedStatement.setLong(2, id);
+            preparedStatement.setString(1, songName);
+            preparedStatement.setLong(2, singerId);
 
             ResultSet resultSet = preparedStatement.executeQuery();
             SongEntity songEntity = null;
 
             if (resultSet.next()) {
-                songEntity = resultSetMapper.map(resultSet);
+                songEntity = songResultSetMapper.mapSongWithAlbumAndSinger(resultSet);
+//                songEntity = songResultSetMapper.mapSongName(resultSet);
             }
             return Optional.ofNullable(songEntity);
         } catch (SQLException e) {
             throw new DaoException("IN findByName");
+        }
+    }
+
+    public List<SongEntity> findByAuthorId(Long authorId) {
+        List<SongEntity> songs = new ArrayList<>();
+
+        try (var connection = ConnectionManagerImpl.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SongSql.FIND_BY_AUTHOR_ID_SQL)) {
+            preparedStatement.setLong(1, authorId);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            SongEntity songEntity = null;
+
+            while (resultSet.next()) {
+                songEntity = songResultSetMapper.mapSongName(resultSet);
+                songs.add(songEntity);
+            }
+            return songs;
+        } catch (SQLException e) {
+            throw new DaoException("IN findByAuthorId");
         }
     }
 
@@ -88,7 +106,7 @@ public class SongRepositoryImpl implements SongRepository {
             ResultSet resultSet = preparedStatement.executeQuery();
             List<SongEntity> result = new ArrayList<>();
             while (resultSet.next()) {
-                result.add(resultSetMapper.map(resultSet));
+                result.add(songResultSetMapper.mapSongWithAlbumAndSinger(resultSet));
             }
             return result;
         } catch (SQLException e) {

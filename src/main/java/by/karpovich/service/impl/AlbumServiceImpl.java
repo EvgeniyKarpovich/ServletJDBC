@@ -1,5 +1,6 @@
 package by.karpovich.service.impl;
 
+import by.karpovich.exception.DuplicateException;
 import by.karpovich.exception.NotFoundEntityException;
 import by.karpovich.model.AlbumEntity;
 import by.karpovich.repository.impl.AlbumRepositoryImpl;
@@ -8,6 +9,7 @@ import by.karpovich.servlet.dto.AlbumDto;
 import by.karpovich.servlet.mapper.AlbumMapper;
 
 import java.util.List;
+import java.util.Optional;
 
 public class AlbumServiceImpl implements AlbumService {
 
@@ -25,7 +27,7 @@ public class AlbumServiceImpl implements AlbumService {
     @Override
     public AlbumDto findById(Long id) {
         AlbumEntity albumEntity = albumRepository.findById(id).orElseThrow(
-                () -> new NotFoundEntityException("IN SERVICE FIND BY ID"));
+                () -> new NotFoundEntityException(String.format("Album with id = %s not found", id)));
 
         return albumMapper.mapDtoFromEntity(albumEntity);
     }
@@ -45,6 +47,8 @@ public class AlbumServiceImpl implements AlbumService {
 
     @Override
     public AlbumDto save(AlbumDto dto) {
+        validateAlreadyExists(dto, null);
+
         AlbumEntity albumEntity = albumMapper.mapEntityFromDto(dto);
         AlbumEntity saved = albumRepository.save(albumEntity);
 
@@ -55,11 +59,20 @@ public class AlbumServiceImpl implements AlbumService {
     public void update(AlbumDto dto, Long id) {
         AlbumEntity albumEntity = albumMapper.mapEntityFromDto(dto);
         albumEntity.setId(id);
+
         albumRepository.update(albumEntity);
     }
 
     public AlbumEntity findSingerByIdWhichWillReturnModel(Long id) {
         return albumRepository.findById(id).orElseThrow(
-                () -> new NotFoundEntityException("IN SERVICE findSingerByIdWhichWillReturnModel"));
+                () -> new NotFoundEntityException(String.format("Album with id = %s not found", id)));
+    }
+
+    private void validateAlreadyExists(AlbumDto dto, Long id) {
+        Optional<AlbumEntity> entity = albumRepository.findByNameAndSingerId(dto.name(), dto.singerId());
+
+        if (entity.isPresent() && !entity.get().getId().equals(id)) {
+            throw new DuplicateException(String.format("Song with name = %s already exist", dto.name()));
+        }
     }
 }

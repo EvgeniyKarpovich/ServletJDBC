@@ -30,14 +30,14 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public AuthorDto findById(Long id) {
         AuthorEntity authorEntity = authorRepository.findById(id).orElseThrow(
-                () -> new NotFoundEntityException("IN SERVICE FIND BY ID"));
+                () -> new NotFoundEntityException(String.format("Author with id = %s not found", id)));
 
         return authorMapper.mapDtoFromEntity(authorEntity);
     }
 
     public AuthorFullDtoOut findByIdFullDtoOut(Long id) {
         AuthorEntity authorEntity = authorRepository.findById(id).orElseThrow(
-                () -> new NotFoundEntityException("IN SERVICE FIND BY ID"));
+                () -> new NotFoundEntityException(String.format("Author with id = %s not found", id)));
 
         return authorMapper.mapFullDtoFromEntity(authorEntity);
     }
@@ -71,6 +71,7 @@ public class AuthorServiceImpl implements AuthorService {
 
         AuthorEntity authorEntity = authorMapper.mapEntityFromDto(dto);
         authorEntity.setId(id);
+
         authorRepository.save(authorEntity);
     }
 
@@ -78,7 +79,7 @@ public class AuthorServiceImpl implements AuthorService {
         Optional<AuthorEntity> entity = authorRepository.findByAuthorName(dto.name());
 
         if (entity.isPresent() && !entity.get().getId().equals(id)) {
-            throw new DuplicateException("IN validateAlreadyExists");
+            throw new DuplicateException(String.format("Author with name = %s already exist", dto.name()));
         }
     }
 }

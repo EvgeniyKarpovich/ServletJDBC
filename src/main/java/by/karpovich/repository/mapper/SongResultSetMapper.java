@@ -7,5 +7,5 @@ import java.sql.SQLException;
 
 public interface SongResultSetMapper {
 
-    SongEntity map(ResultSet resultSet) throws SQLException;
+    SongEntity mapSongWithAlbumAndSinger(ResultSet resultSet) throws SQLException;
 }

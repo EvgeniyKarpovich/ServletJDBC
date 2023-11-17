@@ -8,7 +8,8 @@ import by.karpovich.servlet.dto.AuthorFullDtoOut;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 public class AuthorMapper {
     private final SongRepositoryImpl songRepository = SongRepositoryImpl.getInstance();
@@ -17,8 +18,8 @@ public class AuthorMapper {
 
         return Optional.ofNullable(dto)
                 .map(authorDto -> new AuthorEntity(
-                        authorDto.name(),
-                        songRepository.findByAuthorName(authorDto.name())))
+                        authorDto.name()/*,
+                        songRepository.findByAuthorName(authorDto.name())*/))
                 .orElse(null);
     }
 
@@ -36,7 +37,7 @@ public class AuthorMapper {
                 .map(authorEntity ->
                         new AuthorFullDtoOut(
                                 authorEntity.getAuthorName(),
-                                authorEntity.getSongs().stream().map(SongEntity::getName).collect(Collectors.toList())
+                                songRepository.findByAuthorId(authorEntity.getId()).stream().map(SongEntity::getName).collect(toList())
                         ))
                 .orElse(null);
     }
@@ -45,7 +46,7 @@ public class AuthorMapper {
         return Optional.ofNullable(entities)
                 .map(authorEntities -> authorEntities.stream()
                         .map(this::mapDtoFromEntity)
-                        .collect(Collectors.toList()))
+                        .collect(toList()))
                 .orElse(null);
 
     }

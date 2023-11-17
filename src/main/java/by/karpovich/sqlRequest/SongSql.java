@@ -31,14 +31,14 @@ public class SongSql {
     public static final String FIND_ALL_SQL = """
             SELECT
             songs.id song_id,
-            songs.surname song_name,
+            songs.name song_name,
             singers.id sr_id,
             singers.surname sr_surname,
             albums.id al_id,
             albums.album_name al_name,
             authors.id au_id,
             authors.author_name au_name
-            FROM songs 
+            FROM songs
             JOIN singers
                 ON songs.singer_id = singers.id
             JOIN albums
@@ -57,15 +57,15 @@ public class SongSql {
             INSERT INTO song_author (song_id, author_id)
             VALUES (?, ?)
             """;
-    public static final String FIND_BY_AUTHOR_NAME_SQL = """
-            SELECT
-            songs.id,
-            songs.name
+
+    public static final String FIND_BY_AUTHOR_ID_SQL = """
+            SELECT 
+            songs.name s_name
             FROM songs
             JOIN song_author sa
-                ON songs.id = sa.song_id
-            JOIN authors a
-                ON sa.author_id = a.id
-            WHERE a.author_name = ?;
-            """;
+                ON  songs.id = sa.song_id
+            JOIN authors
+                ON sa.author_id = authors.id
+            WHERE authors.id = ?
+                """;
 }

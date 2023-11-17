@@ -1,28 +1,17 @@
 package by.karpovich.repository.mapper.impl;
 
 import by.karpovich.model.AlbumEntity;
-import by.karpovich.model.AuthorEntity;
 import by.karpovich.model.SingerEntity;
 import by.karpovich.model.SongEntity;
 import by.karpovich.repository.mapper.SongResultSetMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SongResultSetMapperImpl implements SongResultSetMapper {
 
     @Override
-    public SongEntity map(ResultSet resultSet) throws SQLException {
-        List<AuthorEntity> authors = new ArrayList<>();
-
-        if (resultSet.next()) {
-            AuthorEntity authorEntity = new AuthorEntity();
-            authorEntity.setId(resultSet.getLong("au_id"));
-            authorEntity.setAuthorName(resultSet.getString("au_name"));
-            authors.add(authorEntity);
-        }
+    public SongEntity mapSongWithAlbumAndSinger(ResultSet resultSet) throws SQLException {
         SingerEntity singerEntity = new SingerEntity(
                 resultSet.getLong("sr_id"),
                 resultSet.getString("sr_surname")
@@ -36,15 +25,20 @@ public class SongResultSetMapperImpl implements SongResultSetMapper {
                 resultSet.getLong("song_id"),
                 resultSet.getString("song_name"),
                 singerEntity,
-                albumEntity,
-                authors
+                albumEntity
         );
     }
 
-    public SongEntity mapForFindByAuthorName(ResultSet resultSet) throws SQLException {
+    public SongEntity mapSong(ResultSet resultSet) throws SQLException {
         return new SongEntity(
                 resultSet.getLong("id"),
                 resultSet.getString("name")
+        );
+    }
+
+    public SongEntity mapSongName(ResultSet resultSet) throws SQLException {
+        return new SongEntity(
+                resultSet.getString("s_name")
         );
     }
 }

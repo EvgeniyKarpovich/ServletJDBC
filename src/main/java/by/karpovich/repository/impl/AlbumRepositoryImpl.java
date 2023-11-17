@@ -46,6 +46,24 @@ public class AlbumRepositoryImpl implements AlbumRepository {
         }
     }
 
+    public Optional<AlbumEntity> findByNameAndSingerId(String songName, Long singerId) {
+        try (var connection = ConnectionManagerImpl.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(AlbumSql.FIND_BY_NAME_AND_SINGER_ID_SQL)) {
+            preparedStatement.setString(1, songName);
+            preparedStatement.setLong(2, singerId);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            AlbumEntity albumEntity = null;
+
+            if (resultSet.next()) {
+                albumEntity = resultSetMapper.mapAlbumName(resultSet);
+            }
+            return Optional.ofNullable(albumEntity);
+        } catch (SQLException e) {
+            throw new DaoException("IN findByNameAndSingerId");
+        }
+    }
+
     @Override
     public List<AlbumEntity> findAll() {
         try (var connection = ConnectionManagerImpl.getConnection();

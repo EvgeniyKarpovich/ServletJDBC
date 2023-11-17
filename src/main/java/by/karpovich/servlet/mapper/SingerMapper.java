@@ -13,8 +13,7 @@ public class SingerMapper {
 
     public SingerEntity mapEntityFromDto(SingerDto dto) {
         return Optional.ofNullable(dto)
-                .map(singerDto -> new SingerEntity(singerDto.surname())
-                )
+                .map(singerDto -> new SingerEntity(singerDto.surname()))
                 .orElse(null);
     }
 

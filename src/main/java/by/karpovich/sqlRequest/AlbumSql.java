@@ -33,5 +33,13 @@ public class AlbumSql {
     public static final String FIND_BY_ID_SQL = FIND_ALL_SQL + """
             WHERE albums.id = ?
             """;
+    public static final String FIND_BY_NAME_AND_SINGER_ID_SQL = """
+            SELECT
+            id,
+            album_name
+            FROM albums
+            WHERE name = ?
+            AND singer_id = ?
+            """;
     
 }
