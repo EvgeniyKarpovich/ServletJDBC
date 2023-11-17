@@ -5,6 +5,7 @@ import by.karpovich.exception.DaoException;
 import by.karpovich.model.AlbumEntity;
 import by.karpovich.repository.AlbumRepository;
 import by.karpovich.repository.mapper.impl.AlbumResultSetMapperImpl;
+import by.karpovich.sqlRequest.AlbumSql;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,42 +28,10 @@ public class AlbumRepositoryImpl implements AlbumRepository {
         return INSTANCE;
     }
 
-    public static final String SAVE_SQL = """
-            INSERT INTO albums(album_name, singer_id)      
-            VALUES (?,?)     
-            """;
-
-    private static final String DELETE_SQL = """
-               DELETE FROM albums
-               WHERE id = ?
-            """;
-
-    private static final String UPDATE_SQL = """
-            UPDATE albums
-            SET album_name = ?,
-            singer_id = ?
-            WHERE id = ?
-            """;
-
-    private static final String FIND_ALL_SQL = """
-            SELECT
-            albums.id,
-            albums.album_name,
-            singers.id,
-            singers.surname
-            FROM albums
-            JOIN singers
-                ON albums.singer_id = singers.id
-            """;
-
-    private static final String FIND_BY_ID_SQL = FIND_ALL_SQL + """
-            WHERE albums.id = ?
-            """;
-
     @Override
     public Optional<AlbumEntity> findById(Long id) {
         try (var connection = ConnectionManagerImpl.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(AlbumSql.FIND_BY_ID_SQL)) {
             preparedStatement.setLong(1, id);
 
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -80,7 +49,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
     @Override
     public List<AlbumEntity> findAll() {
         try (var connection = ConnectionManagerImpl.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(AlbumSql.FIND_ALL_SQL)) {
 
             ResultSet resultSet = preparedStatement.executeQuery();
             List<AlbumEntity> result = new ArrayList<>();
@@ -96,7 +65,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
     @Override
     public boolean deleteById(Long id) {
         try (var connection = ConnectionManagerImpl.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(AlbumSql.DELETE_SQL)) {
 
             preparedStatement.setLong(1, id);
 
@@ -109,7 +78,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
     @Override
     public AlbumEntity save(AlbumEntity albumEntity) {
         try (var connection = ConnectionManagerImpl.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(AlbumSql.SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, albumEntity.getAlbumName());
             preparedStatement.setLong(2, albumEntity.getSinger().getId());
@@ -130,7 +99,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
     @Override
     public void update(AlbumEntity albumEntity) {
         try (var connection = ConnectionManagerImpl.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(AlbumSql.UPDATE_SQL)) {
 
             preparedStatement.setString(1, albumEntity.getAlbumName());
             preparedStatement.setLong(2, albumEntity.getSinger().getId());

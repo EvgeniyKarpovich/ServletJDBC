@@ -6,6 +6,7 @@ import by.karpovich.model.AuthorEntity;
 import by.karpovich.model.SongEntity;
 import by.karpovich.repository.AuthorRepository;
 import by.karpovich.repository.mapper.impl.AuthorResultSetMapperImpl;
+import by.karpovich.sqlRequest.AuthorSql;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,57 +28,11 @@ public class AuthorRepositoryImpl implements AuthorRepository {
         return INSTANCE;
     }
 
-    private static final String SAVE_SQL = """
-            INSERT INTO  authors (author_name)
-            VALUES (?)
-            """;
-
-    private static final String DELETE_SQL = """
-            DELETE FROM authors
-            WHERE id = ?
-             """;
-
-    private static final String UPDATE_SQL = """
-            UPDATE authors
-            SET author_name = ?,
-            WHERE id = ?
-            """;
-
-    private static final String FIND_ALL_SQL = """
-            SELECT
-            authors.id au_id,
-            authors.author_name au_name
-            FROM authors
-            """;
-
-    private static final String FIND_BY_ID_SQL = """
-            SELECT
-            authors.id au_id,
-            authors.author_name au_name,
-            songs.id song_id,
-            songs.name song_name
-            FROM authors
-            LEFT JOIN song_author
-            ON authors.id = song_author.author_id
-            LEFT JOIN songs
-            ON song_author.song_id = songs.id
-                    WHERE
-                    authors.id  = ?
-                    """;
-
-    private static final String FIND_BY_NAME_SQL = """
-            SELECT
-            authors.id au_id,
-            authors.name au_name
-            FROM authors
-            WHERE authors.name = ?
-            """;
-
     public Optional<AuthorEntity> findByAuthorName(String name) {
         AuthorEntity authorEntity = null;
 
         try (var connection = ConnectionManagerImpl.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_NAME_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(AuthorSql.FIND_BY_NAME_SQL)) {
 
             preparedStatement.setString(1, name);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -98,7 +53,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
         List<SongEntity> songs = new ArrayList<>();
 
         try (var connection = ConnectionManagerImpl.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(AuthorSql.FIND_BY_ID_SQL)) {
 
             preparedStatement.setLong(1, id);
 
@@ -132,7 +87,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
         List<AuthorEntity> authorEntities = new ArrayList<>();
 
         try (var connection = ConnectionManagerImpl.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(AuthorSql.FIND_ALL_SQL)) {
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -148,7 +103,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
     @Override
     public boolean deleteById(Long id) {
         try (var connection = ConnectionManagerImpl.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(AuthorSql.DELETE_SQL)) {
 
             preparedStatement.setLong(1, id);
 
@@ -161,7 +116,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
     @Override
     public AuthorEntity save(AuthorEntity authorEntity) {
         try (var connection = ConnectionManagerImpl.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(AuthorSql.SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, authorEntity.getAuthorName());
             preparedStatement.executeUpdate();
@@ -180,7 +135,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
     @Override
     public void update(AuthorEntity authorEntity) {
         try (var connection = ConnectionManagerImpl.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(AuthorSql.UPDATE_SQL)) {
 
             preparedStatement.setString(1, authorEntity.getAuthorName());
             preparedStatement.executeUpdate();

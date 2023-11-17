@@ -5,6 +5,7 @@ import by.karpovich.exception.DaoException;
 import by.karpovich.model.SingerEntity;
 import by.karpovich.repository.SingerRepository;
 import by.karpovich.repository.mapper.impl.SingerResultSetMapperImpl;
+import by.karpovich.sqlRequest.SingerSql;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -23,53 +24,10 @@ public class SingerRepositoryImpl implements SingerRepository {
         return INSTANCE;
     }
 
-    private static final String SAVE_SQL = """
-               INSERT INTO  singers(surname)
-            VALUES (?)
-            """;
-
-    private static final String DELETE_SQL = """
-               DELETE FROM singers
-               WHERE id = ?
-            """;
-
-    private static final String UPDATE_SQL = """
-            UPDATE singers
-            SET surname = ?
-            WHERE id = ?
-            """;
-
-    private static final String FIND_ALL_SQL = """
-            SELECT
-            singers.id s_id,
-            singers.surname s_surname
-            FROM singers
-            """;
-
-    private static final String FIND_BY_ID_SQL = """  
-            SELECT
-            singers.id s_id,
-            singers.surname s_surname,
-            albums.id al_id,
-            albums.album_name al_name
-            FROM singers
-            LEFT JOIN albums
-                ON albums.singer_id = singers.id       
-              WHERE singers.id = ?
-            """;
-
-    private static final String FIND_BY_NAME_SQL = """
-            SELECT id,
-            surname
-            FROM singers
-            WHERE surname = ?
-            """;
-
-
     @Override
     public Optional<SingerEntity> findById(Long id) {
         try (var connection = ConnectionManagerImpl.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(FIND_BY_ID_SQL)) {
+             PreparedStatement stmt = connection.prepareStatement(SingerSql.FIND_BY_ID_SQL)) {
 
             stmt.setLong(1, id);
             var singerEntity = new SingerEntity();
@@ -97,7 +55,7 @@ public class SingerRepositoryImpl implements SingerRepository {
     @Override
     public Optional<SingerEntity> findByName(String name) {
         try (var connection = ConnectionManagerImpl.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_NAME_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SingerSql.FIND_BY_NAME_SQL)) {
 
             preparedStatement.setString(1, name);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -117,7 +75,7 @@ public class SingerRepositoryImpl implements SingerRepository {
         List<SingerEntity> result = new ArrayList<>();
 
         try (var connection = ConnectionManagerImpl.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SingerSql.FIND_ALL_SQL)) {
 
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -132,7 +90,7 @@ public class SingerRepositoryImpl implements SingerRepository {
     @Override
     public boolean deleteById(Long id) {
         try (var connection = ConnectionManagerImpl.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SingerSql.DELETE_SQL)) {
 
             preparedStatement.setLong(1, id);
 
@@ -145,7 +103,7 @@ public class SingerRepositoryImpl implements SingerRepository {
     @Override
     public SingerEntity save(SingerEntity singerEntity) {
         try (var connection = ConnectionManagerImpl.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SingerSql.SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, singerEntity.getSurname());
             preparedStatement.executeUpdate();
@@ -164,7 +122,7 @@ public class SingerRepositoryImpl implements SingerRepository {
     @Override
     public void update(SingerEntity singerEntity) {
         try (var connection = ConnectionManagerImpl.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SingerSql.UPDATE_SQL)) {
 
             preparedStatement.setString(1, singerEntity.getSurname());
             preparedStatement.setLong(2, singerEntity.getId());

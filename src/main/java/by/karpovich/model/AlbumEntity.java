@@ -9,6 +9,10 @@ public class AlbumEntity {
     public AlbumEntity() {
     }
 
+    public AlbumEntity(String albumName) {
+        this.albumName = albumName;
+    }
+
     public AlbumEntity(Long id, String albumName) {
         this.id = id;
         this.albumName = albumName;

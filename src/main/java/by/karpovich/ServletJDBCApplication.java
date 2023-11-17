@@ -31,7 +31,7 @@ public class ServletJDBCApplication {
         AuthorDto authorDto3 = new AuthorDto("Karpovich MEGA BUM 33");
 //        authorService.save(authorDto);
 //        authorService.save(authorDto3);
-        SingerDto singerDto = new SingerDto("Kaprovich");
+        SingerDto singerDto = new SingerDto("Kaprovich TEST");
 //        singerService.save(singerDto);
         AlbumDto albumDto = new AlbumDto("Second album 22", 1L);
         AlbumDto albumDto2 = new AlbumDto("!!!! album 22", 1L);
@@ -41,6 +41,8 @@ public class ServletJDBCApplication {
         authors.add(2L);
 
         SongDto songDto = new SongDto("3213123121", 1L, 1L, authors);
+
+        singerService.deleteById(8L);
 
 //        List<AuthorDto> all = authorService.findAll();
         List<AuthorEntity> all1 = authorRepository.findAll();
