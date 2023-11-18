@@ -1,5 +1,6 @@
 package by.karpovich.db;
 
+import by.karpovich.exception.IncorrectDataException;
 import by.karpovich.util.PropertiesUtil;
 
 import java.sql.Connection;
@@ -22,7 +23,7 @@ public final class ConnectionManagerImpl {
                     PropertiesUtil.get(USERNAME_KEY),
                     PropertiesUtil.get(PASSWORD_KEY));
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new IncorrectDataException("Wrong url/username/password");
         }
     }
 }

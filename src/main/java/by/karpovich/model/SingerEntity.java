@@ -9,6 +9,10 @@ public class SingerEntity {
     private String surname;
     private List<AlbumEntity> albums = new ArrayList<>();
 
+    public SingerEntity(Long id) {
+        this.id = id;
+    }
+
     public SingerEntity(Long id, String name) {
         this.id = id;
         this.surname = name;
