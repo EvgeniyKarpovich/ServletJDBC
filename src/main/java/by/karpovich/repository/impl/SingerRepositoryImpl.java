@@ -2,12 +2,17 @@ package by.karpovich.repository.impl;
 
 import by.karpovich.db.ConnectionManagerImpl;
 import by.karpovich.exception.DaoException;
+import by.karpovich.model.AlbumEntity;
 import by.karpovich.model.SingerEntity;
 import by.karpovich.repository.SingerRepository;
+import by.karpovich.repository.mapper.impl.AlbumResultSetMapperImpl;
 import by.karpovich.repository.mapper.impl.SingerResultSetMapperImpl;
-import by.karpovich.sqlRequest.SingerSql;
+import by.karpovich.sql.SingerSql;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +20,8 @@ import java.util.Optional;
 public class SingerRepositoryImpl implements SingerRepository {
 
     private static final SingerRepositoryImpl INSTANCE = new SingerRepositoryImpl();
-    private final SingerResultSetMapperImpl resultSetMapper = new SingerResultSetMapperImpl();
+    private final SingerResultSetMapperImpl singerResultSetMapper = new SingerResultSetMapperImpl();
+    private final AlbumResultSetMapperImpl albumResultSetMapper = new AlbumResultSetMapperImpl();
 
     private SingerRepositoryImpl() {
     }
@@ -27,29 +33,33 @@ public class SingerRepositoryImpl implements SingerRepository {
     @Override
     public Optional<SingerEntity> findById(Long id) {
         try (var connection = ConnectionManagerImpl.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(SingerSql.FIND_BY_ID_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SingerSql.FIND_BY_ID_SQL)) {
 
-            stmt.setLong(1, id);
-            var singerEntity = new SingerEntity();
-            try (var resultSet = stmt.executeQuery()) {
-                boolean singerExists = false;
-                while (resultSet.next()) {
-                    if (!singerExists) {
-                        singerEntity = resultSetMapper.mapSinger(resultSet);
-                        singerEntity.setAlbums(new ArrayList<>());
-                        singerExists = true;
-                    }
-                    var albumEntity = resultSetMapper.mapAlbumForSinger(resultSet);
-                    if (albumEntity.getId() != null) {
-                        singerEntity.getAlbums().add(albumEntity);
-                    }
+            preparedStatement.setLong(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            SingerEntity singerEntity = null;
+            List<AlbumEntity> albums = new ArrayList<>();
+
+            while (resultSet.next()) {
+                if (singerEntity == null) {
+                    singerEntity = singerResultSetMapper.mapSinger(resultSet);
                 }
-                return Optional.ofNullable(singerEntity);
+
+                long albumId = resultSet.getLong("al_id");
+                if (albumId != 0) {
+                    AlbumEntity albumEntity = albumResultSetMapper.mapAlbum(resultSet);
+                    albums.add(albumEntity);
+                }
             }
+            if (singerEntity != null) {
+                singerEntity.setAlbums(albums);
+            }
+
+            return Optional.ofNullable(singerEntity);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DaoException("IN findById");
         }
-        return Optional.empty();
     }
 
     @Override
@@ -59,27 +69,29 @@ public class SingerRepositoryImpl implements SingerRepository {
 
             preparedStatement.setString(1, name);
             ResultSet resultSet = preparedStatement.executeQuery();
+
             SingerEntity singerEntity = null;
 
             if (resultSet.next()) {
-                singerEntity = resultSetMapper.mapSinger(resultSet);
+                singerEntity = singerResultSetMapper.mapSinger(resultSet);
             }
             return Optional.ofNullable(singerEntity);
         } catch (SQLException e) {
-            throw new DaoException("IN FIND BY NAME");
+            throw new DaoException("IN findByName");
         }
     }
 
     @Override
     public List<SingerEntity> findAll() {
-        List<SingerEntity> result = new ArrayList<>();
-
         try (var connection = ConnectionManagerImpl.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SingerSql.FIND_ALL_SQL)) {
 
             ResultSet resultSet = preparedStatement.executeQuery();
+
+            List<SingerEntity> result = new ArrayList<>();
+
             while (resultSet.next()) {
-                result.add(resultSetMapper.mapSinger(resultSet));
+                result.add(singerResultSetMapper.mapSinger(resultSet));
             }
             return result;
         } catch (SQLException e) {

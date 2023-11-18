@@ -1,14 +1,14 @@
-package by.karpovich.sqlRequest;
+package by.karpovich.sql;
 
 public class SingerSql {
     public static final String SAVE_SQL = """
-               INSERT INTO  singers(surname)
+            INSERT INTO  singers(surname)
             VALUES (?)
             """;
 
     public static final String DELETE_SQL = """
-               DELETE FROM singers
-               WHERE id = ?
+            DELETE FROM singers
+            WHERE id = ?
             """;
 
     public static final String UPDATE_SQL = """
@@ -32,8 +32,8 @@ public class SingerSql {
             albums.album_name al_name
             FROM singers
             LEFT JOIN albums
-                ON albums.singer_id = singers.id       
-              WHERE singers.id = ?
+                ON albums.singer_id = singers.id
+            WHERE singers.id = ?
             """;
 
     public static final String FIND_BY_NAME_SQL = """
@@ -43,5 +43,6 @@ public class SingerSql {
             WHERE surname = ?
             """;
 
-
+    private SingerSql() {
+    }
 }

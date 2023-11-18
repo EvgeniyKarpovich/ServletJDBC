@@ -6,7 +6,8 @@ import by.karpovich.model.AuthorEntity;
 import by.karpovich.model.SongEntity;
 import by.karpovich.repository.AuthorRepository;
 import by.karpovich.repository.mapper.impl.AuthorResultSetMapperImpl;
-import by.karpovich.sqlRequest.AuthorSql;
+import by.karpovich.repository.mapper.impl.SongResultSetMapperImpl;
+import by.karpovich.sql.AuthorSql;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,7 +20,8 @@ import java.util.Optional;
 public class AuthorRepositoryImpl implements AuthorRepository {
 
     private static final AuthorRepositoryImpl INSTANCE = new AuthorRepositoryImpl();
-    private final AuthorResultSetMapperImpl resultSetMapper = new AuthorResultSetMapperImpl();
+    private final AuthorResultSetMapperImpl authorResultSetMapper = new AuthorResultSetMapperImpl();
+    private final SongResultSetMapperImpl songResultSetMapper = new SongResultSetMapperImpl();
 
     private AuthorRepositoryImpl() {
     }
@@ -38,7 +40,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                authorEntity = resultSetMapper.mapAuthor(resultSet);
+                authorEntity = authorResultSetMapper.mapAuthor(resultSet);
             }
 
             return Optional.ofNullable(authorEntity);
@@ -49,24 +51,22 @@ public class AuthorRepositoryImpl implements AuthorRepository {
 
     @Override
     public Optional<AuthorEntity> findById(Long id) {
-        AuthorEntity authorEntity = null;
-        List<SongEntity> songs = new ArrayList<>();
-
         try (var connection = ConnectionManagerImpl.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(AuthorSql.FIND_BY_ID_SQL)) {
-
             preparedStatement.setLong(1, id);
-
             ResultSet resultSet = preparedStatement.executeQuery();
+
+            AuthorEntity authorEntity = null;
+            List<SongEntity> songs = new ArrayList<>();
 
             while (resultSet.next()) {
                 if (authorEntity == null) {
-                    authorEntity = resultSetMapper.mapAuthor(resultSet);
+                    authorEntity = authorResultSetMapper.mapAuthor(resultSet);
                 }
 
-                Long songId = resultSet.getLong("song_id");
+                long songId = resultSet.getLong("song_id");
                 if (songId != 0) {
-                    SongEntity songEntity = resultSetMapper.mapSong(resultSet);
+                    SongEntity songEntity = songResultSetMapper.mapSong(resultSet);
                     songs.add(songEntity);
                 }
             }
@@ -75,25 +75,25 @@ public class AuthorRepositoryImpl implements AuthorRepository {
                 authorEntity.setSongs(songs);
             }
 
+            return Optional.ofNullable(authorEntity);
         } catch (SQLException e) {
             throw new DaoException("IN findById");
         }
-
-        return Optional.ofNullable(authorEntity);
     }
 
     @Override
     public List<AuthorEntity> findAll() {
-        List<AuthorEntity> authorEntities = new ArrayList<>();
-
         try (var connection = ConnectionManagerImpl.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(AuthorSql.FIND_ALL_SQL)) {
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
+            List<AuthorEntity> authorEntities = new ArrayList<>();
+
             while (resultSet.next()) {
-                authorEntities.add(resultSetMapper.mapAuthor(resultSet));
+                authorEntities.add(authorResultSetMapper.mapAuthor(resultSet));
             }
+
             return authorEntities;
         } catch (SQLException e) {
             throw new DaoException("IN findAll");

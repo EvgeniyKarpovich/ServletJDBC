@@ -5,7 +5,7 @@ import by.karpovich.exception.DaoException;
 import by.karpovich.model.AlbumEntity;
 import by.karpovich.repository.AlbumRepository;
 import by.karpovich.repository.mapper.impl.AlbumResultSetMapperImpl;
-import by.karpovich.sqlRequest.AlbumSql;
+import by.karpovich.sql.AlbumSql;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,7 +19,6 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 
     private static final AlbumRepositoryImpl INSTANCE = new AlbumRepositoryImpl();
     private final AlbumResultSetMapperImpl resultSetMapper = new AlbumResultSetMapperImpl();
-    private final SongRepositoryImpl songRepository = SongRepositoryImpl.getInstance();
 
     private AlbumRepositoryImpl() {
     }
@@ -35,10 +34,11 @@ public class AlbumRepositoryImpl implements AlbumRepository {
             preparedStatement.setLong(1, id);
 
             ResultSet resultSet = preparedStatement.executeQuery();
+
             AlbumEntity albumEntity = null;
 
             if (resultSet.next()) {
-                albumEntity = resultSetMapper.map(resultSet);
+                albumEntity = resultSetMapper.mapAlbumWithSinger(resultSet);
             }
             return Optional.ofNullable(albumEntity);
         } catch (SQLException e) {
@@ -49,10 +49,12 @@ public class AlbumRepositoryImpl implements AlbumRepository {
     public Optional<AlbumEntity> findByNameAndSingerId(String songName, Long singerId) {
         try (var connection = ConnectionManagerImpl.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(AlbumSql.FIND_BY_NAME_AND_SINGER_ID_SQL)) {
+
             preparedStatement.setString(1, songName);
             preparedStatement.setLong(2, singerId);
 
             ResultSet resultSet = preparedStatement.executeQuery();
+
             AlbumEntity albumEntity = null;
 
             if (resultSet.next()) {
@@ -70,9 +72,11 @@ public class AlbumRepositoryImpl implements AlbumRepository {
              PreparedStatement preparedStatement = connection.prepareStatement(AlbumSql.FIND_ALL_SQL)) {
 
             ResultSet resultSet = preparedStatement.executeQuery();
+
             List<AlbumEntity> result = new ArrayList<>();
+
             while (resultSet.next()) {
-                result.add(resultSetMapper.map(resultSet));
+                result.add(resultSetMapper.mapAlbumWithSinger(resultSet));
             }
             return result;
         } catch (SQLException e) {

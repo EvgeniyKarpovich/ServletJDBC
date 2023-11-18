@@ -10,7 +10,7 @@ import java.sql.SQLException;
 public class AlbumResultSetMapperImpl implements AlbumResultSetMapper {
 
     @Override
-    public AlbumEntity map(ResultSet resultSet) throws SQLException {
+    public AlbumEntity mapAlbumWithSinger(ResultSet resultSet) throws SQLException {
         SingerEntity singerEntity = new SingerEntity(
                 resultSet.getLong("id"),
                 resultSet.getString("surname")
@@ -24,6 +24,12 @@ public class AlbumResultSetMapperImpl implements AlbumResultSetMapper {
     public AlbumEntity mapAlbumName(ResultSet resultSet) throws SQLException {
         return new AlbumEntity(
                 resultSet.getString("album_name"));
+    }
+
+    public AlbumEntity mapAlbum(ResultSet resultSet) throws SQLException {
+        return new AlbumEntity(
+                resultSet.getLong("al_id"),
+                resultSet.getString("al_name"));
     }
 
 

@@ -1,15 +1,15 @@
-package by.karpovich.sqlRequest;
+package by.karpovich.sql;
 
 public class AlbumSql {
 
     public static final String SAVE_SQL = """
-            INSERT INTO albums(album_name, singer_id)      
+            INSERT INTO albums(album_name, singer_id)  
             VALUES (?,?)     
             """;
 
     public static final String DELETE_SQL = """
-               DELETE FROM albums
-               WHERE id = ?
+            DELETE FROM albums
+            WHERE id = ?
             """;
 
     public static final String UPDATE_SQL = """
@@ -41,5 +41,7 @@ public class AlbumSql {
             WHERE name = ?
             AND singer_id = ?
             """;
-    
+
+    private AlbumSql() {
+    }
 }

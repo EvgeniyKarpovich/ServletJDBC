@@ -16,11 +16,4 @@ public class AuthorResultSetMapperImpl implements AuthorResultSetMapper {
                 resultSet.getString("au_name")
         );
     }
-
-    public SongEntity mapSong(ResultSet resultSet) throws SQLException {
-        return new SongEntity(
-                resultSet.getString("song_name")
-        );
-    }
-
 }

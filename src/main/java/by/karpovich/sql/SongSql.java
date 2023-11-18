@@ -1,4 +1,4 @@
-package by.karpovich.sqlRequest;
+package by.karpovich.sql;
 
 public class SongSql {
     public static final String SAVE_SQL = """
@@ -21,8 +21,8 @@ public class SongSql {
 
     public static final String FIND_BY_NAME_AND_SINGER_ID_SQL = """
             SELECT
-            id,
-            name
+            songs.id song_id,
+            songs.name song_name
             FROM songs
             WHERE name = ?
             AND singer_id = ?
@@ -59,8 +59,9 @@ public class SongSql {
             """;
 
     public static final String FIND_BY_AUTHOR_ID_SQL = """
-            SELECT 
-            songs.name s_name
+            SELECT
+            songs.id song_id,
+            songs.name song_name
             FROM songs
             JOIN song_author sa
                 ON  songs.id = sa.song_id
@@ -68,4 +69,7 @@ public class SongSql {
                 ON sa.author_id = authors.id
             WHERE authors.id = ?
                 """;
+
+    private SongSql() {
+    }
 }

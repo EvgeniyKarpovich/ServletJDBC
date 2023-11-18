@@ -1,4 +1,4 @@
-package by.karpovich.sqlRequest;
+package by.karpovich.sql;
 
 public class AuthorSql {
 
@@ -36,9 +36,9 @@ public class AuthorSql {
             ON authors.id = song_author.author_id
             LEFT JOIN songs
             ON song_author.song_id = songs.id
-                    WHERE
-                    authors.id  = ?
-                    """;
+            WHERE
+            authors.id  = ?
+            """;
 
     public static final String FIND_BY_NAME_SQL = """
             SELECT
@@ -47,4 +47,7 @@ public class AuthorSql {
             FROM authors
             WHERE authors.name = ?
             """;
+
+    private AuthorSql() {
+    }
 }

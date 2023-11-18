@@ -31,14 +31,8 @@ public class SongResultSetMapperImpl implements SongResultSetMapper {
 
     public SongEntity mapSong(ResultSet resultSet) throws SQLException {
         return new SongEntity(
-                resultSet.getLong("id"),
-                resultSet.getString("name")
-        );
-    }
-
-    public SongEntity mapSongName(ResultSet resultSet) throws SQLException {
-        return new SongEntity(
-                resultSet.getString("s_name")
+                resultSet.getLong("song_id"),
+                resultSet.getString("song_name")
         );
     }
 }
