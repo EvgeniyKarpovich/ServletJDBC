@@ -43,9 +43,9 @@ public class SongSql {
                 ON songs.singer_id = singers.id
             JOIN albums
                 ON songs.album_id = albums.id
-            LEFT JOIN song_author
+            JOIN song_author
                 ON songs.id = song_author.song_id
-            LEFT  JOIN authors
+            JOIN authors
                 ON song_author.author_id = authors.id
             """;
 

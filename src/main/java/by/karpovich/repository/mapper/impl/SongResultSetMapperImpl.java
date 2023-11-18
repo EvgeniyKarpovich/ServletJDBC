@@ -18,8 +18,7 @@ public class SongResultSetMapperImpl implements SongResultSetMapper {
         );
         AlbumEntity albumEntity = new AlbumEntity(
                 resultSet.getLong("al_id"),
-                resultSet.getString("al_name"),
-                singerEntity
+                resultSet.getString("al_name")
         );
         return new SongEntity(
                 resultSet.getLong("song_id"),

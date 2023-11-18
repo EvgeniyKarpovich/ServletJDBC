@@ -5,7 +5,6 @@ import by.karpovich.repository.impl.SingerRepositoryImpl;
 import by.karpovich.servlet.dto.SingerDto;
 import by.karpovich.servlet.dto.SingerDtoOut;
 import by.karpovich.servlet.mapper.SingerMapper;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,7 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.WARN)
+//@MockitoSettings(strictness = Strictness.WARN)
 class SingerServiceImplTest {
     private static final Long ID = 1L;
     @Mock
@@ -41,8 +40,8 @@ class SingerServiceImplTest {
         when(singerRepository.findById(anyLong())).thenReturn(Optional.of(entity));
         when(singerMapper.mapDtoFromEntity(any(SingerEntity.class))).thenReturn(dto);
 
-        SingerDto foundSinger = singerService.findById(ID);
-        assertNotNull(foundSinger);
+        SingerDto result = singerService.findById(ID);
+        assertNotNull(result);
     }
 
     @Test
@@ -82,14 +81,12 @@ class SingerServiceImplTest {
 
     @Test
     void save() {
-        SingerEntity validate = mock(SingerEntity.class);
         SingerEntity mapped = mock(SingerEntity.class);
         SingerEntity saved = mock(SingerEntity.class);
 
         SingerDto startDto = mock(SingerDto.class);
         SingerDto returnedDto = mock(SingerDto.class);
 
-        when(singerRepository.findByName(anyString())).thenReturn(Optional.of(validate));
         when(singerMapper.mapEntityFromDto(any(SingerDto.class))).thenReturn(mapped);
         when(singerRepository.save(any(SingerEntity.class))).thenReturn(saved);
         when(singerMapper.mapDtoFromEntity(any(SingerEntity.class))).thenReturn(returnedDto);
@@ -101,14 +98,12 @@ class SingerServiceImplTest {
 
     @Test
     void update() {
-        SingerEntity validate = mock(SingerEntity.class);
         SingerEntity mapped = mock(SingerEntity.class);
         SingerEntity saved = mock(SingerEntity.class);
 
         SingerDto startDto = mock(SingerDto.class);
         SingerDto returnedDto = mock(SingerDto.class);
 
-        when(singerRepository.findByName(anyString())).thenReturn(Optional.of(validate));
         when(singerMapper.mapEntityFromDto(any(SingerDto.class))).thenReturn(mapped);
         when(singerRepository.save(any(SingerEntity.class))).thenReturn(saved);
         when(singerMapper.mapDtoFromEntity(any(SingerEntity.class))).thenReturn(returnedDto);

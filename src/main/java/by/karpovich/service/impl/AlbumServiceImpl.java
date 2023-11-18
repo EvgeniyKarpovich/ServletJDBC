@@ -14,8 +14,8 @@ import java.util.Optional;
 public class AlbumServiceImpl implements AlbumService {
 
     private static final AlbumServiceImpl INSTANCE = new AlbumServiceImpl();
-    private final AlbumRepositoryImpl albumRepository = AlbumRepositoryImpl.getInstance();
-    private final AlbumMapper albumMapper = new AlbumMapper();
+    private AlbumRepositoryImpl albumRepository = AlbumRepositoryImpl.getInstance();
+    private AlbumMapper albumMapper = new AlbumMapper();
 
     private AlbumServiceImpl() {
     }

@@ -9,16 +9,15 @@ import java.sql.SQLException;
 
 public class AlbumResultSetMapperImpl implements AlbumResultSetMapper {
 
+    private SingerResultSetMapperImpl singerResultSetMapper = new SingerResultSetMapperImpl();
+
     @Override
     public AlbumEntity mapAlbumWithSinger(ResultSet resultSet) throws SQLException {
-        SingerEntity singerEntity = new SingerEntity(
-                resultSet.getLong("id"),
-                resultSet.getString("surname")
-        );
         return new AlbumEntity(
-                resultSet.getLong("id"),
-                resultSet.getString("album_name"),
-                singerEntity);
+                resultSet.getLong("al_id"),
+                resultSet.getString("al_name"),
+                singerResultSetMapper.mapSinger(resultSet)
+                );
     }
 
     public AlbumEntity mapAlbum(ResultSet resultSet) throws SQLException {

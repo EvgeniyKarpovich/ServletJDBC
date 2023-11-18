@@ -21,10 +21,10 @@ public class AlbumSql {
 
     public static final String FIND_ALL_SQL = """
             SELECT
-            albums.id,
-            albums.album_name,
-            singers.id,
-            singers.surname
+            albums.id al_id,
+            albums.album_name al_name,
+            singers.id s_id,
+            singers.surname s_surname
             FROM albums
             JOIN singers
                 ON albums.singer_id = singers.id

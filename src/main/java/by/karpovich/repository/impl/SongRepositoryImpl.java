@@ -106,6 +106,7 @@ public class SongRepositoryImpl implements SongRepository {
 
             ResultSet resultSet = preparedStatement.executeQuery();
             List<SongEntity> result = new ArrayList<>();
+
             while (resultSet.next()) {
                 result.add(songResultSetMapper.mapSongWithAlbumAndSinger(resultSet));
             }

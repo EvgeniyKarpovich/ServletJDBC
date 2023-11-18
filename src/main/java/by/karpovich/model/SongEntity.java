@@ -108,7 +108,7 @@ public class SongEntity {
     public String toString() {
         return "SongEntity{" +
                 "id=" + id +
-                ", surname='" + name + '\'' +
+                ", name='" + name + '\'' +
                 ", singer=" + singer +
                 ", album=" + album +
                 ", authors=" + authors +
