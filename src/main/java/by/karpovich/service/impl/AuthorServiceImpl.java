@@ -3,12 +3,10 @@ package by.karpovich.service.impl;
 import by.karpovich.exception.DuplicateException;
 import by.karpovich.exception.NotFoundEntityException;
 import by.karpovich.model.AuthorEntity;
-import by.karpovich.model.SongEntity;
 import by.karpovich.repository.impl.AuthorRepositoryImpl;
 import by.karpovich.service.AuthorService;
 import by.karpovich.servlet.dto.AuthorDto;
-import by.karpovich.servlet.dto.AuthorFullDtoOut;
-import by.karpovich.servlet.dto.SongDto;
+import by.karpovich.servlet.dto.AuthorDtoOut;
 import by.karpovich.servlet.mapper.AuthorMapper;
 
 import java.util.List;
@@ -35,7 +33,7 @@ public class AuthorServiceImpl implements AuthorService {
         return authorMapper.mapDtoFromEntity(authorEntity);
     }
 
-    public AuthorFullDtoOut findByIdFullDtoOut(Long id) {
+    public AuthorDtoOut findByIdFullDtoOut(Long id) {
         AuthorEntity authorEntity = authorRepository.findById(id).orElseThrow(
                 () -> new NotFoundEntityException(String.format("Author with id = %s not found", id)));
 

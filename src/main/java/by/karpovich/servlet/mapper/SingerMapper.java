@@ -3,7 +3,7 @@ package by.karpovich.servlet.mapper;
 import by.karpovich.model.AlbumEntity;
 import by.karpovich.model.SingerEntity;
 import by.karpovich.servlet.dto.SingerDto;
-import by.karpovich.servlet.dto.SingerFullDtoOut;
+import by.karpovich.servlet.dto.SingerDtoOut;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,9 +17,9 @@ public class SingerMapper {
                 .orElse(null);
     }
 
-    public SingerFullDtoOut mapFullDtoOutFromEntity(SingerEntity entity) {
+    public SingerDtoOut mapFullDtoOutFromEntity(SingerEntity entity) {
         return Optional.ofNullable(entity)
-                .map(singerEntity -> new SingerFullDtoOut(
+                .map(singerEntity -> new SingerDtoOut(
                         singerEntity.getId(),
                         singerEntity.getSurname(),
                         singerEntity.getAlbums().stream().map(AlbumEntity::getAlbumName).collect(Collectors.toList())))

@@ -3,8 +3,8 @@ package by.karpovich.sql;
 public class AlbumSql {
 
     public static final String SAVE_SQL = """
-            INSERT INTO albums(album_name, singer_id)  
-            VALUES (?,?)     
+            INSERT INTO albums(album_name, singer_id)
+            VALUES (?,?)
             """;
 
     public static final String DELETE_SQL = """
@@ -35,10 +35,10 @@ public class AlbumSql {
             """;
     public static final String FIND_BY_NAME_AND_SINGER_ID_SQL = """
             SELECT
-            id,
-            album_name
+            albums.id al_id,
+            albums.album_name al_name
             FROM albums
-            WHERE name = ?
+            WHERE album_name = ?
             AND singer_id = ?
             """;
 

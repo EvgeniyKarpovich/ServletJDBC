@@ -6,7 +6,7 @@ import by.karpovich.model.SongEntity;
 import by.karpovich.repository.impl.SongRepositoryImpl;
 import by.karpovich.service.SongService;
 import by.karpovich.servlet.dto.SongDto;
-import by.karpovich.servlet.dto.SongFullDtoOut;
+import by.karpovich.servlet.dto.SongDtoOut;
 import by.karpovich.servlet.mapper.SongMapper;
 
 import java.util.List;
@@ -34,7 +34,7 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public SongFullDtoOut findByIdFullDtoOut(Long id) {
+    public SongDtoOut findByIdFullDtoOut(Long id) {
         SongEntity songEntity = songRepository.findById(id).orElseThrow(
                 () -> new NotFoundEntityException(String.format("Song with id = %s not found", id)));
 

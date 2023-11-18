@@ -1,8 +1,5 @@
 package by.karpovich;
 
-import by.karpovich.model.AuthorEntity;
-import by.karpovich.model.SingerEntity;
-import by.karpovich.model.SongEntity;
 import by.karpovich.repository.impl.AlbumRepositoryImpl;
 import by.karpovich.repository.impl.AuthorRepositoryImpl;
 import by.karpovich.repository.impl.SingerRepositoryImpl;
@@ -15,7 +12,6 @@ import by.karpovich.servlet.dto.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class ServletJDBCApplication {
 
@@ -45,7 +41,10 @@ public class ServletJDBCApplication {
 
         SongDto songDto = new SongDto("3213123121", 1L, 1L, authors);
 
-        Optional<SongEntity> byNameAndSingerId = songRepository.findByNameAndSingerId("32131", 1L);
-        System.out.println(byNameAndSingerId.get());
+        SingerDtoOut byIdReturnFullDto = singerService.findByIdReturnFullDto(1L);
+        System.out.println(byIdReturnFullDto);
+
+        List<AuthorDto> all = authorService.findAll();
+        System.out.println(all);
     }
 }

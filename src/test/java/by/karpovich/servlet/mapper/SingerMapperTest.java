@@ -3,7 +3,7 @@ package by.karpovich.servlet.mapper;
 import by.karpovich.model.AlbumEntity;
 import by.karpovich.model.SingerEntity;
 import by.karpovich.servlet.dto.SingerDto;
-import by.karpovich.servlet.dto.SingerFullDtoOut;
+import by.karpovich.servlet.dto.SingerDtoOut;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -38,7 +38,7 @@ class SingerMapperTest {
         SingerEntity singerEntity = generateSingerEntity();
         singerEntity.setAlbums(Arrays.asList(generateAlbumEntity()));
 
-        SingerFullDtoOut mappedDto = singerMapper.mapFullDtoOutFromEntity(singerEntity);
+        SingerDtoOut mappedDto = singerMapper.mapFullDtoOutFromEntity(singerEntity);
 
         assertEquals(generateSingerEntity().getId(), mappedDto.id());
         assertEquals(generateSingerEntity().getSurname(), mappedDto.surname());
@@ -81,5 +81,4 @@ class SingerMapperTest {
     private SingerDto generateSingerDto() {
         return new SingerDto(SINGER_NAME);
     }
-
 }

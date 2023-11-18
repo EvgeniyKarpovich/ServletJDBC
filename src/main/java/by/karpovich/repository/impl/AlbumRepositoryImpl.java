@@ -18,7 +18,7 @@ import java.util.Optional;
 public class AlbumRepositoryImpl implements AlbumRepository {
 
     private static final AlbumRepositoryImpl INSTANCE = new AlbumRepositoryImpl();
-    private final AlbumResultSetMapperImpl resultSetMapper = new AlbumResultSetMapperImpl();
+    private final AlbumResultSetMapperImpl albumResultSetMapper = new AlbumResultSetMapperImpl();
 
     private AlbumRepositoryImpl() {
     }
@@ -38,7 +38,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
             AlbumEntity albumEntity = null;
 
             if (resultSet.next()) {
-                albumEntity = resultSetMapper.mapAlbumWithSinger(resultSet);
+                albumEntity = albumResultSetMapper.mapAlbumWithSinger(resultSet);
             }
             return Optional.ofNullable(albumEntity);
         } catch (SQLException e) {
@@ -58,7 +58,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
             AlbumEntity albumEntity = null;
 
             if (resultSet.next()) {
-                albumEntity = resultSetMapper.mapAlbumName(resultSet);
+                albumEntity = albumResultSetMapper.mapAlbum(resultSet);
             }
             return Optional.ofNullable(albumEntity);
         } catch (SQLException e) {
@@ -76,7 +76,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
             List<AlbumEntity> result = new ArrayList<>();
 
             while (resultSet.next()) {
-                result.add(resultSetMapper.mapAlbumWithSinger(resultSet));
+                result.add(albumResultSetMapper.mapAlbumWithSinger(resultSet));
             }
             return result;
         } catch (SQLException e) {

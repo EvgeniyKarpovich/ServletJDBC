@@ -6,7 +6,7 @@ import by.karpovich.model.SingerEntity;
 import by.karpovich.repository.impl.SingerRepositoryImpl;
 import by.karpovich.service.SingerService;
 import by.karpovich.servlet.dto.SingerDto;
-import by.karpovich.servlet.dto.SingerFullDtoOut;
+import by.karpovich.servlet.dto.SingerDtoOut;
 import by.karpovich.servlet.mapper.SingerMapper;
 
 import java.util.List;
@@ -15,8 +15,8 @@ import java.util.Optional;
 public class SingerServiceImpl implements SingerService {
 
     private static final SingerServiceImpl INSTANCE = new SingerServiceImpl();
-    private final SingerRepositoryImpl singerRepository = SingerRepositoryImpl.getInstance();
-    private final SingerMapper singerMapper = new SingerMapper();
+    private SingerRepositoryImpl singerRepository = SingerRepositoryImpl.getInstance();
+    private SingerMapper singerMapper = new SingerMapper();
 
     private SingerServiceImpl() {
     }
@@ -32,7 +32,7 @@ public class SingerServiceImpl implements SingerService {
         return singerMapper.mapDtoFromEntity(singerEntity);
     }
 
-    public SingerFullDtoOut findByIdReturnFullDto(Long id) {
+    public SingerDtoOut findByIdReturnFullDto(Long id) {
         SingerEntity singerEntity = singerRepository.findById(id).orElseThrow(
                 () -> new NotFoundEntityException(String.format("Singer with id = %s not found", id)));
         return singerMapper.mapFullDtoOutFromEntity(singerEntity);

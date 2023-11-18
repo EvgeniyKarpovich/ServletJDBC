@@ -4,7 +4,7 @@ import by.karpovich.model.AuthorEntity;
 import by.karpovich.model.SongEntity;
 import by.karpovich.repository.impl.SongRepositoryImpl;
 import by.karpovich.servlet.dto.AuthorDto;
-import by.karpovich.servlet.dto.AuthorFullDtoOut;
+import by.karpovich.servlet.dto.AuthorDtoOut;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,10 +12,9 @@ import java.util.Optional;
 import static java.util.stream.Collectors.toList;
 
 public class AuthorMapper {
-    private final SongRepositoryImpl songRepository = SongRepositoryImpl.getInstance();
+    private SongRepositoryImpl songRepository = SongRepositoryImpl.getInstance();
 
     public AuthorEntity mapEntityFromDto(AuthorDto dto) {
-
         return Optional.ofNullable(dto)
                 .map(authorDto -> new AuthorEntity(
                         authorDto.name()/*,
@@ -26,19 +25,16 @@ public class AuthorMapper {
     public AuthorDto mapDtoFromEntity(AuthorEntity entity) {
         return Optional.ofNullable(entity)
                 .map(authorEntity ->
-                        new AuthorDto(
-                                authorEntity.getAuthorName()
-                        ))
+                        new AuthorDto(authorEntity.getAuthorName()))
                 .orElse(null);
     }
 
-    public AuthorFullDtoOut mapFullDtoFromEntity(AuthorEntity entity) {
+    public AuthorDtoOut mapFullDtoFromEntity(AuthorEntity entity) {
         return Optional.ofNullable(entity)
                 .map(authorEntity ->
-                        new AuthorFullDtoOut(
+                        new AuthorDtoOut(
                                 authorEntity.getAuthorName(),
-                                songRepository.findByAuthorId(authorEntity.getId()).stream().map(SongEntity::getName).collect(toList())
-                        ))
+                                songsNameByAuthorId(authorEntity.getId())))
                 .orElse(null);
     }
 
@@ -48,6 +44,10 @@ public class AuthorMapper {
                         .map(this::mapDtoFromEntity)
                         .collect(toList()))
                 .orElse(null);
+    }
 
+    private List<String> songsNameByAuthorId(Long authorId) {
+        return songRepository.findByAuthorId(authorId).stream()
+                .map(SongEntity::getName).collect(toList());
     }
 }

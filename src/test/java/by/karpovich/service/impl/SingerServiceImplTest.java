@@ -3,7 +3,9 @@ package by.karpovich.service.impl;
 import by.karpovich.model.SingerEntity;
 import by.karpovich.repository.impl.SingerRepositoryImpl;
 import by.karpovich.servlet.dto.SingerDto;
+import by.karpovich.servlet.dto.SingerDtoOut;
 import by.karpovich.servlet.mapper.SingerMapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,12 +14,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -28,18 +29,17 @@ class SingerServiceImplTest {
     @Mock
     private SingerRepositoryImpl singerRepository;
     @Mock
-    private SingerEntity singerEntityMock;
-    @Mock SingerDto singerDtoMock;
-    @Mock
     private SingerMapper singerMapper;
     @InjectMocks
     private SingerServiceImpl singerService;
 
-
     @Test
     void findById() {
-        when(singerRepository.findById(ID)).thenReturn(Optional.of(singerEntityMock));
-        when(singerMapper.mapDtoFromEntity(singerEntityMock)).thenReturn(singerDtoMock);
+        SingerEntity entity = mock(SingerEntity.class);
+        SingerDto dto = mock(SingerDto.class);
+
+        when(singerRepository.findById(anyLong())).thenReturn(Optional.of(entity));
+        when(singerMapper.mapDtoFromEntity(any(SingerEntity.class))).thenReturn(dto);
 
         SingerDto foundSinger = singerService.findById(ID);
         assertNotNull(foundSinger);
@@ -47,64 +47,84 @@ class SingerServiceImplTest {
 
     @Test
     void findByIdReturnFullDto() {
-//        SingerFullDtoOut singerDto = new SingerDto();
-//        SingerEntity singerEntity = new SingerEntity();
-//
-//        when(singerRepository.findById(anyLong())).thenReturn(Optional.of(singerEntity));
-//        when(singerMapper.mapFullDtoOutFromEntity(any(SingerEntity.class))).thenReturn(singerDto);
-//
-//        SingerDto result = singerService.findById(14L);
-//
-//        assertEquals(result, singerDto);
+        SingerEntity entity = mock(SingerEntity.class);
+        SingerDtoOut dto = mock(SingerDtoOut.class);
+
+        when(singerRepository.findById(anyLong())).thenReturn(Optional.of(entity));
+        when(singerMapper.mapFullDtoOutFromEntity(any(SingerEntity.class))).thenReturn(dto);
+
+        SingerDtoOut result = singerService.findByIdReturnFullDto(ID);
+
+        assertEquals(result, dto);
     }
 
     @Test
     void findAll() {
-        when(singerRepository.findAll()).thenReturn(Arrays.asList(singerEntityMock));
-        when(singerMapper.mapListDtoFromListEntity(Arrays.asList(singerEntityMock))).thenReturn(Arrays.asList(singerDtoMock));
+        List<SingerEntity> entities = new ArrayList<>();
+        List<SingerDto> dtos = new ArrayList<>();
 
-        // Act
-        List<SingerDto> singers = singerService.findAll();
+        when(singerRepository.findAll()).thenReturn(entities);
+        when(singerMapper.mapListDtoFromListEntity(anyList())).thenReturn(dtos);
 
-        // Assert
-        assertEquals(1, singers.size());
+        List<SingerDto> result = singerService.findAll();
+
+        assertArrayEquals(result.toArray(), dtos.toArray());
     }
 
     @Test
     void deleteById() {
-        when(singerRepository.findById(ID)).thenReturn(Optional.of(singerEntityMock));
+        SingerEntity entity = mock(SingerEntity.class);
 
-        singerService.deleteById(1L);
+        when(singerRepository.findById(anyLong())).thenReturn(Optional.of(entity));
+
+        singerService.deleteById(ID);
     }
 
-    //решить проблему с верифай(КОННЕКТИОН. констрейнт на уникальность)
     @Test
     void save() {
-        SingerDto singerDto = new SingerDto("123124");
-        SingerEntity singerEntity = new SingerEntity();
+        SingerEntity validate = mock(SingerEntity.class);
+        SingerEntity mapped = mock(SingerEntity.class);
+        SingerEntity saved = mock(SingerEntity.class);
 
-        when(singerMapper.mapEntityFromDto(any(SingerDto.class))).thenReturn(singerEntity);
-        when(singerRepository.save(any(SingerEntity.class))).thenReturn(singerEntity);
-        when(singerMapper.mapDtoFromEntity(any(SingerEntity.class))).thenReturn(singerDto);
+        SingerDto startDto = mock(SingerDto.class);
+        SingerDto returnedDto = mock(SingerDto.class);
 
-        SingerDto savedSingerDto = singerService.save(singerDto);
+        when(singerRepository.findByName(anyString())).thenReturn(Optional.of(validate));
+        when(singerMapper.mapEntityFromDto(any(SingerDto.class))).thenReturn(mapped);
+        when(singerRepository.save(any(SingerEntity.class))).thenReturn(saved);
+        when(singerMapper.mapDtoFromEntity(any(SingerEntity.class))).thenReturn(returnedDto);
 
-        assertEquals(singerDto, savedSingerDto);
+        SingerDto result = singerService.save(startDto);
+
+        assertEquals(result, returnedDto);
     }
 
     @Test
     void update() {
-        SingerDto singerDto = new SingerDto("KKK12");
+        SingerEntity validate = mock(SingerEntity.class);
+        SingerEntity mapped = mock(SingerEntity.class);
+        SingerEntity saved = mock(SingerEntity.class);
 
-        singerService.update(singerDto, ID);
+        SingerDto startDto = mock(SingerDto.class);
+        SingerDto returnedDto = mock(SingerDto.class);
+
+        when(singerRepository.findByName(anyString())).thenReturn(Optional.of(validate));
+        when(singerMapper.mapEntityFromDto(any(SingerDto.class))).thenReturn(mapped);
+        when(singerRepository.save(any(SingerEntity.class))).thenReturn(saved);
+        when(singerMapper.mapDtoFromEntity(any(SingerEntity.class))).thenReturn(returnedDto);
+
+        SingerDto result = singerService.save(startDto);
+
+        assertEquals(result, returnedDto);
     }
 
     @Test
     void findSingerByIdWhichWillReturnModel() {
-        when(singerEntityMock.getId()).thenReturn(ID);
-        when(singerRepository.findById(ID)).thenReturn(Optional.of(singerEntityMock));
+        SingerEntity singerEntity = mock(SingerEntity.class);
 
-        SingerEntity foundSinger = singerService.findSingerByIdWhichWillReturnModel(ID);
-        assertEquals(ID, foundSinger.getId());
+        when(singerRepository.findById(anyLong())).thenReturn(Optional.of(singerEntity));
+
+        SingerEntity result = singerService.findSingerByIdWhichWillReturnModel(ID);
+        assertEquals(result, singerEntity);
     }
 }
