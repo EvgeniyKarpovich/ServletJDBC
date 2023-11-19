@@ -11,10 +11,7 @@ import by.karpovich.repository.mapper.impl.SingerResultSetMapperImpl;
 import by.karpovich.repository.mapper.impl.SongResultSetMapperImpl;
 import by.karpovich.sql.SongSql;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -50,7 +47,7 @@ public class SongRepositoryImpl implements SongRepository {
                     songEntity.setAlbum(albumResultSetMapper.mapAlbum(resultSet));
                     songEntity.setSinger(singerResultSetMapper.mapSinger(resultSet));
                 }
-                Long auId = resultSet.getLong("au_id");
+                long auId = resultSet.getLong("au_id");
                 if (auId != 0) {
                     AuthorEntity authorEntity = authorResultSetMapper.mapAuthor(resultSet);
                     authors.add(authorEntity);
@@ -142,36 +139,67 @@ public class SongRepositoryImpl implements SongRepository {
 
     @Override
     public SongEntity save(SongEntity songEntity) {
-        try (var connection = ConnectionManagerImpl.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SongSql.SAVE_SQL, Statement.RETURN_GENERATED_KEYS);
-             PreparedStatement songAuthorStatement = connection.prepareStatement(SongSql.INSERT_SONG_AUTHOR_SQL)) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        PreparedStatement songAuthorStatement = null;
 
+        try {
+            connection = ConnectionManagerImpl.getConnection();
             connection.setAutoCommit(false);
 
+            preparedStatement = connection.prepareStatement(SongSql.SAVE_SQL, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, songEntity.getName());
             preparedStatement.setLong(2, songEntity.getSinger().getId());
             preparedStatement.setLong(3, songEntity.getAlbum().getId());
             preparedStatement.executeUpdate();
 
-            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+            resultSet = preparedStatement.getGeneratedKeys();
 
             if (resultSet.next()) {
                 songEntity.setId(resultSet.getLong("id"));
             }
 
+            songAuthorStatement = connection.prepareStatement(SongSql.INSERT_SONG_AUTHOR_SQL);
             for (AuthorEntity author : songEntity.getAuthors()) {
                 songAuthorStatement.setLong(1, songEntity.getId());
                 songAuthorStatement.setLong(2, author.getId());
                 songAuthorStatement.addBatch();
             }
-            songAuthorStatement.executeBatch();
-            connection.commit();
 
-            return songEntity;
+            songAuthorStatement.executeBatch();
+
+            connection.commit();
         } catch (SQLException e) {
-            throw new DaoException("Error during the execution of save");
+            try {
+                if (connection != null) {
+                    connection.rollback();
+                }
+            } catch (SQLException ex) {
+                throw new DaoException("Error during the execution of save");
+            }
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if (songAuthorStatement != null) {
+                    songAuthorStatement.close();
+                }
+                if (connection != null) {
+                    connection.setAutoCommit(true);
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                throw new DaoException("Error during the execution of save");
+            }
         }
+        return songEntity;
     }
+
 
     @Override
     public void update(SongEntity songEntity) {

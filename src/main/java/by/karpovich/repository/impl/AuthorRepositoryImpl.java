@@ -19,7 +19,7 @@ import java.util.Optional;
 
 public class AuthorRepositoryImpl implements AuthorRepository {
 
-    private static final AuthorRepositoryImpl INSTANCE = new AuthorRepositoryImpl();
+    private static AuthorRepositoryImpl INSTANCE = new AuthorRepositoryImpl();
     private final AuthorResultSetMapperImpl authorResultSetMapper = new AuthorResultSetMapperImpl();
     private final SongResultSetMapperImpl songResultSetMapper = new SongResultSetMapperImpl();
 
