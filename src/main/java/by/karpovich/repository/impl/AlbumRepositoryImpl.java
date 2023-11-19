@@ -17,10 +17,10 @@ import java.util.Optional;
 
 public class AlbumRepositoryImpl implements AlbumRepository {
 
-    private static final AlbumRepositoryImpl INSTANCE = new AlbumRepositoryImpl();
-    private final AlbumResultSetMapperImpl albumResultSetMapper = new AlbumResultSetMapperImpl();
+    private static AlbumRepositoryImpl INSTANCE = new AlbumRepositoryImpl();
+    private  AlbumResultSetMapperImpl albumResultSetMapper = new AlbumResultSetMapperImpl();
 
-    private AlbumRepositoryImpl() {
+    public AlbumRepositoryImpl() {
     }
 
     public static AlbumRepositoryImpl getInstance() {

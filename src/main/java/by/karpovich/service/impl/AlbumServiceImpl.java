@@ -63,7 +63,7 @@ public class AlbumServiceImpl implements AlbumService {
         albumRepository.update(albumEntity);
     }
 
-    public AlbumEntity findSingerByIdWhichWillReturnModel(Long id) {
+    public AlbumEntity findAlbumByIdWhichWillReturnModel(Long id) {
         return albumRepository.findById(id).orElseThrow(
                 () -> new NotFoundEntityException(String.format("Album with id = %s not found", id)));
     }

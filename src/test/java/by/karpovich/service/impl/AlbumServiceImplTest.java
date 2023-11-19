@@ -20,7 +20,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-//@MockitoSettings(strictness = Strictness.WARN)
 class AlbumServiceImplTest {
 
     private static final Long ID = 1L;
@@ -105,7 +104,7 @@ class AlbumServiceImplTest {
 
         when(albumRepository.findById(anyLong())).thenReturn(Optional.of(AlbumEntity));
 
-        AlbumEntity result = albumService.findSingerByIdWhichWillReturnModel(ID);
+        AlbumEntity result = albumService.findAlbumByIdWhichWillReturnModel(ID);
         assertEquals(result, AlbumEntity);
     }
 }

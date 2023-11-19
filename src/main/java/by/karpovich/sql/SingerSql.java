@@ -37,7 +37,8 @@ public class SingerSql {
             """;
 
     public static final String FIND_BY_NAME_SQL = """
-            SELECT id,
+            SELECT
+            id,
             surname
             FROM singers
             WHERE surname = ?

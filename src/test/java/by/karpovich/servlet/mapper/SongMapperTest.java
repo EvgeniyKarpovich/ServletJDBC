@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,7 +30,7 @@ import static org.mockito.Mockito.when;
 class SongMapperTest {
 
     private static final Long ID = 1L;
-    private static final  String SONG_NAME = "SongTestName";
+    private static final String SONG_NAME = "SongTestName";
     private static final SingerEntity SINGER = new SingerEntity(1L, "SingerTestName");
     private static final AlbumEntity ALBUM = new AlbumEntity(1L, "AlbumTestName");
     private static final AuthorEntity AUTHOR = new AuthorEntity(1L, "AuthorName");
@@ -48,7 +47,7 @@ class SongMapperTest {
     @Test
     void mapEntityFromDto() {
         when(singerService.findSingerByIdWhichWillReturnModel(SINGER.getId())).thenReturn(SINGER);
-        when(albumService.findSingerByIdWhichWillReturnModel(ALBUM.getId())).thenReturn(ALBUM);
+        when(albumService.findAlbumByIdWhichWillReturnModel(ALBUM.getId())).thenReturn(ALBUM);
         when(authorRepository.findById(AUTHOR.getId())).thenReturn(Optional.of(AUTHOR));
 
         SongEntity result = songMapper.mapEntityFromDto(generateAuthorDto());
@@ -60,7 +59,7 @@ class SongMapperTest {
         assertEquals(Arrays.asList(AUTHOR), result.getAuthors());
 
         verify(singerService).findSingerByIdWhichWillReturnModel(SINGER.getId());
-        verify(albumService).findSingerByIdWhichWillReturnModel(ALBUM.getId());
+        verify(albumService).findAlbumByIdWhichWillReturnModel(ALBUM.getId());
         verify(authorRepository).findById(AUTHOR.getId());
     }
 

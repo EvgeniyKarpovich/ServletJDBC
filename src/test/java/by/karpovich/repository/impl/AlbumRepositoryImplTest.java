@@ -8,6 +8,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.sql.DriverManager;
@@ -15,12 +16,16 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Testcontainers
 class AlbumRepositoryImplTest {
 
-    private AlbumRepositoryImpl albumRepository = AlbumRepositoryImpl.getInstance();
-
+    private final AlbumRepositoryImpl albumRepository = new AlbumRepositoryImpl();
+    @Container
     public static final PostgreSQLContainer<?> container =
             new PostgreSQLContainer<>("postgres:16")
                     .withDatabaseName("postgres")
@@ -50,12 +55,12 @@ class AlbumRepositoryImplTest {
 
     @Test
     void findAll() {
-        SingerEntity singerEntity = new SingerEntity(1L, "TEST SINGER");
-        albumRepository.save(new AlbumEntity("TEST ALBUM ONE", singerEntity));
+        SingerEntity singerEntity = new SingerEntity(1L, "TEST2 SINGER");
+        albumRepository.save(new AlbumEntity("TEST13333fr9gf3j67333 ALBUM ONE", singerEntity));
 //        albumRepository.save(new AlbumEntity("TEST ALBUM TWO"));
 
-        List<AlbumEntity> customers = albumRepository.findAll();
-        assertEquals(1, customers.size());
+        List<AlbumEntity> result = albumRepository.findAll();
+        assertEquals(1, result.size());
     }
 
     @Test
