@@ -1,7 +1,5 @@
 package by.karpovich.repository.mapper.impl;
 
-import by.karpovich.model.AlbumEntity;
-import by.karpovich.model.SingerEntity;
 import by.karpovich.model.SongEntity;
 import by.karpovich.repository.mapper.SongResultSetMapper;
 
@@ -10,24 +8,19 @@ import java.sql.SQLException;
 
 public class SongResultSetMapperImpl implements SongResultSetMapper {
 
+    private AlbumResultSetMapperImpl albumResultSetMapper = new AlbumResultSetMapperImpl();
+    private SingerResultSetMapperImpl singerResultSetMapper = new SingerResultSetMapperImpl();
+
     @Override
     public SongEntity mapSongWithAlbumAndSinger(ResultSet resultSet) throws SQLException {
-        SingerEntity singerEntity = new SingerEntity(
-                resultSet.getLong("sr_id"),
-                resultSet.getString("sr_surname")
-        );
-        AlbumEntity albumEntity = new AlbumEntity(
-                resultSet.getLong("al_id"),
-                resultSet.getString("al_name")
-        );
         return new SongEntity(
                 resultSet.getLong("song_id"),
                 resultSet.getString("song_name"),
-                singerEntity,
-                albumEntity
-        );
+                singerResultSetMapper.mapSinger(resultSet),
+                albumResultSetMapper.mapAlbum(resultSet));
     }
 
+    @Override
     public SongEntity mapSong(ResultSet resultSet) throws SQLException {
         return new SongEntity(
                 resultSet.getLong("song_id"),

@@ -71,6 +71,7 @@ public class SingerServiceImpl implements SingerService {
         singerRepository.update(singerEntity);
     }
 
+    @Override
     public SingerEntity findSingerByIdWhichWillReturnModel(Long id) {
         return singerRepository.findById(id).orElseThrow(
                 () -> new NotFoundEntityException(String.format("Singer with id = %s not found", id)));

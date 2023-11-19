@@ -2,6 +2,7 @@ package by.karpovich.servlet.mapper;
 
 import by.karpovich.model.AlbumEntity;
 import by.karpovich.model.SingerEntity;
+import by.karpovich.model.SongEntity;
 import by.karpovich.service.impl.SingerServiceImpl;
 import by.karpovich.servlet.dto.AlbumDto;
 import org.junit.jupiter.api.Test;
@@ -14,13 +15,17 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AlbumMapperTest {
 
     private static final Long ID = 1L;
-    private final static String ALBUM_NAME = "TestName";
+    private static final String ALBUM_NAME = "AlbumTestName";
+    private static final SingerEntity SINGER = new SingerEntity(1L, "SingerTestName");
+
+
     @Mock
     private SingerServiceImpl singerService;
     @InjectMocks
@@ -28,46 +33,45 @@ class AlbumMapperTest {
 
     @Test
     void mapEntityFromDto() {
-        AlbumDto albumDto = new AlbumDto(ALBUM_NAME, ID);
+        when(singerService.findSingerByIdWhichWillReturnModel(ID)).thenReturn(SINGER);
 
-        SingerEntity singerEntity = new SingerEntity();
-        singerEntity.setId(ID);
+        AlbumEntity result = albumMapper.mapEntityFromDto(generateAlbumDto());
 
-        when(singerService.findSingerByIdWhichWillReturnModel(ID)).thenReturn(singerEntity);
-
-        AlbumEntity mappedEntity = albumMapper.mapEntityFromDto(albumDto);
-
-        assertEquals(albumDto.name(), mappedEntity.getAlbumName());
-        assertEquals(albumDto.singerId(), mappedEntity.getSinger().getId());
+        assertNull(result.getId());
+        assertEquals(ALBUM_NAME, result.getAlbumName());
+        assertEquals(SINGER, result.getSinger());
     }
 
     @Test
     void mapDtoFromEntity() {
-        AlbumDto mappedDto = albumMapper.mapDtoFromEntity(generateAlbum());
+        AlbumDto result = albumMapper.mapDtoFromEntity(generateAlbumEntity());
 
-        assertEquals(generateAlbum().getAlbumName(), mappedDto.name());
-        assertEquals(generateAlbum().getSinger().getId(), mappedDto.singerId());
+        assertEquals(ALBUM_NAME, result.name());
+        assertEquals(SINGER.getId(), result.singerId());
     }
 
     @Test
     void mapListDtoFromListEntity() {
-        List<AlbumEntity> albumEntities = Arrays.asList(generateAlbum());
-        List<AlbumDto> mappedDtoList = albumMapper.mapListDtoFromListEntity(albumEntities);
+        List<AlbumEntity> albumEntities = Arrays.asList(generateAlbumEntity(), generateAlbumEntity());
 
-        for (int i = 0; i < mappedDtoList.size(); i++) {
-            assertEquals(albumEntities.get(i).getAlbumName(), mappedDtoList.get(i).name());
-            assertEquals(albumEntities.get(i).getSinger().getId(), mappedDtoList.get(i).singerId());
+        List<AlbumDto> result = albumMapper.mapListDtoFromListEntity(albumEntities);
+
+       for (AlbumDto dto : result) {
+            assertEquals(ALBUM_NAME, dto.name());
+            assertEquals(SINGER.getId(), dto.singerId());
         }
     }
 
-    private AlbumEntity generateAlbum() {
+    private AlbumEntity generateAlbumEntity() {
         return new AlbumEntity(
+                ID,
                 ALBUM_NAME,
-                generateSinger());
+                SINGER);
     }
 
-    private SingerEntity generateSinger() {
-        return new SingerEntity(
-                ID);
+    private AlbumDto generateAlbumDto() {
+        return new AlbumDto(ALBUM_NAME,
+                1L);
     }
+
 }

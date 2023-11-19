@@ -10,19 +10,26 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AuthorMapperTest {
 
     private static final Long ID = 1L;
-    private final static String AUTHOR_NAME = "AuthorTestName";
-    private final static String SONG_NAME = "SongTestName";
+    private static final String AUTHOR_NAME = "AuthorTestName";
+    private static final String SONG_NAME = "SongTestName";
+    private static final SongEntity SONG = new SongEntity(1L, "SongTestName");
+    private static final List<SongEntity> SONGS = Arrays.asList(SONG);
 
     @Mock
     private SongRepositoryImpl songRepository;
@@ -31,46 +38,39 @@ class AuthorMapperTest {
 
     @Test
     void mapEntityFromDto() {
-        AuthorDto authorDto = generateAuthorDto();
+        AuthorEntity result = authorMapper.mapEntityFromDto(generateAuthorDto());
 
-        AuthorEntity mappedEntity = authorMapper.mapEntityFromDto(authorDto);
-
-        assertEquals(authorDto.name(), mappedEntity.getAuthorName());
+        assertNull(result.getId());
+        assertEquals(AUTHOR_NAME, result.getAuthorName());
     }
 
     @Test
     void mapDtoFromEntity() {
-        AuthorEntity authorEntity = generateAuthorEntity();
+        AuthorDto result = authorMapper.mapDtoFromEntity(generateAuthorEntity());
 
-        AuthorDto authorDto = authorMapper.mapDtoFromEntity(authorEntity);
-
-        assertEquals(authorEntity.getAuthorName(), authorDto.name());
+        assertEquals(AUTHOR_NAME, result.name());
     }
 
     @Test
     void mapFullDtoFromEntity() {
-        AuthorEntity authorEntity = generateAuthorEntity();
+        when(songRepository.findByAuthorId(ID)).thenReturn(SONGS);
 
-        SongEntity songEntity = generateSongEntity();
+        AuthorDtoOut result = authorMapper.mapFullDtoFromEntity(generateAuthorEntity());
 
-        when(songRepository.findByAuthorId(ID)).thenReturn(Arrays.asList(songEntity));
-
-        AuthorDtoOut expectedDto = new AuthorDtoOut(AUTHOR_NAME, Arrays.asList(SONG_NAME));
-        AuthorDtoOut resultDto = authorMapper.mapFullDtoFromEntity(authorEntity);
-
-        assertEquals(expectedDto, resultDto);
+        assertEquals(AUTHOR_NAME, result.name());
+        assertEquals(SONGS.stream().map(SongEntity::getName).collect(toList()), result.songsName());
     }
 
     @Test
     void mapListDtoFromListEntity() {
-        AuthorEntity authorEntity = generateAuthorEntity();
+        List<AuthorEntity> authorEntities = Arrays.asList(generateAuthorEntity(), generateAuthorEntity());
+        List<AuthorDto> result = authorMapper.mapListDtoFromListEntity(authorEntities);
 
-        List<AuthorEntity> authorEntities = Arrays.asList(authorEntity);
+        assertEquals(2, result.size());
 
-        AuthorDto expectedDto = generateAuthorDto();
-        List<AuthorDto> expectedResult = Arrays.asList(expectedDto);
-
-        assertEquals(expectedResult, authorMapper.mapListDtoFromListEntity(authorEntities));
+        for (AuthorDto dto : result) {
+            assertEquals(AUTHOR_NAME, dto.name());
+        }
     }
 
     private AuthorDto generateAuthorDto() {
@@ -80,7 +80,8 @@ class AuthorMapperTest {
     private AuthorEntity generateAuthorEntity() {
         return new AuthorEntity(
                 ID,
-                AUTHOR_NAME);
+                AUTHOR_NAME,
+                SONGS);
     }
 
     private SongEntity generateSongEntity() {

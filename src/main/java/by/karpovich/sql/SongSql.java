@@ -32,8 +32,8 @@ public class SongSql {
             SELECT
             songs.id song_id,
             songs.name song_name,
-            singers.id sr_id,
-            singers.surname sr_surname,
+            singers.id s_id,
+            singers.surname s_surname,
             albums.id al_id,
             albums.album_name al_name,
             authors.id au_id,

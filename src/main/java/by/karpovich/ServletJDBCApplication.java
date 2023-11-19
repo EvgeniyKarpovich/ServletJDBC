@@ -32,5 +32,7 @@ public class ServletJDBCApplication {
 
         List<SongEntity> all = songRepository.findAll();
         System.out.println(all);
+        Optional<SongEntity> byId = songRepository.findById(1L);
+        System.out.println(byId.get());
     }
 }

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.verify;
@@ -30,7 +31,7 @@ import static org.mockito.Mockito.when;
 class SongMapperTest {
 
     private static final Long ID = 1L;
-    private final static String SONG_NAME = "SongTestName";
+    private static final  String SONG_NAME = "SongTestName";
     private static final SingerEntity SINGER = new SingerEntity(1L, "SingerTestName");
     private static final AlbumEntity ALBUM = new AlbumEntity(1L, "AlbumTestName");
     private static final AuthorEntity AUTHOR = new AuthorEntity(1L, "AuthorName");
@@ -50,7 +51,7 @@ class SongMapperTest {
         when(albumService.findSingerByIdWhichWillReturnModel(ALBUM.getId())).thenReturn(ALBUM);
         when(authorRepository.findById(AUTHOR.getId())).thenReturn(Optional.of(AUTHOR));
 
-        SongEntity result = songMapper.mapEntityFromDto(generateDto());
+        SongEntity result = songMapper.mapEntityFromDto(generateAuthorDto());
 
         assertNull(result.getId());
         assertEquals(SONG_NAME, result.getName());
@@ -73,7 +74,7 @@ class SongMapperTest {
         assertEquals(SINGER.getSurname(), result.singerName());
         assertEquals(ALBUM.getId(), result.albumId());
         assertEquals(ALBUM.getAlbumName(), result.albumName());
-        assertEquals(AUTHORS.stream().map(AuthorEntity::getAuthorName).collect(Collectors.toList()), result.authorsName());
+        assertEquals(AUTHORS.stream().map(AuthorEntity::getAuthorName).collect(toList()), result.authorsName());
     }
 
     @Test
@@ -83,7 +84,7 @@ class SongMapperTest {
         assertEquals(SONG_NAME, result.name());
         assertEquals(ALBUM.getId(), result.AlbumId());
         assertEquals(SINGER.getId(), result.singerId());
-        assertEquals(AUTHORS.stream().map(AuthorEntity::getId).collect(Collectors.toList()), result.authorsId());
+        assertEquals(AUTHORS.stream().map(AuthorEntity::getId).collect(toList()), result.authorsId());
     }
 
     @Test
@@ -98,11 +99,11 @@ class SongMapperTest {
             assertEquals(SONG_NAME, dto.name());
             assertEquals(ALBUM.getId(), dto.AlbumId());
             assertEquals(SINGER.getId(), dto.singerId());
-            assertEquals(AUTHORS.stream().map(AuthorEntity::getId).collect(Collectors.toList()), dto.authorsId());
+            assertEquals(AUTHORS.stream().map(AuthorEntity::getId).collect(toList()), dto.authorsId());
         }
     }
 
-    private SongDto generateDto() {
+    private SongDto generateAuthorDto() {
         List<Long> authorsId = new ArrayList<>();
         authorsId.add(AUTHOR.getId());
         return new SongDto(

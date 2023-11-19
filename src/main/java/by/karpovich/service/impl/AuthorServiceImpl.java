@@ -33,6 +33,7 @@ public class AuthorServiceImpl implements AuthorService {
         return authorMapper.mapDtoFromEntity(authorEntity);
     }
 
+    @Override
     public AuthorDtoOut findByIdFullDtoOut(Long id) {
         AuthorEntity authorEntity = authorRepository.findById(id).orElseThrow(
                 () -> new NotFoundEntityException(String.format("Author with id = %s not found", id)));

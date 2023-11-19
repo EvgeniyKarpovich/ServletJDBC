@@ -11,70 +11,65 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static java.util.stream.Collectors.toList;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class SingerMapperTest {
 
     private static final Long ID = 1L;
     private final static String SINGER_NAME = "SingerTestName";
-    private final static String ALBUM_NAME = "AlbumTestName";
+    private final static AlbumEntity ALBUM = new AlbumEntity(1L, "AlbumTestName");
+    private final static List<AlbumEntity> ALBUMS = Arrays.asList(ALBUM);
     @InjectMocks
     private SingerMapper singerMapper = new SingerMapper();
 
     @Test
     void mapEntityFromDto() {
-        SingerDto singerDto = generateSingerDto();
+        SingerEntity result = singerMapper.mapEntityFromDto(generateSingerDto());
 
-        SingerEntity mappedEntity = singerMapper.mapEntityFromDto(singerDto);
-
-        assertEquals(singerDto.surname(), mappedEntity.getSurname());
+        assertNull(result.getId());
+        assertEquals(SINGER_NAME, result.getSurname());
     }
 
     @Test
     void mapFullDtoOutFromEntity() {
-        SingerEntity singerEntity = generateSingerEntity();
-        singerEntity.setAlbums(Arrays.asList(generateAlbumEntity()));
+        SingerDtoOut result = singerMapper.mapFullDtoOutFromEntity(generateSingerEntity());
 
-        SingerDtoOut mappedDto = singerMapper.mapFullDtoOutFromEntity(singerEntity);
-
-        assertEquals(generateSingerEntity().getId(), mappedDto.id());
-        assertEquals(generateSingerEntity().getSurname(), mappedDto.surname());
-        assertTrue(mappedDto.albumsName().contains(generateAlbumEntity().getAlbumName()));
+        assertEquals(ID, result.id());
+        assertEquals(SINGER_NAME, result.surname());
+        assertEquals(ALBUMS.stream().map(AlbumEntity::getAlbumName).collect(toList()), result.albumsName());
     }
 
     @Test
     void mapDtoFromEntity() {
-        SingerEntity singerEntity = generateSingerEntity();
+        SingerDto result = singerMapper.mapDtoFromEntity(generateSingerEntity());
 
-        SingerDto mappedDto = singerMapper.mapDtoFromEntity(singerEntity);
-
-        assertEquals(singerEntity.getSurname(), mappedDto.surname());
+        assertEquals(SINGER_NAME, result.surname());
     }
 
     @Test
     void mapListDtoFromListEntity() {
         SingerEntity singerEntity = generateSingerEntity();
 
-        List<SingerEntity> singerEntities = Arrays.asList(singerEntity);
+        List<SingerEntity> singerEntities = Arrays.asList(generateSingerEntity(), generateSingerEntity());
 
-        List<SingerDto> mappedDtoList = singerMapper.mapListDtoFromListEntity(singerEntities);
+        List<SingerDto> result = singerMapper.mapListDtoFromListEntity(singerEntities);
 
-        for (int i = 0; i < mappedDtoList.size(); i++) {
-            assertEquals(singerEntities.get(i).getSurname(), mappedDtoList.get(i).surname());
+        assertEquals(2, result.size());
+
+        for (SingerDto dto : result){
+            assertEquals(SINGER_NAME, dto.surname());
         }
-    }
-
-    private AlbumEntity generateAlbumEntity() {
-        return new AlbumEntity(ALBUM_NAME);
     }
 
     private SingerEntity generateSingerEntity() {
         return new SingerEntity(
                 ID,
-                SINGER_NAME
+                SINGER_NAME,
+                ALBUMS
         );
     }
 
