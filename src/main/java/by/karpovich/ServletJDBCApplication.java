@@ -3,6 +3,7 @@ package by.karpovich;
 import by.karpovich.model.AlbumEntity;
 import by.karpovich.model.AuthorEntity;
 import by.karpovich.model.SingerEntity;
+import by.karpovich.model.SongEntity;
 import by.karpovich.repository.impl.AlbumRepositoryImpl;
 import by.karpovich.repository.impl.AuthorRepositoryImpl;
 import by.karpovich.repository.impl.SingerRepositoryImpl;
@@ -37,8 +38,7 @@ public class ServletJDBCApplication {
 
         SingerDto singerDto = new SingerDto("Gomonchuk");
 
-        Optional<SingerEntity> byId1 = singerRepository.findById(1L);
+        Optional<AlbumEntity> byId1 = albumRepository.findById(1L);
         System.out.println(byId1.get());
-
     }
 }

@@ -5,6 +5,7 @@ import by.karpovich.exception.DaoException;
 import by.karpovich.model.AlbumEntity;
 import by.karpovich.repository.AlbumRepository;
 import by.karpovich.repository.mapper.impl.AlbumResultSetMapperImpl;
+import by.karpovich.repository.mapper.impl.SingerResultSetMapperImpl;
 import by.karpovich.sql.AlbumSql;
 
 import java.sql.PreparedStatement;
@@ -18,7 +19,8 @@ import java.util.Optional;
 public class AlbumRepositoryImpl implements AlbumRepository {
 
     private static AlbumRepositoryImpl INSTANCE = new AlbumRepositoryImpl();
-    private  AlbumResultSetMapperImpl albumResultSetMapper = new AlbumResultSetMapperImpl();
+    private final AlbumResultSetMapperImpl albumResultSetMapper = new AlbumResultSetMapperImpl();
+    private final SingerResultSetMapperImpl singerResultSetMapper = new SingerResultSetMapperImpl();
 
     public AlbumRepositoryImpl() {
     }
@@ -38,11 +40,12 @@ public class AlbumRepositoryImpl implements AlbumRepository {
             AlbumEntity albumEntity = null;
 
             if (resultSet.next()) {
-                albumEntity = albumResultSetMapper.mapAlbumWithSinger(resultSet);
+                albumEntity = albumResultSetMapper.mapAlbum(resultSet);
+                albumEntity.setSinger(singerResultSetMapper.mapSinger(resultSet));
             }
             return Optional.ofNullable(albumEntity);
         } catch (SQLException e) {
-            throw new DaoException("IN FIND BY ID");
+            throw new DaoException("Error during the execution of findById");
         }
     }
 
@@ -62,7 +65,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
             }
             return Optional.ofNullable(albumEntity);
         } catch (SQLException e) {
-            throw new DaoException("IN findByNameAndSingerId");
+            throw new DaoException("Error during the execution of findByNameAndSingerId");
         }
     }
 
@@ -74,13 +77,16 @@ public class AlbumRepositoryImpl implements AlbumRepository {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             List<AlbumEntity> result = new ArrayList<>();
+            AlbumEntity albumEntity = null;
 
             while (resultSet.next()) {
-                result.add(albumResultSetMapper.mapAlbumWithSinger(resultSet));
+                albumEntity = albumResultSetMapper.mapAlbum(resultSet);
+                albumEntity.setSinger(singerResultSetMapper.mapSinger(resultSet));
+                result.add(albumEntity);
             }
             return result;
         } catch (SQLException e) {
-            throw new DaoException("IN FIND ALL");
+            throw new DaoException("Error during the execution of findAll");
         }
     }
 
@@ -93,7 +99,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 
             return preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
-            throw new DaoException("IN DELETE");
+            throw new DaoException("Error during the execution of deleteById");
         }
     }
 
@@ -114,7 +120,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 
             return albumEntity;
         } catch (SQLException e) {
-            throw new DaoException("IN REPOSITORY SAVE");
+            throw new DaoException("Error during the execution of save");
         }
     }
 
@@ -129,7 +135,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            throw new DaoException("IN UPDATE");
+            throw new DaoException("Error during the execution of update");
         }
     }
 }

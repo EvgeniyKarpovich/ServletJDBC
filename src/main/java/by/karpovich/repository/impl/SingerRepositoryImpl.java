@@ -58,7 +58,7 @@ public class SingerRepositoryImpl implements SingerRepository {
 
             return Optional.ofNullable(singerEntity);
         } catch (SQLException e) {
-            throw new DaoException("IN findById");
+            throw new DaoException("Error during the execution of findById");
         }
     }
 
@@ -77,7 +77,7 @@ public class SingerRepositoryImpl implements SingerRepository {
             }
             return Optional.ofNullable(singerEntity);
         } catch (SQLException e) {
-            throw new DaoException("IN findByName");
+            throw new DaoException("Error during the execution of findByName");
         }
     }
 
@@ -95,7 +95,7 @@ public class SingerRepositoryImpl implements SingerRepository {
             }
             return result;
         } catch (SQLException e) {
-            throw new DaoException("IN FIND ALL");
+            throw new DaoException("Error during the execution of findAll");
         }
     }
 
@@ -108,7 +108,7 @@ public class SingerRepositoryImpl implements SingerRepository {
 
             return preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
-            throw new DaoException("IN DELETE");
+            throw new DaoException("Error during the execution of delete");
         }
     }
 
@@ -127,7 +127,7 @@ public class SingerRepositoryImpl implements SingerRepository {
             }
             return singerEntity;
         } catch (SQLException e) {
-            throw new DaoException("IN SAVE");
+            throw new DaoException("Error during the execution of save");
         }
     }
 
@@ -141,7 +141,7 @@ public class SingerRepositoryImpl implements SingerRepository {
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            throw new DaoException("IN UPDATE");
+            throw new DaoException("Error during the execution of update");
         }
     }
 }

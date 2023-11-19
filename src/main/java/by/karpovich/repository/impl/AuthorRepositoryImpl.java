@@ -45,7 +45,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
 
             return Optional.ofNullable(authorEntity);
         } catch (SQLException e) {
-            throw new DaoException("IN findByAuthorName");
+            throw new DaoException("Error during the execution of findByAuthorName");
         }
     }
 
@@ -77,7 +77,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
 
             return Optional.ofNullable(authorEntity);
         } catch (SQLException e) {
-            throw new DaoException("IN findById");
+            throw new DaoException("Error during the execution of findById");
         }
     }
 
@@ -96,7 +96,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
 
             return authorEntities;
         } catch (SQLException e) {
-            throw new DaoException("IN findAll");
+            throw new DaoException("Error during the execution of findAll");
         }
     }
 
@@ -109,7 +109,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
 
             return preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
-            throw new DaoException("IN DELETE");
+            throw new DaoException("Error during the execution of delete");
         }
     }
 
@@ -128,7 +128,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
             }
             return authorEntity;
         } catch (SQLException e) {
-            throw new DaoException("IN SAVE");
+            throw new DaoException("Error during the execution of save");
         }
     }
 
@@ -146,7 +146,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
                 authorEntity.setId(resultSet.getLong("id"));
             }
         } catch (SQLException e) {
-            throw new DaoException("IN UPDATE");
+            throw new DaoException("Error during the execution of update");
         }
     }
 }
