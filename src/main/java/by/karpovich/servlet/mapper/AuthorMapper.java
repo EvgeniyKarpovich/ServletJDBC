@@ -29,7 +29,7 @@ public class AuthorMapper {
                 .orElse(null);
     }
 
-    public AuthorDtoOut mapFullDtoFromEntity(AuthorEntity entity) {
+    public AuthorDtoOut mapDtoOutFromEntity(AuthorEntity entity) {
         return Optional.ofNullable(entity)
                 .map(authorEntity ->
                         new AuthorDtoOut(

@@ -11,19 +11,19 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-//@WebServlet("/albums/all")
+@WebServlet("/albums/all")
 public class AlbumAllServlet extends HttpServlet {
 
-//    private AlbumServiceImpl albumService = AlbumServiceImpl.getInstance();
-//
-//    @Override
-//    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        List<AlbumDto> allDto = albumService.findAll();
-//        if (allDto != null) {
-//            for (AlbumDto dto : allDto) {
-//                String data = String.format("Name: %s SingerId: %s\n", dto.name(), dto.singerId());
-//                resp.getWriter().write(data);
-//            }
-//        }
-//    }
+    private final AlbumServiceImpl albumService = AlbumServiceImpl.getInstance();
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        List<AlbumDto> allDto = albumService.findAll();
+        if (allDto != null) {
+            for (AlbumDto dto : allDto) {
+                String data = String.format("Name: %s SingerId: %s\n", dto.name(), dto.singerId());
+                resp.getWriter().write(data);
+            }
+        }
+    }
 }

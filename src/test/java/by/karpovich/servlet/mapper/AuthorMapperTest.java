@@ -10,12 +10,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -55,7 +52,7 @@ class AuthorMapperTest {
     void mapFullDtoFromEntity() {
         when(songRepository.findByAuthorId(ID)).thenReturn(SONGS);
 
-        AuthorDtoOut result = authorMapper.mapFullDtoFromEntity(generateAuthorEntity());
+        AuthorDtoOut result = authorMapper.mapDtoOutFromEntity(generateAuthorEntity());
 
         assertEquals(AUTHOR_NAME, result.name());
         assertEquals(SONGS.stream().map(SongEntity::getName).collect(toList()), result.songsName());

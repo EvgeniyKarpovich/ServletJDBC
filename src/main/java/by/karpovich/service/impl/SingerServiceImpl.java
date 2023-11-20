@@ -35,7 +35,7 @@ public class SingerServiceImpl implements SingerService {
     public SingerDtoOut findByIdReturnFullDto(Long id) {
         SingerEntity singerEntity = singerRepository.findById(id).orElseThrow(
                 () -> new NotFoundEntityException(String.format("Singer with id = %s not found", id)));
-        return singerMapper.mapFullDtoOutFromEntity(singerEntity);
+        return singerMapper.mapDtoOutFromEntity(singerEntity);
     }
 
     @Override

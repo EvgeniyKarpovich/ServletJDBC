@@ -2,7 +2,6 @@ package by.karpovich.servlet.mapper;
 
 import by.karpovich.model.AlbumEntity;
 import by.karpovich.model.SingerEntity;
-import by.karpovich.model.SongEntity;
 import by.karpovich.service.impl.SingerServiceImpl;
 import by.karpovich.servlet.dto.AlbumDto;
 import org.junit.jupiter.api.Test;
@@ -56,7 +55,7 @@ class AlbumMapperTest {
 
         List<AlbumDto> result = albumMapper.mapListDtoFromListEntity(albumEntities);
 
-       for (AlbumDto dto : result) {
+        for (AlbumDto dto : result) {
             assertEquals(ALBUM_NAME, dto.name());
             assertEquals(SINGER.getId(), dto.singerId());
         }

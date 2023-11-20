@@ -38,7 +38,7 @@ public class AuthorServiceImpl implements AuthorService {
         AuthorEntity authorEntity = authorRepository.findById(id).orElseThrow(
                 () -> new NotFoundEntityException(String.format("Author with id = %s not found", id)));
 
-        return authorMapper.mapFullDtoFromEntity(authorEntity);
+        return authorMapper.mapDtoOutFromEntity(authorEntity);
     }
 
     @Override

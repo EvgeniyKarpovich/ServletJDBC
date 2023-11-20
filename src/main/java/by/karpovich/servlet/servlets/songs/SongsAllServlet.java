@@ -19,7 +19,7 @@ public class SongsAllServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<SongDto> all = songService.findAll();
-        for (SongDto dto : all){
+        for (SongDto dto : all) {
             String data = String.format("Name: %s SingerId: %s albumId: %s AuthorsId %s\n", dto.name(), dto.singerId(), dto.albumId(), dto.authorsId());
             resp.getWriter().write(data);
         }

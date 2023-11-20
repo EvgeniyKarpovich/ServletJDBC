@@ -19,8 +19,8 @@ import java.util.Optional;
 public class AlbumRepositoryImpl implements AlbumRepository {
 
     private static AlbumRepositoryImpl INSTANCE = new AlbumRepositoryImpl();
-    private  AlbumResultSetMapperImpl albumResultSetMapper = new AlbumResultSetMapperImpl();
-    private  SingerResultSetMapperImpl singerResultSetMapper = new SingerResultSetMapperImpl();
+    private AlbumResultSetMapperImpl albumResultSetMapper = new AlbumResultSetMapperImpl();
+    private SingerResultSetMapperImpl singerResultSetMapper = new SingerResultSetMapperImpl();
 
     public AlbumRepositoryImpl() {
     }

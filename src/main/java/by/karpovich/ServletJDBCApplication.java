@@ -1,9 +1,5 @@
 package by.karpovich;
 
-import by.karpovich.model.AlbumEntity;
-import by.karpovich.model.AuthorEntity;
-import by.karpovich.model.SingerEntity;
-import by.karpovich.model.SongEntity;
 import by.karpovich.repository.impl.AlbumRepositoryImpl;
 import by.karpovich.repository.impl.AuthorRepositoryImpl;
 import by.karpovich.repository.impl.SingerRepositoryImpl;
@@ -14,13 +10,6 @@ import by.karpovich.service.impl.SingerServiceImpl;
 import by.karpovich.service.impl.SongServiceImpl;
 import by.karpovich.servlet.dto.AlbumDto;
 import by.karpovich.servlet.dto.SingerDto;
-import by.karpovich.servlet.dto.SingerDtoOut;
-import by.karpovich.servlet.dto.SongDto;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 public class ServletJDBCApplication {
 

@@ -16,6 +16,7 @@ public final class ConnectionManagerImpl {
     static {
         loadDriver();
     }
+
     private ConnectionManagerImpl() {
     }
 

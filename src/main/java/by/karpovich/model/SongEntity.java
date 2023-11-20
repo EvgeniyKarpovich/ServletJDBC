@@ -20,7 +20,6 @@ public class SongEntity {
     }
 
 
-
     public SongEntity(String name, SingerEntity singer) {
         this.name = name;
         this.singer = singer;

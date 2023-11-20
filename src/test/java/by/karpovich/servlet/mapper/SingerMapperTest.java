@@ -11,10 +11,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ExtendWith(MockitoExtension.class)
 class SingerMapperTest {
@@ -36,7 +36,7 @@ class SingerMapperTest {
 
     @Test
     void mapFullDtoOutFromEntity() {
-        SingerDtoOut result = singerMapper.mapFullDtoOutFromEntity(generateSingerEntity());
+        SingerDtoOut result = singerMapper.mapDtoOutFromEntity(generateSingerEntity());
 
         assertEquals(ID, result.id());
         assertEquals(SINGER_NAME, result.surname());
@@ -60,7 +60,7 @@ class SingerMapperTest {
 
         assertEquals(2, result.size());
 
-        for (SingerDto dto : result){
+        for (SingerDto dto : result) {
             assertEquals(SINGER_NAME, dto.surname());
         }
     }

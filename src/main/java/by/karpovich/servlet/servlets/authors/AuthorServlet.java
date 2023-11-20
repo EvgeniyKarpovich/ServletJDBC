@@ -17,15 +17,11 @@ public class AuthorServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        var id = Long.valueOf(req.getParameter("id"));
-        if (id != null) {
-            AuthorDto dto = authorService.findById(id);
-            if (dto != null) {
-                String data = String.format("Name: %s", dto.name());
-                resp.getWriter().write(data);
-            }
-        } else {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        Long id = Long.valueOf(req.getParameter("id"));
+        AuthorDto dto = authorService.findById(id);
+        if (dto != null) {
+            String data = String.format("Name: %s", dto.name());
+            resp.getWriter().write(data);
         }
     }
 
@@ -50,21 +46,15 @@ public class AuthorServlet extends HttpServlet {
         AuthorDto result = new AuthorDto(name);
         authorService.update(result, id);
 
-        if (result != null) {
-            String data = String.format("Name: %s", result.name());
-            resp.getWriter().write(data);
-        }
+        String data = String.format("Name: %s", result.name());
+        resp.getWriter().write(data);
+
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Long id = Long.valueOf(req.getParameter("id"));
 
-        if (id != null) {
-            authorService.deleteById(id);
-        } else {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        }
+        authorService.deleteById(id);
     }
-
 }

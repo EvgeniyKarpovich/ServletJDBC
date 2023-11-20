@@ -1,25 +1,6 @@
 package by.karpovich.repository.impl;
 
-import by.karpovich.db.ConnectionManagerImpl;
-import by.karpovich.model.AlbumEntity;
-import by.karpovich.model.SingerEntity;
-import net.bytebuddy.utility.dispatcher.JavaDispatcher;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.testcontainers.containers.PostgreSQLContainer;
-
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
-
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Testcontainers
 class AlbumRepositoryImplTest {

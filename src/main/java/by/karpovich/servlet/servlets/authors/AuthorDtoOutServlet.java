@@ -1,7 +1,6 @@
 package by.karpovich.servlet.servlets.authors;
 
 import by.karpovich.service.impl.AuthorServiceImpl;
-import by.karpovich.servlet.dto.AuthorDto;
 import by.karpovich.servlet.dto.AuthorDtoOut;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -19,14 +18,11 @@ public class AuthorDtoOutServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Long id = Long.valueOf(req.getParameter("id"));
-        if (id != null) {
-            AuthorDtoOut dto = authorService.findByIdFullDtoOut(id);
-            if (dto != null) {
-                String data = String.format("Name: %s Songs: %s", dto.name(), dto.songsName());
-                resp.getWriter().write(data);
-            }
-        } else {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+
+        AuthorDtoOut dto = authorService.findByIdFullDtoOut(id);
+        if (dto != null) {
+            String data = String.format("Name: %s Songs: %s", dto.name(), dto.songsName());
+            resp.getWriter().write(data);
         }
     }
 }

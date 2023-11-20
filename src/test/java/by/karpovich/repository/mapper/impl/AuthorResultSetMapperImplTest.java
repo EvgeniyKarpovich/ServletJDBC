@@ -9,7 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -20,6 +20,7 @@ class AuthorResultSetMapperImplTest {
     private static final String NAME = "Test Author";
     @InjectMocks
     private AuthorResultSetMapperImpl resultSetMapper;
+
     @Test
     void mapAuthor() throws SQLException {
         ResultSet resultSet = mock(ResultSet.class);

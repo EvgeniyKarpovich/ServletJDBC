@@ -1,7 +1,6 @@
 package by.karpovich.servlet.servlets.singers;
 
 import by.karpovich.service.impl.SingerServiceImpl;
-import by.karpovich.service.impl.SongServiceImpl;
 import by.karpovich.servlet.dto.SingerDto;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -18,16 +17,13 @@ public class SingerServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        var id = Long.valueOf(req.getParameter("id"));
-        if (id != null) {
-            SingerDto dto = singerService.findById(id);
-            if (dto != null) {
-                String data = String.format("Name: %s", dto.surname());
-                resp.getWriter().write(data);
-            }
-        } else {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        Long id = Long.valueOf(req.getParameter("id"));
+        SingerDto dto = singerService.findById(id);
+        if (dto != null) {
+            String data = String.format("Name: %s", dto.surname());
+            resp.getWriter().write(data);
         }
+
     }
 
     @Override
@@ -51,20 +47,15 @@ public class SingerServlet extends HttpServlet {
         SingerDto result = new SingerDto(name);
         singerService.update(result, id);
 
-        if (result != null) {
-            String data = String.format("Name: %s", result.surname());
-            resp.getWriter().write(data);
-        }
+        String data = String.format("Name: %s", result.surname());
+        resp.getWriter().write(data);
+
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Long id = Long.valueOf(req.getParameter("id"));
 
-        if (id != null) {
-            singerService.deleteById(id);
-        } else {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        }
+        singerService.deleteById(id);
     }
 }

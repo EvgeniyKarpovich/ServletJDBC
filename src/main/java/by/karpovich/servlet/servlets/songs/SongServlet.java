@@ -19,15 +19,12 @@ public class SongServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        var id = Long.valueOf(req.getParameter("id"));
-        if (id != null) {
-            SongDto dto = songService.findById(id);
-            if (dto != null) {
-                String data = String.format("Name: %s SingerId: %s albumId: %s AuthorsId %s", dto.name(), dto.singerId(), dto.albumId(), dto.authorsId());
-                resp.getWriter().write(data);
-            }
-        } else {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        Long id = Long.valueOf(req.getParameter("id"));
+
+        SongDto dto = songService.findById(id);
+        if (dto != null) {
+            String data = String.format("Name: %s SingerId: %s albumId: %s AuthorsId %s", dto.name(), dto.singerId(), dto.albumId(), dto.authorsId());
+            resp.getWriter().write(data);
         }
     }
 
@@ -77,10 +74,6 @@ public class SongServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Long id = Long.valueOf(req.getParameter("id"));
 
-        if (id != null) {
-            songService.deleteById(id);
-        } else {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        }
+        songService.deleteById(id);
     }
 }

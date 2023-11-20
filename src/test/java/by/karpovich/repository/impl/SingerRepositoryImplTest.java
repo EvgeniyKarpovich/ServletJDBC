@@ -1,15 +1,5 @@
 package by.karpovich.repository.impl;
 
-import by.karpovich.model.SingerEntity;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.testcontainers.containers.PostgreSQLContainer;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 class SingerRepositoryImplTest {
 
 //    private SingerRepositoryImpl singerRepository = SingerRepositoryImpl.getInstance();

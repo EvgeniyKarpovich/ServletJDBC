@@ -1,11 +1,9 @@
 package by.karpovich.service.impl;
 
 import by.karpovich.model.SongEntity;
-import by.karpovich.model.SongEntity;
 import by.karpovich.repository.impl.SongRepositoryImpl;
 import by.karpovich.servlet.dto.SongDto;
 import by.karpovich.servlet.dto.SongDtoOut;
-import by.karpovich.servlet.dto.SongDto;
 import by.karpovich.servlet.mapper.SongMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

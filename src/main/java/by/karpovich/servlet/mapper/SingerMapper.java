@@ -17,7 +17,7 @@ public class SingerMapper {
                 .orElse(null);
     }
 
-    public SingerDtoOut mapFullDtoOutFromEntity(SingerEntity entity) {
+    public SingerDtoOut mapDtoOutFromEntity(SingerEntity entity) {
         return Optional.ofNullable(entity)
                 .map(singerEntity -> new SingerDtoOut(
                         singerEntity.getId(),

@@ -27,7 +27,7 @@ class AuthorServiceImplTest {
     @Mock
     private AuthorRepositoryImpl authorRepository;
     @Mock
-    private  AuthorMapper authorMapper;
+    private AuthorMapper authorMapper;
     @InjectMocks
     private AuthorServiceImpl authorService;
 
@@ -49,7 +49,7 @@ class AuthorServiceImplTest {
         AuthorDtoOut dto = mock(AuthorDtoOut.class);
 
         when(authorRepository.findById(anyLong())).thenReturn(Optional.of(entity));
-        when(authorMapper.mapFullDtoFromEntity(any(AuthorEntity.class))).thenReturn(dto);
+        when(authorMapper.mapDtoOutFromEntity(any(AuthorEntity.class))).thenReturn(dto);
 
         AuthorDtoOut result = authorService.findByIdFullDtoOut(ID);
 

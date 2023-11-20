@@ -1,8 +1,6 @@
 package by.karpovich.servlet.servlets.authors;
 
-import by.karpovich.service.impl.AlbumServiceImpl;
 import by.karpovich.service.impl.AuthorServiceImpl;
-import by.karpovich.servlet.dto.AlbumDto;
 import by.karpovich.servlet.dto.AuthorDto;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,7 +14,7 @@ import java.util.List;
 @WebServlet("/albums/all")
 public class AuthorsAllServlet extends HttpServlet {
 
-    private AuthorServiceImpl authorService = AuthorServiceImpl.getInstance();
+    private final AuthorServiceImpl authorService = AuthorServiceImpl.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
