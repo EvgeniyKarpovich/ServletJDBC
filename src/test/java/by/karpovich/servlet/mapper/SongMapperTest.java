@@ -81,7 +81,7 @@ class SongMapperTest {
         SongDto result = songMapper.mapSongDtoFromEntity(generateSongEntity());
 
         assertEquals(SONG_NAME, result.name());
-        assertEquals(ALBUM.getId(), result.AlbumId());
+        assertEquals(ALBUM.getId(), result.albumId());
         assertEquals(SINGER.getId(), result.singerId());
         assertEquals(AUTHORS.stream().map(AuthorEntity::getId).collect(toList()), result.authorsId());
     }
@@ -96,7 +96,7 @@ class SongMapperTest {
 
         for (SongDto dto : result) {
             assertEquals(SONG_NAME, dto.name());
-            assertEquals(ALBUM.getId(), dto.AlbumId());
+            assertEquals(ALBUM.getId(), dto.albumId());
             assertEquals(SINGER.getId(), dto.singerId());
             assertEquals(AUTHORS.stream().map(AuthorEntity::getId).collect(toList()), dto.authorsId());
         }

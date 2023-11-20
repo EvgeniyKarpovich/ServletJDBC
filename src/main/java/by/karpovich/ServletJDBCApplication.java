@@ -37,7 +37,7 @@ public class ServletJDBCApplication {
 
         AlbumDto byId = albumService.findById(1L);
 
-        AlbumDto albumDto = new AlbumDto("FINAL", 2L);
+        AlbumDto albumDto = new AlbumDto("FINrererAL", 2L);
 
         SingerDto singerDto = new SingerDto("Gomonchuk");
 //        SingerEntity singerEntity = new SingerEntity("OOOOO");
@@ -54,6 +54,9 @@ public class ServletJDBCApplication {
 //        SongEntity save3 = songRepository.save(songEntity);
 //        System.out.println(save3);
 
-        songService.save(new SongDto("ijzkjasl", 2L, 2L, Arrays.asList(1L)));
+
+        albumService.update(albumDto, 57L);
+
+//        songService.save(new SongDto("ijzkjasl", 2L, 2L, Arrays.asList(1L)));
     }
 }

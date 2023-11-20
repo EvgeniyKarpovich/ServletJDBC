@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public class AlbumServiceImpl implements AlbumService {
 
-    private static final AlbumServiceImpl INSTANCE = new AlbumServiceImpl();
+    private static AlbumServiceImpl INSTANCE = new AlbumServiceImpl();
     private AlbumRepositoryImpl albumRepository = AlbumRepositoryImpl.getInstance();
     private AlbumMapper albumMapper = new AlbumMapper();
 

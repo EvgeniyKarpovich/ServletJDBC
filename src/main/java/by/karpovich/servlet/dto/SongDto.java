@@ -4,6 +4,6 @@ import java.util.List;
 
 public record SongDto(String name,
                       Long singerId,
-                      Long AlbumId,
+                      Long albumId,
                       List<Long> authorsId) {
 }

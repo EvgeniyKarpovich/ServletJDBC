@@ -23,7 +23,7 @@ public class SongMapper {
                 .map(songDto ->
                         new SongEntity(songDto.name(),
                                 singerService.findSingerByIdWhichWillReturnModel(songDto.singerId()),
-                                albumService.findAlbumByIdWhichWillReturnModel(songDto.AlbumId()),
+                                albumService.findAlbumByIdWhichWillReturnModel(songDto.albumId()),
                                 getAuthorEntities(songDto.authorsId())))
                 .orElse(null);
     }

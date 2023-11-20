@@ -13,7 +13,18 @@ public final class ConnectionManagerImpl {
     private static final String USERNAME_KEY = "db.username";
     private static final String URL_KEY = "db.url";
 
+    static {
+        loadDriver();
+    }
     private ConnectionManagerImpl() {
+    }
+
+    private static void loadDriver() {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static Connection getConnection() {
