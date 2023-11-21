@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/albums/all")
+@WebServlet("/authors/all")
 public class AuthorsAllServlet extends HttpServlet {
 
     private final AuthorServiceImpl authorService = AuthorServiceImpl.getInstance();

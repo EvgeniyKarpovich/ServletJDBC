@@ -21,6 +21,8 @@
         <testcontainers.version>1.18.0</testcontainers.version>
         <junit-jupiter.version>1.19.1</junit-jupiter.version>
         <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
+        <jacoco-maven-plugin.version>0.8.10</jacoco-maven-plugin.version>
+        <maven-project-info-reports-plugin.version>3.4.5</maven-project-info-reports-plugin.version>
     </properties>
 
     <dependencies>
@@ -31,14 +33,12 @@
             <version>${jakarta.servlet-api.version}</version>
             <scope>provided</scope>
         </dependency>
-
         <!--        BD-->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>${postgresql.version}</version>
         </dependency>
-
         <!--        Test-->
         <dependency>
             <groupId>junit</groupId>
@@ -79,6 +79,45 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>${maven-war-plugin.version}</version>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>${maven-project-info-reports-plugin.version}</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>jcc-report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <excludes>
+                        <exclude>by/karpovich/exception/**</exclude>
+                        <exclude>by/karpovich/model/**</exclude>
+                        <exclude>by/karpovich/servlet/dto/**</exclude>
+                        <exclude>by/karpovich/sql/**</exclude>
+                        <exclude>by/karpovich/util/**</exclude>
+                        <exclude>by/karpovich/repository</exclude>
+                        <exclude>by/karpovich/repository/mapper</exclude>
+                        <exclude>by/karpovich/service</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 </project>
