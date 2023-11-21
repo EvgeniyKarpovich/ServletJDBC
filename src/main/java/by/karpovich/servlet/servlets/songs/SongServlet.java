@@ -2,6 +2,7 @@ package by.karpovich.servlet.servlets.songs;
 
 import by.karpovich.service.impl.SongServiceImpl;
 import by.karpovich.servlet.dto.SongDto;
+import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -15,21 +16,26 @@ import java.util.List;
 @WebServlet("/songs")
 public class SongServlet extends HttpServlet {
 
-    private final SongServiceImpl songService = SongServiceImpl.getInstance();
+    private SongServiceImpl songService = SongServiceImpl.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Gson gson = new Gson();
+
         Long id = Long.valueOf(req.getParameter("id"));
 
         SongDto dto = songService.findById(id);
         if (dto != null) {
-            String data = String.format("Name: %s SingerId: %s albumId: %s AuthorsId %s", dto.name(), dto.singerId(), dto.albumId(), dto.authorsId());
-            resp.getWriter().write(data);
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
+            gson.toJson(dto, resp.getWriter());
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Gson gson = new Gson();
+
         String name = req.getParameter("name");
         Long singerId = Long.parseLong(req.getParameter("singerId"));
         Long albumId = Long.parseLong(req.getParameter("albumId"));
@@ -44,8 +50,9 @@ public class SongServlet extends HttpServlet {
         SongDto result = songService.save(dto);
 
         if (result != null) {
-            String data = String.format("Name: %s", result.name());
-            resp.getWriter().write(data);
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
+            gson.toJson(result, resp.getWriter());
         }
     }
 
@@ -60,14 +67,10 @@ public class SongServlet extends HttpServlet {
         for (String author : authorsStrings) {
             authors.add(Long.parseLong(author));
         }
+        Long id = Long.valueOf(req.getParameter("id"));
 
         SongDto dto = new SongDto(name, singerId, albumId, authors);
-        SongDto result = songService.save(dto);
-
-        if (result != null) {
-            String data = String.format("Name: %s", result.name());
-            resp.getWriter().write(data);
-        }
+        songService.update(dto, id);
     }
 
     @Override

@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public class SingerServiceImpl implements SingerService {
 
-    private static final SingerServiceImpl INSTANCE = new SingerServiceImpl();
+    private static SingerServiceImpl INSTANCE = new SingerServiceImpl();
     private SingerRepositoryImpl singerRepository = SingerRepositoryImpl.getInstance();
     private SingerMapper singerMapper = new SingerMapper();
 

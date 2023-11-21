@@ -2,6 +2,7 @@ package by.karpovich.servlet.servlets.singers;
 
 import by.karpovich.service.impl.SingerServiceImpl;
 import by.karpovich.servlet.dto.SingerDto;
+import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -13,29 +14,34 @@ import java.io.IOException;
 @WebServlet("/singers")
 public class SingerServlet extends HttpServlet {
 
-    private final SingerServiceImpl singerService = SingerServiceImpl.getInstance();
+    private SingerServiceImpl singerService = SingerServiceImpl.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Gson gson = new Gson();
+
         Long id = Long.valueOf(req.getParameter("id"));
         SingerDto dto = singerService.findById(id);
         if (dto != null) {
-            String data = String.format("Name: %s", dto.surname());
-            resp.getWriter().write(data);
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
+            gson.toJson(dto, resp.getWriter());
         }
-
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Gson gson = new Gson();
+
         String name = req.getParameter("name");
 
         SingerDto dto = new SingerDto(name);
         SingerDto result = singerService.save(dto);
 
         if (result != null) {
-            String data = String.format("Name: %s", result.surname());
-            resp.getWriter().write(data);
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
+            gson.toJson(result, resp.getWriter());
         }
     }
 
@@ -46,10 +52,6 @@ public class SingerServlet extends HttpServlet {
 
         SingerDto result = new SingerDto(name);
         singerService.update(result, id);
-
-        String data = String.format("Name: %s", result.surname());
-        resp.getWriter().write(data);
-
     }
 
     @Override

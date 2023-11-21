@@ -2,6 +2,7 @@ package by.karpovich.servlet.servlets.authors;
 
 import by.karpovich.service.impl.AuthorServiceImpl;
 import by.karpovich.servlet.dto.AuthorDto;
+import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,11 +19,14 @@ public class AuthorsAllServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Gson gson = new Gson();
+
         List<AuthorDto> allDto = authorService.findAll();
         if (allDto != null) {
             for (AuthorDto dto : allDto) {
-                String data = String.format("Name: %s\n", dto.name());
-                resp.getWriter().write(data);
+                resp.setContentType("application/json");
+                resp.setCharacterEncoding("UTF-8");
+                gson.toJson(dto, resp.getWriter());
             }
         }
     }

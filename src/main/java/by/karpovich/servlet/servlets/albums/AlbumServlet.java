@@ -2,6 +2,7 @@ package by.karpovich.servlet.servlets.albums;
 
 import by.karpovich.service.impl.AlbumServiceImpl;
 import by.karpovich.servlet.dto.AlbumDto;
+import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,25 +18,31 @@ public class AlbumServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Gson gson = new Gson();
+
         Long id = Long.valueOf(req.getParameter("id"));
         AlbumDto dto = albumService.findById(id);
         if (dto != null) {
-            String data = String.format("Name: %s SingerId: %s", dto.name(), dto.singerId());
-            resp.getWriter().write(data);
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
+            gson.toJson(dto, resp.getWriter());
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Gson gson = new Gson();
+
         String name = req.getParameter("name");
         Long singerId = Long.valueOf(req.getParameter("singerId"));
 
         AlbumDto albumDto = new AlbumDto(name, singerId);
-        AlbumDto savedAlbumDto = albumService.save(albumDto);
+        AlbumDto dto = albumService.save(albumDto);
 
-        if (savedAlbumDto != null) {
-            String data = String.format("Name: %s SingerId: %s", savedAlbumDto.name(), savedAlbumDto.singerId());
-            resp.getWriter().write(data);
+        if (dto != null) {
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
+            gson.toJson(dto, resp.getWriter());
         }
     }
 
@@ -47,9 +54,6 @@ public class AlbumServlet extends HttpServlet {
 
         AlbumDto albumDto = new AlbumDto(name, singerId);
         albumService.update(albumDto, id);
-
-        String data = String.format("Name: %s SingerId: %s", albumDto.name(), albumDto.singerId());
-        resp.getWriter().write(data);
     }
 
     @Override

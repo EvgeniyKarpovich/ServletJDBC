@@ -2,6 +2,7 @@ package by.karpovich.servlet.servlets.songs;
 
 import by.karpovich.service.impl.SongServiceImpl;
 import by.karpovich.servlet.dto.SongDto;
+import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,10 +19,13 @@ public class SongsAllServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Gson gson = new Gson();
+
         List<SongDto> all = songService.findAll();
         for (SongDto dto : all) {
-            String data = String.format("Name: %s SingerId: %s albumId: %s AuthorsId %s\n", dto.name(), dto.singerId(), dto.albumId(), dto.authorsId());
-            resp.getWriter().write(data);
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
+            gson.toJson(dto, resp.getWriter());
         }
     }
 }

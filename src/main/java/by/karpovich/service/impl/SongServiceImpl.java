@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public class SongServiceImpl implements SongService {
 
-    private static final SongServiceImpl INSTANCE = new SongServiceImpl();
+    private static SongServiceImpl INSTANCE = new SongServiceImpl();
     private SongMapper songMapper = new SongMapper();
     private SongRepositoryImpl songRepository = SongRepositoryImpl.getInstance();
 

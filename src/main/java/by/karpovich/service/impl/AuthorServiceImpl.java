@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public class AuthorServiceImpl implements AuthorService {
 
-    private static final AuthorServiceImpl INSTANCE = new AuthorServiceImpl();
+    private static  AuthorServiceImpl INSTANCE = new AuthorServiceImpl();
     private AuthorRepositoryImpl authorRepository = AuthorRepositoryImpl.getInstance();
     private AuthorMapper authorMapper = new AuthorMapper();
 

@@ -2,6 +2,7 @@ package by.karpovich.servlet.servlets.songs;
 
 import by.karpovich.service.impl.SongServiceImpl;
 import by.karpovich.servlet.dto.SongDtoOut;
+import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,13 +18,15 @@ public class SongsOutServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Gson gson = new Gson();
+
         Long id = Long.valueOf(req.getParameter("id"));
 
         SongDtoOut dto = songService.findByIdFullDtoOut(id);
         if (dto != null) {
-            String data = String.format("Name: %s SingerId: %s SingerName: %s albumId: %s AlbumName : %s  AuthorsName %s",
-                    dto.name(), dto.singerId(), dto.singerName(), dto.albumId(), dto.albumName(), dto.authorsName());
-            resp.getWriter().write(data);
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
+            gson.toJson(dto, resp.getWriter());
         }
     }
 }
