@@ -1,5 +1,7 @@
 package by.karpovich.service.impl;
 
+import by.karpovich.exception.DuplicateException;
+import by.karpovich.exception.NotFoundEntityException;
 import by.karpovich.model.SongEntity;
 import by.karpovich.repository.impl.SongRepositoryImpl;
 import by.karpovich.servlet.dto.SongDto;
@@ -17,8 +19,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class SongServiceImplTest {
@@ -97,18 +99,28 @@ class SongServiceImplTest {
 
     @Test
     void update() {
-        SongEntity mapped = mock(SongEntity.class);
-        SongEntity saved = mock(SongEntity.class);
+        SongEntity entity = mock(SongEntity.class);
+        SongDto dto = mock(SongDto.class);
 
-        SongDto startDto = mock(SongDto.class);
-        SongDto returnedDto = mock(SongDto.class);
+        when(songMapper.mapEntityFromDto(any(SongDto.class))).thenReturn(entity);
 
-        when(songMapper.mapEntityFromDto(any(SongDto.class))).thenReturn(mapped);
-        when(songRepository.save(any(SongEntity.class))).thenReturn(saved);
-        when(songMapper.mapSongDtoFromEntity(any(SongEntity.class))).thenReturn(returnedDto);
+        songService.update(dto, ID);
 
-        SongDto result = songService.save(startDto);
+        verify(songMapper).mapEntityFromDto(dto);
+        verify(songRepository).update(entity);
+    }
 
-        assertEquals(result, returnedDto);
+    @Test
+    void findByIdThrowsException() {
+        when(songRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundEntityException.class, () -> songService.findById(ID));
+    }
+
+    @Test
+    void saveThrowsException() {
+        when(songRepository.findByNameAndSingerId(anyString(), anyLong())).thenThrow(DuplicateException.class);
+
+        assertThrows(DuplicateException.class, () -> songRepository.findByNameAndSingerId("TEST NAME", 1L));
     }
 }

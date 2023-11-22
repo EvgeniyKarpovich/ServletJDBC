@@ -14,13 +14,17 @@ import java.io.IOException;
 @WebServlet("/songs/out")
 public class SongsOutServlet extends HttpServlet {
 
-    private final SongServiceImpl songService = SongServiceImpl.getInstance();
+    private SongServiceImpl songService = SongServiceImpl.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Gson gson = new Gson();
 
         Long id = Long.valueOf(req.getParameter("id"));
+
+        if (id == null) {
+            throw new ServletException("id must not be null");
+        }
 
         SongDtoOut dto = songService.findByIdFullDtoOut(id);
         if (dto != null) {

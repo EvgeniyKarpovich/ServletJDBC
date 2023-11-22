@@ -24,6 +24,10 @@ public class SongServlet extends HttpServlet {
 
         Long id = Long.valueOf(req.getParameter("id"));
 
+        if (id == null) {
+            throw new ServletException("id must not be null");
+        }
+
         SongDto dto = songService.findById(id);
         if (dto != null) {
             resp.setContentType("application/json");
@@ -39,6 +43,11 @@ public class SongServlet extends HttpServlet {
         String name = req.getParameter("name");
         Long singerId = Long.parseLong(req.getParameter("singerId"));
         Long albumId = Long.parseLong(req.getParameter("albumId"));
+
+        if (name == null || singerId == null || albumId == null) {
+            throw new ServletException("Name and SingerId must not be null");
+        }
+
 
         String[] authorsStrings = req.getParameter("authorsId").split(",");
         List<Long> authors = new ArrayList<>();
@@ -62,6 +71,10 @@ public class SongServlet extends HttpServlet {
         Long singerId = Long.parseLong(req.getParameter("singerId"));
         Long albumId = Long.parseLong(req.getParameter("albumId"));
 
+        if (name == null || singerId == null || albumId == null) {
+            throw new ServletException("Name and SingerId must not be null");
+        }
+
         String[] authorsStrings = req.getParameter("authorsId").split(",");
         List<Long> authors = new ArrayList<>();
         for (String author : authorsStrings) {
@@ -76,6 +89,10 @@ public class SongServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Long id = Long.valueOf(req.getParameter("id"));
+
+        if (id == null) {
+            throw new ServletException("id must not be null");
+        }
 
         songService.deleteById(id);
     }

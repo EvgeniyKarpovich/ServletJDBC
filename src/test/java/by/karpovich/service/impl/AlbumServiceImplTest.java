@@ -1,5 +1,7 @@
 package by.karpovich.service.impl;
 
+import by.karpovich.exception.DuplicateException;
+import by.karpovich.exception.NotFoundEntityException;
 import by.karpovich.model.AlbumEntity;
 import by.karpovich.repository.impl.AlbumRepositoryImpl;
 import by.karpovich.servlet.dto.AlbumDto;
@@ -16,8 +18,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AlbumServiceImplTest {
@@ -83,19 +84,16 @@ class AlbumServiceImplTest {
 
     @Test
     void update() {
-        AlbumEntity mapped = mock(AlbumEntity.class);
-        AlbumEntity saved = mock(AlbumEntity.class);
+        AlbumEntity entity = mock(AlbumEntity.class);
 
-        AlbumDto startDto = mock(AlbumDto.class);
-        AlbumDto returnedDto = mock(AlbumDto.class);
+        AlbumDto dto = mock(AlbumDto.class);
 
-        when(albumMapper.mapEntityFromDto(any(AlbumDto.class))).thenReturn(mapped);
-        when(albumRepository.save(any(AlbumEntity.class))).thenReturn(saved);
-        when(albumMapper.mapDtoFromEntity(any(AlbumEntity.class))).thenReturn(returnedDto);
+        when(albumMapper.mapEntityFromDto(any(AlbumDto.class))).thenReturn(entity);
 
-        AlbumDto result = albumService.save(startDto);
+        albumService.update(dto, ID);
 
-        assertEquals(result, returnedDto);
+        verify(albumMapper).mapEntityFromDto(dto);
+        verify(albumRepository).update(entity);
     }
 
     @Test
@@ -106,5 +104,27 @@ class AlbumServiceImplTest {
 
         AlbumEntity result = albumService.findAlbumByIdWhichWillReturnModel(ID);
         assertEquals(result, AlbumEntity);
+    }
+
+    @Test
+    void findByIdThrowsException() {
+        when(albumRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundEntityException.class, () -> albumService.findById(ID));
+    }
+
+    @Test
+    void saveThrowsException() {
+        when(albumRepository.findByNameAndSingerId(anyString(), anyLong())).thenThrow(DuplicateException.class);
+
+        assertThrows(DuplicateException.class, () -> albumRepository.findByNameAndSingerId("TEST NAME", 1L));
+    }
+
+    @Test
+    void findAlbumByIdWhichWillReturnModelThrowsException() {
+        when(albumRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundEntityException.class,
+                () -> albumService.findAlbumByIdWhichWillReturnModel(ID));
     }
 }

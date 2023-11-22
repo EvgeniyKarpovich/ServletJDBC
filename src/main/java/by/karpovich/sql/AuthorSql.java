@@ -14,7 +14,7 @@ public class AuthorSql {
 
     public static final String UPDATE_SQL = """
             UPDATE authors
-            SET author_name = ?,
+            SET author_name = ?
             WHERE id = ?
             """;
 

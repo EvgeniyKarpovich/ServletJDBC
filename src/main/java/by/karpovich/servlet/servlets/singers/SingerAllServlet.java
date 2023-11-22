@@ -1,7 +1,8 @@
-package by.karpovich.servlet.servlets.authors;
+package by.karpovich.servlet.servlets.singers;
 
-import by.karpovich.service.impl.AuthorServiceImpl;
-import by.karpovich.servlet.dto.AuthorDto;
+import by.karpovich.service.impl.SingerServiceImpl;
+import by.karpovich.servlet.dto.AlbumDto;
+import by.karpovich.servlet.dto.SingerDto;
 import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,18 +13,18 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/authors/all")
-public class AuthorsAllServlet extends HttpServlet {
+@WebServlet("/singers/all")
+public class SingerAllServlet extends HttpServlet {
 
-    private AuthorServiceImpl authorService = AuthorServiceImpl.getInstance();
+    private SingerServiceImpl singerService = SingerServiceImpl.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Gson gson = new Gson();
 
-        List<AuthorDto> allDto = authorService.findAll();
+        List<SingerDto> allDto = singerService.findAll();
         if (allDto != null) {
-            for (AuthorDto dto : allDto) {
+            for (SingerDto dto : allDto) {
                 resp.setContentType("application/json");
                 resp.setCharacterEncoding("UTF-8");
                 gson.toJson(dto, resp.getWriter());

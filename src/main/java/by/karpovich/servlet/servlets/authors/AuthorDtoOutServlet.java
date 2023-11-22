@@ -21,6 +21,10 @@ public class AuthorDtoOutServlet extends HttpServlet {
         Gson gson = new Gson();
         Long id = Long.valueOf(req.getParameter("id"));
 
+        if (id == null) {
+            throw new ServletException("id must not be null");
+        }
+
         AuthorDtoOut dto = authorService.findByIdFullDtoOut(id);
         if (dto != null) {
             resp.setContentType("application/json");

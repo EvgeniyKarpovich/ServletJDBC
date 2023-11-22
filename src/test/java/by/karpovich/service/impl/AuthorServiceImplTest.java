@@ -1,10 +1,13 @@
 package by.karpovich.service.impl;
 
+import by.karpovich.exception.DuplicateException;
+import by.karpovich.exception.NotFoundEntityException;
 import by.karpovich.model.AuthorEntity;
 import by.karpovich.repository.impl.AuthorRepositoryImpl;
 import by.karpovich.servlet.dto.AuthorDto;
 import by.karpovich.servlet.dto.AuthorDtoOut;
 import by.karpovich.servlet.mapper.AuthorMapper;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,8 +20,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AuthorServiceImplTest {
@@ -97,18 +99,35 @@ class AuthorServiceImplTest {
 
     @Test
     void update() {
-        AuthorEntity mapped = mock(AuthorEntity.class);
-        AuthorEntity saved = mock(AuthorEntity.class);
+        AuthorEntity entity = mock(AuthorEntity.class);
+        AuthorDto dto = mock(AuthorDto.class);
 
-        AuthorDto startDto = mock(AuthorDto.class);
-        AuthorDto returnedDto = mock(AuthorDto.class);
+        when(authorMapper.mapEntityFromDto(any(AuthorDto.class))).thenReturn(entity);
 
-        when(authorMapper.mapEntityFromDto(any(AuthorDto.class))).thenReturn(mapped);
-        when(authorRepository.save(any(AuthorEntity.class))).thenReturn(saved);
-        when(authorMapper.mapDtoFromEntity(any(AuthorEntity.class))).thenReturn(returnedDto);
+        authorService.update(dto, ID);
 
-        AuthorDto result = authorService.save(startDto);
+        verify(authorRepository).findByAuthorName(dto.name());
+        verify(authorMapper).mapEntityFromDto(dto);
+        verify(authorRepository).update(entity);
+    }
 
-        assertEquals(result, returnedDto);
+    @Test
+    void findByIdReturnFullDtoThrowException() {
+        assertThrows(NotFoundEntityException.class, () -> authorService.findByIdFullDtoOut(ID));
+
+        verify(authorRepository).findById(ID);
+    }
+    @Test
+    void findByIdThrowsException() {
+        when(authorRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundEntityException.class, () -> authorService.findById(ID));
+    }
+
+    @Test
+    void saveThrowsException() {
+        when(authorRepository.findByAuthorName(anyString())).thenThrow(DuplicateException.class);
+
+        assertThrows(DuplicateException.class, () -> authorRepository.findByAuthorName(anyString()));
     }
 }

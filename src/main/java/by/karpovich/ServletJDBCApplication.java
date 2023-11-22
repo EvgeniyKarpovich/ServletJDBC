@@ -1,5 +1,7 @@
 package by.karpovich;
 
+import by.karpovich.model.AuthorEntity;
+import by.karpovich.model.SingerEntity;
 import by.karpovich.repository.impl.AlbumRepositoryImpl;
 import by.karpovich.repository.impl.AuthorRepositoryImpl;
 import by.karpovich.repository.impl.SingerRepositoryImpl;
@@ -10,6 +12,8 @@ import by.karpovich.service.impl.SingerServiceImpl;
 import by.karpovich.service.impl.SongServiceImpl;
 import by.karpovich.servlet.dto.AlbumDto;
 import by.karpovich.servlet.dto.SingerDto;
+
+import java.util.Optional;
 
 public class ServletJDBCApplication {
 
@@ -29,23 +33,13 @@ public class ServletJDBCApplication {
         AlbumDto albumDto = new AlbumDto("FINrererAL", 2L);
 
         SingerDto singerDto = new SingerDto("Gomonchuk");
-//        SingerEntity singerEntity = new SingerEntity("OOOOO");
-//        SingerEntity save = singerRepository.save(singerEntity);
-//
-//        AlbumEntity albumEntity = new AlbumEntity("ALBUUUUUM", singerEntity);
-//        AlbumEntity save1 = albumRepository.save(albumEntity);
-//        AuthorEntity authorEntity = new AuthorEntity("AUTHOOOOOOOR");
-//        AuthorEntity save2 = authorRepository.save(authorEntity);
-//        List<AuthorEntity> authorEntities = new ArrayList<>();
-//        authorEntities.add(save2);
-//
-//        SongEntity songEntity = new SongEntity("FINAL FINAL SOOOOONG", save, save1,authorEntities);
-//        SongEntity save3 = songRepository.save(songEntity);
-//        System.out.println(save3);
 
 
-        albumService.update(albumDto, 57L);
 
-//        songService.save(new SongDto("ijzkjasl", 2L, 2L, Arrays.asList(1L)));
+        Optional<SingerEntity> byName = singerRepository.findByName("1");
+        System.out.println(byName.get());
+
+        AuthorEntity authorEntity = new AuthorEntity(2L, "BETHOVEN");
+        authorRepository.update(authorEntity);
     }
 }

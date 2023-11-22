@@ -21,6 +21,11 @@ public class AuthorServlet extends HttpServlet {
         Gson gson = new Gson();
 
         Long id = Long.valueOf(req.getParameter("id"));
+
+        if (id == null) {
+            throw new ServletException("id must not be null");
+        }
+
         AuthorDto dto = authorService.findById(id);
         if (dto != null) {
             resp.setContentType("application/json");
@@ -35,6 +40,10 @@ public class AuthorServlet extends HttpServlet {
 
         String name = req.getParameter("name");
 
+        if (name == null) {
+            throw new ServletException("Name must not be null");
+        }
+
         AuthorDto dto = new AuthorDto(name);
         AuthorDto result = authorService.save(dto);
 
@@ -47,10 +56,12 @@ public class AuthorServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Gson gson = new Gson();
-
         String name = req.getParameter("name");
         Long id = Long.valueOf(req.getParameter("id"));
+
+        if (name == null || id == null) {
+            throw new ServletException("Name and SingerId must not be null");
+        }
 
         AuthorDto result = new AuthorDto(name);
         authorService.update(result, id);
@@ -59,6 +70,10 @@ public class AuthorServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Long id = Long.valueOf(req.getParameter("id"));
+
+        if (id == null) {
+            throw new ServletException("id must not be null");
+        }
 
         authorService.deleteById(id);
     }

@@ -71,7 +71,7 @@ public class AuthorServiceImpl implements AuthorService {
         AuthorEntity authorEntity = authorMapper.mapEntityFromDto(dto);
         authorEntity.setId(id);
 
-        authorRepository.save(authorEntity);
+        authorRepository.update(authorEntity);
     }
 
     private void validateAlreadyExists(AuthorDto dto, Long id) {

@@ -1,10 +1,8 @@
-package by.karpovich.servlet.servlets.albums;
+package by.karpovich.servlet.servlets.songs;
 
-import by.karpovich.service.impl.AlbumServiceImpl;
-import by.karpovich.service.impl.AuthorServiceImpl;
-import by.karpovich.servlet.dto.AlbumDto;
-import by.karpovich.servlet.dto.AuthorDto;
-import by.karpovich.servlet.servlets.authors.AuthorServlet;
+import by.karpovich.service.impl.SongServiceImpl;
+import by.karpovich.servlet.dto.SongDto;
+import by.karpovich.servlet.dto.SongDtoOut;
 import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,27 +18,26 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verify;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @RunWith(MockitoJUnitRunner.class)
-class AlbumAllServletTest {
-
-    private static final Long ID = 1L;
-    private static final String NAME = "Test ALbum";
+class SongsOutServletTest {
+    private static final String ID = "1";
+    private static final String NAME = "Test Song";
+    private static final List<Long> AUTHORS = Arrays.asList(1L, 2L);
     @Mock
-    private AlbumServiceImpl albumService;
+    private SongServiceImpl songService;
     @InjectMocks
-    private AlbumAllServlet albumAllServlet;
-
-
+    private SongsOutServlet songServlet;
     @Test
     void doGet() throws IOException, ServletException {
         HttpServletRequest request = mock(HttpServletRequest.class);
@@ -50,21 +47,26 @@ class AlbumAllServletTest {
         PrintWriter writer = new PrintWriter(stringWriter);
 
         Gson gson = new Gson();
+        String json = gson.toJson(generateSongDtoOut());
 
-        List<AlbumDto> result = Arrays.asList(generateAuthorDto(), generateAuthorDto());
-        String json = result.stream().map(gson::toJson).collect(Collectors.joining());
-
-
-
-        when(albumService.findAll()).thenReturn(result);
+        when(request.getParameter("id")).thenReturn(ID);
+        when(songService.findByIdFullDtoOut(anyLong())).thenReturn(generateSongDtoOut());
         when(response.getWriter()).thenReturn(new PrintWriter(writer));
 
-        albumAllServlet.doGet(request, response);
+        songServlet.doGet(request, response);
 
         assertEquals(json, stringWriter.toString());
     }
 
-    private AlbumDto generateAuthorDto() {
-        return new AlbumDto(NAME, ID);
+    private SongDto generateSongDto() {
+        return new SongDto(NAME,
+                1L,
+                1L,
+                AUTHORS);
     }
+    private SongDtoOut generateSongDtoOut() {
+        List<String> authorsId = Arrays.asList("One Author", "Two Author");
+        return new SongDtoOut(1L, NAME, 1L, "Test Song", 1L,"Album test",authorsId);
+    }
+
 }

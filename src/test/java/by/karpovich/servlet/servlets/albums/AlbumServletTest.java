@@ -1,9 +1,10 @@
-package by.karpovich.servlet.servlets.singers;
+package by.karpovich.servlet.servlets.albums;
 
+import by.karpovich.service.impl.AlbumServiceImpl;
 import by.karpovich.service.impl.SingerServiceImpl;
-import by.karpovich.service.impl.SongServiceImpl;
+import by.karpovich.servlet.dto.AlbumDto;
 import by.karpovich.servlet.dto.SingerDto;
-import by.karpovich.servlet.servlets.songs.SongsOutServlet;
+import by.karpovich.servlet.servlets.singers.SingerServlet;
 import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,29 +16,27 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.OngoingStubbing;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 @RunWith(MockitoJUnitRunner.class)
-class SingerServletTest {
-
+class AlbumServletTest {
     private static final String ID = "1";
-    private static final String NAME = "Test Singer";
+    private static final String NAME = "Test Album";
     @Mock
-    private SingerServiceImpl singerService;
+    private AlbumServiceImpl albumService;
     @InjectMocks
-    private SingerServlet singerServlet;
+    private AlbumServlet albumServlet;
 
     @Test
-    void doGet() throws Exception {
+    void doGet() throws IOException, ServletException {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
 
@@ -45,13 +44,13 @@ class SingerServletTest {
         PrintWriter writer = new PrintWriter(stringWriter);
 
         Gson gson = new Gson();
-        String json = gson.toJson(generateSingerDto());
+        String json = gson.toJson(generateAlbumDto());
 
         when(request.getParameter("id")).thenReturn(ID);
-        when(singerService.findById(Long.valueOf(ID))).thenReturn(generateSingerDto());
+        when(albumService.findById(Long.valueOf(ID))).thenReturn(generateAlbumDto());
         when(response.getWriter()).thenReturn(new PrintWriter(writer));
 
-        singerServlet.doGet(request, response);
+        albumServlet.doGet(request, response);
 
         verify(response).setContentType("application/json");
         verify(response).setCharacterEncoding("UTF-8");
@@ -59,7 +58,7 @@ class SingerServletTest {
     }
 
     @Test
-    void doPost() throws ServletException, IOException {
+    void doPost() throws IOException, ServletException {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
 
@@ -67,13 +66,14 @@ class SingerServletTest {
         PrintWriter writer = new PrintWriter(stringWriter);
 
         Gson gson = new Gson();
-        String json = gson.toJson(generateSingerDto());
+        String json = gson.toJson(generateAlbumDto());
 
         when(request.getParameter("name")).thenReturn(NAME);
-        when(singerService.save(any(SingerDto.class))).thenReturn(generateSingerDto());
+        when(request.getParameter("singerId")).thenReturn(ID);
+        when(albumService.save(any(AlbumDto.class))).thenReturn(generateAlbumDto());
         when(response.getWriter()).thenReturn(new PrintWriter(writer));
 
-        singerServlet.doPost(request, response);
+        albumServlet.doPost(request, response);
 
         verify(response).setContentType("application/json");
         verify(response).setCharacterEncoding("UTF-8");
@@ -87,10 +87,11 @@ class SingerServletTest {
 
         when(request.getParameter("id")).thenReturn(ID);
         when(request.getParameter("name")).thenReturn(NAME);
+        when(request.getParameter("singerId")).thenReturn(ID);
 
-        singerServlet.doPut(request, response);
+        albumServlet.doPut(request, response);
 
-        verify(singerService).update(any(SingerDto.class), eq(Long.valueOf(ID)));
+        verify(albumService).update(any(AlbumDto.class), eq(Long.valueOf(ID)));
     }
 
     @Test
@@ -100,12 +101,12 @@ class SingerServletTest {
 
         when(request.getParameter("id")).thenReturn(ID);
 
-        singerServlet.doDelete(request, response);
+        albumServlet.doDelete(request, response);
 
-        verify(singerService).deleteById(Long.valueOf(ID));
+        verify(albumService).deleteById(Long.valueOf(ID));
     }
 
-    private SingerDto generateSingerDto() {
-        return new SingerDto(NAME);
+    private AlbumDto generateAlbumDto() {
+        return new AlbumDto(NAME, 1L);
     }
 }

@@ -22,9 +22,6 @@ public class AlbumRepositoryImpl implements AlbumRepository {
     private AlbumResultSetMapperImpl albumResultSetMapper = new AlbumResultSetMapperImpl();
     private SingerResultSetMapperImpl singerResultSetMapper = new SingerResultSetMapperImpl();
 
-    public AlbumRepositoryImpl() {
-    }
-
     public static AlbumRepositoryImpl getInstance() {
         return INSTANCE;
     }

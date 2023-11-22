@@ -21,6 +21,11 @@ public class AlbumServlet extends HttpServlet {
         Gson gson = new Gson();
 
         Long id = Long.valueOf(req.getParameter("id"));
+
+        if (id == null) {
+            throw new ServletException("id must not be null");
+        }
+
         AlbumDto dto = albumService.findById(id);
         if (dto != null) {
             resp.setContentType("application/json");
@@ -35,6 +40,10 @@ public class AlbumServlet extends HttpServlet {
 
         String name = req.getParameter("name");
         Long singerId = Long.valueOf(req.getParameter("singerId"));
+
+        if (name == null || singerId == null) {
+            throw new ServletException("Name and SingerId must not be null");
+        }
 
         AlbumDto albumDto = new AlbumDto(name, singerId);
         AlbumDto dto = albumService.save(albumDto);
@@ -52,6 +61,10 @@ public class AlbumServlet extends HttpServlet {
         Long singerId = Long.valueOf(req.getParameter("singerId"));
         Long id = Long.valueOf(req.getParameter("id"));
 
+        if (name == null || singerId == null || id == null) {
+            throw new ServletException("Name and SingerId must not be null");
+        }
+
         AlbumDto albumDto = new AlbumDto(name, singerId);
         albumService.update(albumDto, id);
     }
@@ -59,6 +72,10 @@ public class AlbumServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Long id = Long.valueOf(req.getParameter("id"));
+
+        if (id == null) {
+            throw new ServletException("id must not be null");
+        }
 
         albumService.deleteById(id);
     }

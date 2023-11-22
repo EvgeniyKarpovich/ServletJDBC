@@ -1,10 +1,13 @@
 package by.karpovich.service.impl;
 
+import by.karpovich.exception.DuplicateException;
+import by.karpovich.exception.NotFoundEntityException;
 import by.karpovich.model.SingerEntity;
 import by.karpovich.repository.impl.SingerRepositoryImpl;
 import by.karpovich.servlet.dto.SingerDto;
 import by.karpovich.servlet.dto.SingerDtoOut;
 import by.karpovich.servlet.mapper.SingerMapper;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -42,6 +45,13 @@ class SingerServiceImplTest {
     }
 
     @Test
+    void findByIdThrowsException() {
+        when(singerRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundEntityException.class, () -> singerService.findById(ID));
+    }
+
+    @Test
     void findByIdReturnFullDto() {
         SingerEntity entity = mock(SingerEntity.class);
         SingerDtoOut dto = mock(SingerDtoOut.class);
@@ -52,6 +62,13 @@ class SingerServiceImplTest {
         SingerDtoOut result = singerService.findByIdReturnFullDto(ID);
 
         assertEquals(result, dto);
+    }
+
+    @Test
+    void findByIdReturnFullDtoThrowException() {
+        assertThrows(NotFoundEntityException.class, () -> singerService.findByIdReturnFullDto(ID));
+
+        verify(singerRepository).findById(ID);
     }
 
     @Test
@@ -94,20 +111,24 @@ class SingerServiceImplTest {
     }
 
     @Test
+    void saveThrowsException() {
+        when(singerRepository.findByName(anyString())).thenThrow(DuplicateException.class);
+
+        assertThrows(DuplicateException.class, () -> singerRepository.findByName("TEST NAME"));
+    }
+
+    @Test
     void update() {
-        SingerEntity mapped = mock(SingerEntity.class);
-        SingerEntity saved = mock(SingerEntity.class);
+        SingerEntity entity = mock(SingerEntity.class);
+        SingerDto dto = mock(SingerDto.class);
 
-        SingerDto startDto = mock(SingerDto.class);
-        SingerDto returnedDto = mock(SingerDto.class);
+        when(singerMapper.mapEntityFromDto(any(SingerDto.class))).thenReturn(entity);
 
-        when(singerMapper.mapEntityFromDto(any(SingerDto.class))).thenReturn(mapped);
-        when(singerRepository.save(any(SingerEntity.class))).thenReturn(saved);
-        when(singerMapper.mapDtoFromEntity(any(SingerEntity.class))).thenReturn(returnedDto);
+        singerService.update(dto, ID);
 
-        SingerDto result = singerService.save(startDto);
-
-        assertEquals(result, returnedDto);
+        verify(singerRepository).findByName(dto.surname());
+        verify(singerMapper).mapEntityFromDto(dto);
+        verify(singerRepository).update(entity);
     }
 
     @Test
@@ -118,5 +139,13 @@ class SingerServiceImplTest {
 
         SingerEntity result = singerService.findSingerByIdWhichWillReturnModel(ID);
         assertEquals(result, singerEntity);
+    }
+
+    @Test
+    void findSingerByIdWhichWillReturnModelThrowsException() {
+        when(singerRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundEntityException.class,
+                () -> singerService.findSingerByIdWhichWillReturnModel(ID));
     }
 }

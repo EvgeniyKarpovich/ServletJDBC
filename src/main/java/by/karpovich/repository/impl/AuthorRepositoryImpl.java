@@ -138,13 +138,9 @@ public class AuthorRepositoryImpl implements AuthorRepository {
              PreparedStatement preparedStatement = connection.prepareStatement(AuthorSql.UPDATE_SQL)) {
 
             preparedStatement.setString(1, authorEntity.getAuthorName());
+            preparedStatement.setLong(2, authorEntity.getId());
+
             preparedStatement.executeUpdate();
-
-            ResultSet resultSet = preparedStatement.getGeneratedKeys();
-
-            if (resultSet.next()) {
-                authorEntity.setId(resultSet.getLong("id"));
-            }
         } catch (SQLException e) {
             throw new DaoException("Error during the execution of update");
         }
