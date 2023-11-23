@@ -17,12 +17,6 @@ public class ConnectionManagerImpl2 {
         loadDriver();
     }
 
-    public ConnectionManagerImpl2(String password, String username, String url) {
-        this.password = password;
-        this.username = username;
-        this.url = url;
-    }
-
     private static void loadDriver() {
         try {
             Class.forName("org.postgresql.Driver");

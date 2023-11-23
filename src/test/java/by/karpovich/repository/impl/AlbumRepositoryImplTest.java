@@ -1,9 +1,7 @@
 package by.karpovich.repository.impl;
 
 import by.karpovich.dase.ALRepo;
-import by.karpovich.dase.ConnectionManager;
 import by.karpovich.dase.ConnectionManagerImpl2;
-import by.karpovich.db.ConnectionManagerImpl;
 import by.karpovich.model.AlbumEntity;
 import by.karpovich.model.SingerEntity;
 import by.karpovich.repository.mapper.impl.AlbumResultSetMapperImpl;
@@ -11,13 +9,10 @@ import by.karpovich.repository.mapper.impl.SingerResultSetMapperImpl;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -37,6 +32,9 @@ class AlbumRepositoryImplTest {
     AlbumResultSetMapperImpl albumResultSetMapper = new AlbumResultSetMapperImpl();
     @InjectMocks
     private ALRepo albumRepository = new ALRepo(albumResultSetMapper, singerResultSetMapper, connectionManager);
+
+
+    static String connectionUrl;
     @Container
     public static final PostgreSQLContainer<?> container =
             new PostgreSQLContainer<>("postgres:16")
@@ -45,6 +43,8 @@ class AlbumRepositoryImplTest {
     @BeforeAll
     static void beforeAll() {
         container.start();
+        String[] url = container.getJdbcUrl().split("\\?");
+        connectionUrl = url[0];
     }
 
     @AfterAll
@@ -57,7 +57,6 @@ class AlbumRepositoryImplTest {
                 container.getJdbcUrl(),
                 container.getUsername(),
                 container.getPassword())).when(connectionManager).getConnection();
-
 
         SingerEntity singerEntity = new SingerEntity(1L, "TEST2 SINGER");
         albumRepository.save(new AlbumEntity("ALBUM ONE1", singerEntity));

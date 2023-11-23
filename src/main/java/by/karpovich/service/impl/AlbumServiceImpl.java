@@ -1,5 +1,6 @@
 package by.karpovich.service.impl;
 
+import by.karpovich.dase.ConnectionManagerImpl2;
 import by.karpovich.exception.DuplicateException;
 import by.karpovich.exception.NotFoundEntityException;
 import by.karpovich.model.AlbumEntity;

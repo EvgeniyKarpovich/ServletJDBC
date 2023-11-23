@@ -18,8 +18,8 @@ import java.util.Optional;
 public class ServletJDBCApplication {
 
     public static void main(String[] args) {
-        AlbumRepositoryImpl albumRepository = AlbumRepositoryImpl.getInstance();
-        SingerRepositoryImpl singerRepository = SingerRepositoryImpl.getInstance();
+//        AlbumRepositoryImpl albumRepository = AlbumRepositoryImpl.getInstance();
+//        SingerRepositoryImpl singerRepository = SingerRepositoryImpl.getInstance();
         SongRepositoryImpl songRepository = SongRepositoryImpl.getInstance();
         AuthorRepositoryImpl authorRepository = AuthorRepositoryImpl.getInstance();
 
@@ -35,11 +35,7 @@ public class ServletJDBCApplication {
         SingerDto singerDto = new SingerDto("Gomonchuk");
 
 
-
-        Optional<SingerEntity> byName = singerRepository.findByName("1");
-        System.out.println(byName.get());
-
-        AuthorEntity authorEntity = new AuthorEntity(2L, "BETHOVEN");
-        authorRepository.update(authorEntity);
+        Optional<AuthorEntity> byId1 = authorRepository.findById(1L);
+        System.out.println(byId1.get());
     }
 }

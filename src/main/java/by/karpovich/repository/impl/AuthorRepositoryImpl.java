@@ -20,8 +20,13 @@ import java.util.Optional;
 public class AuthorRepositoryImpl implements AuthorRepository {
 
     private static AuthorRepositoryImpl INSTANCE = new AuthorRepositoryImpl();
-    private final AuthorResultSetMapperImpl authorResultSetMapper = new AuthorResultSetMapperImpl();
-    private final SongResultSetMapperImpl songResultSetMapper = new SongResultSetMapperImpl();
+    private AuthorResultSetMapperImpl authorResultSetMapper;
+    private SongResultSetMapperImpl songResultSetMapper;
+    private ConnectionManagerImpl connectionManagerImpl;
+
+    public AuthorRepositoryImpl(ConnectionManagerImpl connectionManagerImpl) {
+        this.connectionManagerImpl = connectionManagerImpl;
+    }
 
     private AuthorRepositoryImpl() {
     }
@@ -33,7 +38,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
     public Optional<AuthorEntity> findByAuthorName(String name) {
         AuthorEntity authorEntity = null;
 
-        try (var connection = ConnectionManagerImpl.getConnection();
+        try (var connection = connectionManagerImpl.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(AuthorSql.FIND_BY_NAME_SQL)) {
 
             preparedStatement.setString(1, name);
@@ -51,7 +56,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
 
     @Override
     public Optional<AuthorEntity> findById(Long id) {
-        try (var connection = ConnectionManagerImpl.getConnection();
+        try (var connection = connectionManagerImpl.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(AuthorSql.FIND_BY_ID_SQL)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -83,7 +88,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
 
     @Override
     public List<AuthorEntity> findAll() {
-        try (var connection = ConnectionManagerImpl.getConnection();
+        try (var connection = connectionManagerImpl.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(AuthorSql.FIND_ALL_SQL)) {
 
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -102,7 +107,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
 
     @Override
     public boolean deleteById(Long id) {
-        try (var connection = ConnectionManagerImpl.getConnection();
+        try (var connection = connectionManagerImpl.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(AuthorSql.DELETE_SQL)) {
 
             preparedStatement.setLong(1, id);
@@ -115,7 +120,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
 
     @Override
     public AuthorEntity save(AuthorEntity authorEntity) {
-        try (var connection = ConnectionManagerImpl.getConnection();
+        try (var connection = connectionManagerImpl.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(AuthorSql.SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, authorEntity.getAuthorName());
@@ -128,13 +133,14 @@ public class AuthorRepositoryImpl implements AuthorRepository {
             }
             return authorEntity;
         } catch (SQLException e) {
-            throw new DaoException("Error during the execution of save");
+//            throw new DaoException("Error during the execution of save");
+            throw new RuntimeException(e.getMessage());
         }
     }
 
     @Override
     public void update(AuthorEntity authorEntity) {
-        try (var connection = ConnectionManagerImpl.getConnection();
+        try (var connection = connectionManagerImpl.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(AuthorSql.UPDATE_SQL)) {
 
             preparedStatement.setString(1, authorEntity.getAuthorName());

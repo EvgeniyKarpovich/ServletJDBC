@@ -61,7 +61,7 @@ public class ALRepo {
 
             return albumEntity;
         } catch (SQLException e) {
-            throw new DaoException("Error during the execution of save");
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

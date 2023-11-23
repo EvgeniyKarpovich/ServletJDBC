@@ -8,18 +8,16 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConnectionManagerImpl {
-
-    private final static String PASSWORD_KEY = "db.password";
-    private final static String USERNAME_KEY = "db.username";
-    private final static String URL_KEY = "db.url";
+    private String password = "db.password";
+    private String username = "db.username";
+    private String url = "db.url";
 
     static {
         loadDriver();
     }
 
-    public ConnectionManagerImpl() {
+    private ConnectionManagerImpl() {
     }
-
 
     private static void loadDriver() {
         try {
@@ -29,12 +27,12 @@ public class ConnectionManagerImpl {
         }
     }
 
-    public static Connection getConnection() {
+    public Connection getConnection() {
         try {
             return DriverManager.getConnection(
-                    PropertiesUtil.get(URL_KEY),
-                    PropertiesUtil.get(USERNAME_KEY),
-                    PropertiesUtil.get(PASSWORD_KEY));
+                    PropertiesUtil.get(url),
+                    PropertiesUtil.get(username),
+                    PropertiesUtil.get(password));
         } catch (SQLException e) {
             throw new IncorrectDataException("Wrong url/username/password");
         }

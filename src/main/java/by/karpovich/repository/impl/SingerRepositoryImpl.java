@@ -22,6 +22,11 @@ public class SingerRepositoryImpl implements SingerRepository {
     private static  SingerRepositoryImpl INSTANCE = new SingerRepositoryImpl();
     private  SingerResultSetMapperImpl singerResultSetMapper = new SingerResultSetMapperImpl();
     private  AlbumResultSetMapperImpl albumResultSetMapper = new AlbumResultSetMapperImpl();
+    private ConnectionManagerImpl connectionManager;
+
+    public SingerRepositoryImpl(ConnectionManagerImpl connectionManager) {
+        this.connectionManager = connectionManager;
+    }
 
     private SingerRepositoryImpl() {
     }
@@ -32,7 +37,7 @@ public class SingerRepositoryImpl implements SingerRepository {
 
     @Override
     public Optional<SingerEntity> findById(Long id) {
-        try (var connection = ConnectionManagerImpl.getConnection();
+        try (var connection = connectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SingerSql.FIND_BY_ID_SQL)) {
 
             preparedStatement.setLong(1, id);
@@ -64,7 +69,7 @@ public class SingerRepositoryImpl implements SingerRepository {
 
     @Override
     public Optional<SingerEntity> findByName(String name) {
-        try (var connection = ConnectionManagerImpl.getConnection();
+        try (var connection = connectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SingerSql.FIND_BY_NAME_SQL)) {
 
             preparedStatement.setString(1, name);
@@ -83,7 +88,7 @@ public class SingerRepositoryImpl implements SingerRepository {
 
     @Override
     public List<SingerEntity> findAll() {
-        try (var connection = ConnectionManagerImpl.getConnection();
+        try (var connection = connectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SingerSql.FIND_ALL_SQL)) {
 
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -101,7 +106,7 @@ public class SingerRepositoryImpl implements SingerRepository {
 
     @Override
     public boolean deleteById(Long id) {
-        try (var connection = ConnectionManagerImpl.getConnection();
+        try (var connection = connectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SingerSql.DELETE_SQL)) {
 
             preparedStatement.setLong(1, id);
@@ -114,7 +119,7 @@ public class SingerRepositoryImpl implements SingerRepository {
 
     @Override
     public SingerEntity save(SingerEntity singerEntity) {
-        try (var connection = ConnectionManagerImpl.getConnection();
+        try (var connection = connectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SingerSql.SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, singerEntity.getSurname());
@@ -133,7 +138,7 @@ public class SingerRepositoryImpl implements SingerRepository {
 
     @Override
     public void update(SingerEntity singerEntity) {
-        try (var connection = ConnectionManagerImpl.getConnection();
+        try (var connection = connectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SingerSql.UPDATE_SQL)) {
 
             preparedStatement.setString(1, singerEntity.getSurname());
