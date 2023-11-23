@@ -8,10 +8,7 @@ import by.karpovich.repository.mapper.impl.AlbumResultSetMapperImpl;
 import by.karpovich.repository.mapper.impl.SingerResultSetMapperImpl;
 import by.karpovich.sql.AlbumSql;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +18,9 @@ public class AlbumRepositoryImpl implements AlbumRepository {
     private static AlbumRepositoryImpl INSTANCE = new AlbumRepositoryImpl();
     private AlbumResultSetMapperImpl albumResultSetMapper = new AlbumResultSetMapperImpl();
     private SingerResultSetMapperImpl singerResultSetMapper = new SingerResultSetMapperImpl();
+
+    public AlbumRepositoryImpl() {
+    }
 
     public static AlbumRepositoryImpl getInstance() {
         return INSTANCE;
