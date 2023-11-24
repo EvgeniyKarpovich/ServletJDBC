@@ -7,7 +7,6 @@ import by.karpovich.repository.impl.SingerRepositoryImpl;
 import by.karpovich.servlet.dto.SingerDto;
 import by.karpovich.servlet.dto.SingerDtoOut;
 import by.karpovich.servlet.mapper.SingerMapper;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

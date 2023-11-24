@@ -1,5 +1,6 @@
 package by.karpovich.service.impl;
 
+import by.karpovich.db.ConnectionManagerImpl;
 import by.karpovich.exception.DuplicateException;
 import by.karpovich.exception.NotFoundEntityException;
 import by.karpovich.model.AuthorEntity;
@@ -14,9 +15,11 @@ import java.util.Optional;
 
 public class AuthorServiceImpl implements AuthorService {
 
-    private static  AuthorServiceImpl INSTANCE = new AuthorServiceImpl();
+    private static AuthorServiceImpl INSTANCE = new AuthorServiceImpl();
     private AuthorRepositoryImpl authorRepository = AuthorRepositoryImpl.getInstance();
     private AuthorMapper authorMapper = new AuthorMapper();
+
+    private ConnectionManagerImpl connectionManager;
 
     private AuthorServiceImpl() {
     }

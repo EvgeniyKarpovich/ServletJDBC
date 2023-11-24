@@ -19,9 +19,9 @@ import java.util.Optional;
 
 public class SingerRepositoryImpl implements SingerRepository {
 
-    private static  SingerRepositoryImpl INSTANCE = new SingerRepositoryImpl();
-    private  SingerResultSetMapperImpl singerResultSetMapper = new SingerResultSetMapperImpl();
-    private  AlbumResultSetMapperImpl albumResultSetMapper = new AlbumResultSetMapperImpl();
+    private static SingerRepositoryImpl INSTANCE = new SingerRepositoryImpl();
+    private SingerResultSetMapperImpl singerResultSetMapper = new SingerResultSetMapperImpl();
+    private AlbumResultSetMapperImpl albumResultSetMapper = new AlbumResultSetMapperImpl();
     private ConnectionManagerImpl connectionManager;
 
     public SingerRepositoryImpl(ConnectionManagerImpl connectionManager) {

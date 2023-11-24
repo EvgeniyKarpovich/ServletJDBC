@@ -133,8 +133,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
             }
             return authorEntity;
         } catch (SQLException e) {
-//            throw new DaoException("Error during the execution of save");
-            throw new RuntimeException(e.getMessage());
+            throw new DaoException("Error during the execution of save");
         }
     }
 

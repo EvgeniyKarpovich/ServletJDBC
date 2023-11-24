@@ -8,15 +8,12 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConnectionManagerImpl {
-    private String password = "db.password";
-    private String username = "db.username";
-    private String url = "db.url";
+    private final String password = "db.password";
+    private final String username = "db.username";
+    private final String url = "db.url";
 
     static {
         loadDriver();
-    }
-
-    private ConnectionManagerImpl() {
     }
 
     private static void loadDriver() {

@@ -1,7 +1,6 @@
 package by.karpovich.servlet.servlets.singers;
 
 import by.karpovich.service.impl.SingerServiceImpl;
-import by.karpovich.servlet.dto.AlbumDto;
 import by.karpovich.servlet.dto.SingerDto;
 import com.google.gson.Gson;
 import jakarta.servlet.ServletException;

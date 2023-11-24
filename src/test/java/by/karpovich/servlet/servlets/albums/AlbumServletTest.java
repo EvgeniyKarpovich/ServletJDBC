@@ -1,10 +1,7 @@
 package by.karpovich.servlet.servlets.albums;
 
 import by.karpovich.service.impl.AlbumServiceImpl;
-import by.karpovich.service.impl.SingerServiceImpl;
 import by.karpovich.servlet.dto.AlbumDto;
-import by.karpovich.servlet.dto.SingerDto;
-import by.karpovich.servlet.servlets.singers.SingerServlet;
 import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,9 +18,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 @RunWith(MockitoJUnitRunner.class)

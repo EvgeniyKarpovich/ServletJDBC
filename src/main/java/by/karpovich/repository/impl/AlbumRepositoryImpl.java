@@ -8,7 +8,10 @@ import by.karpovich.repository.mapper.impl.AlbumResultSetMapperImpl;
 import by.karpovich.repository.mapper.impl.SingerResultSetMapperImpl;
 import by.karpovich.sql.AlbumSql;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

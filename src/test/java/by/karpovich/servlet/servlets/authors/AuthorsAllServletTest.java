@@ -17,12 +17,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -34,6 +33,7 @@ class AuthorsAllServletTest {
     private AuthorServiceImpl authorService;
     @InjectMocks
     private AuthorsAllServlet authorServlet;
+
     @Test
     void doGet() throws IOException, ServletException {
         HttpServletRequest request = mock(HttpServletRequest.class);
@@ -54,6 +54,7 @@ class AuthorsAllServletTest {
 
         assertEquals(json, stringWriter.toString());
     }
+
     private AuthorDto generateAuthorDto() {
         return new AuthorDto(NAME);
     }

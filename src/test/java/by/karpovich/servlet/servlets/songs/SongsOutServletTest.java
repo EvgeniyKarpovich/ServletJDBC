@@ -20,10 +20,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -38,6 +36,7 @@ class SongsOutServletTest {
     private SongServiceImpl songService;
     @InjectMocks
     private SongsOutServlet songServlet;
+
     @Test
     void doGet() throws IOException, ServletException {
         HttpServletRequest request = mock(HttpServletRequest.class);
@@ -64,9 +63,10 @@ class SongsOutServletTest {
                 1L,
                 AUTHORS);
     }
+
     private SongDtoOut generateSongDtoOut() {
         List<String> authorsId = Arrays.asList("One Author", "Two Author");
-        return new SongDtoOut(1L, NAME, 1L, "Test Song", 1L,"Album test",authorsId);
+        return new SongDtoOut(1L, NAME, 1L, "Test Song", 1L, "Album test", authorsId);
     }
 
 }

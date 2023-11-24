@@ -1,13 +1,13 @@
 package by.karpovich.repository.impl;
 
-import by.karpovich.dase.ConnectionManagerImpl2;
-import by.karpovich.dase.SingerRep;
+import by.karpovich.db.ConnectionManagerImpl;
 import by.karpovich.model.SingerEntity;
 import by.karpovich.repository.mapper.impl.SingerResultSetMapperImpl;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.testcontainers.containers.PostgreSQLContainer;
 
@@ -19,17 +19,16 @@ import static org.mockito.Mockito.doAnswer;
 
 class SingerRepositoryImplTest {
 
-    ConnectionManagerImpl2 connectionManagerImpl2 = Mockito.mock(ConnectionManagerImpl2.class);
-    SingerResultSetMapperImpl singerResultSetMapper = new SingerResultSetMapperImpl();
-    @InjectMocks
-    private SingerRep singerRepository = new SingerRep(singerResultSetMapper, connectionManagerImpl2);
-
-
-    static String connectionUrl;
     public static final PostgreSQLContainer<?> container =
             new PostgreSQLContainer<>("postgres:16")
 
                     .withInitScript("db-migration.SQL");
+    static String connectionUrl;
+    private ConnectionManagerImpl connectionManagerImpl2 = Mockito.mock(ConnectionManagerImpl.class);
+    @Mock
+    private SingerResultSetMapperImpl singerResultSetMapper;
+    @InjectMocks
+    private SingerRepositoryImpl singerRepository = new SingerRepositoryImpl(connectionManagerImpl2);
 
     @BeforeAll
     static void beforeAll() {

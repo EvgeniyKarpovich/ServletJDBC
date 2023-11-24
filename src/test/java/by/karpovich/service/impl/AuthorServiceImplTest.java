@@ -7,7 +7,6 @@ import by.karpovich.repository.impl.AuthorRepositoryImpl;
 import by.karpovich.servlet.dto.AuthorDto;
 import by.karpovich.servlet.dto.AuthorDtoOut;
 import by.karpovich.servlet.mapper.AuthorMapper;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -117,6 +116,7 @@ class AuthorServiceImplTest {
 
         verify(authorRepository).findById(ID);
     }
+
     @Test
     void findByIdThrowsException() {
         when(authorRepository.findById(anyLong())).thenReturn(Optional.empty());

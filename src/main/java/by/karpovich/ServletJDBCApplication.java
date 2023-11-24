@@ -1,10 +1,7 @@
 package by.karpovich;
 
 import by.karpovich.model.AuthorEntity;
-import by.karpovich.model.SingerEntity;
-import by.karpovich.repository.impl.AlbumRepositoryImpl;
 import by.karpovich.repository.impl.AuthorRepositoryImpl;
-import by.karpovich.repository.impl.SingerRepositoryImpl;
 import by.karpovich.repository.impl.SongRepositoryImpl;
 import by.karpovich.service.impl.AlbumServiceImpl;
 import by.karpovich.service.impl.AuthorServiceImpl;
