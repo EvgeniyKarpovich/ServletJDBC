@@ -17,23 +17,19 @@ import java.util.List;
 import java.util.Optional;
 
 public class SongRepositoryImpl implements SongRepository {
-    private static final SongRepositoryImpl INSTANCE = new SongRepositoryImpl();
-    private final SongResultSetMapperImpl songResultSetMapper = new SongResultSetMapperImpl();
-    private final AuthorResultSetMapperImpl authorResultSetMapper = new AuthorResultSetMapperImpl();
-    private final AlbumResultSetMapperImpl albumResultSetMapper = new AlbumResultSetMapperImpl();
-    private final SingerResultSetMapperImpl singerResultSetMapper = new SingerResultSetMapperImpl();
+    private final SongResultSetMapperImpl songResultSetMapper ;
+    private final AuthorResultSetMapperImpl authorResultSetMapper;
+    private final AlbumResultSetMapperImpl albumResultSetMapper;
+    private final SingerResultSetMapperImpl singerResultSetMapper;
 
-    private ConnectionManagerImpl connectionManager;
+    private  final ConnectionManagerImpl connectionManager;
 
-    public SongRepositoryImpl(ConnectionManagerImpl connectionManager) {
+    public SongRepositoryImpl(SongResultSetMapperImpl songResultSetMapper, AuthorResultSetMapperImpl authorResultSetMapper, AlbumResultSetMapperImpl albumResultSetMapper, SingerResultSetMapperImpl singerResultSetMapper, ConnectionManagerImpl connectionManager) {
+        this.songResultSetMapper = songResultSetMapper;
+        this.authorResultSetMapper = authorResultSetMapper;
+        this.albumResultSetMapper = albumResultSetMapper;
+        this.singerResultSetMapper = singerResultSetMapper;
         this.connectionManager = connectionManager;
-    }
-
-    private SongRepositoryImpl() {
-    }
-
-    public static SongRepositoryImpl getInstance() {
-        return INSTANCE;
     }
 
     @Override

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
 
@@ -19,17 +20,16 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doAnswer;
 
-@ExtendWith(MockitoExtension.class)
+
 class AuthorRepositoryImplTest {
 
-    @Mock
-    private ConnectionManagerImpl connectionManager;
-    @Mock
-    private AuthorResultSetMapperImpl authorResultSetMapper;
-    @Mock
-    private SongResultSetMapperImpl songResultSetMapper;
+    private ConnectionManagerImpl connectionManager = Mockito.mock(ConnectionManagerImpl.class);
+
+    private AuthorResultSetMapperImpl authorResultSetMapper  = new AuthorResultSetMapperImpl();
+
+    private SongResultSetMapperImpl songResultSetMapper = new SongResultSetMapperImpl();
     @InjectMocks
-    private AuthorRepositoryImpl authorRepository = new AuthorRepositoryImpl(connectionManager);
+    private AuthorRepositoryImpl authorRepository = new AuthorRepositoryImpl( authorResultSetMapper, songResultSetMapper, connectionManager);
     static String connectionUrl;
     public static final PostgreSQLContainer<?> container =
             new PostgreSQLContainer<>("postgres:16")

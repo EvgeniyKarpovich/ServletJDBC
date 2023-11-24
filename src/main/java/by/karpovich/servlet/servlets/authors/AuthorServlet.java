@@ -14,7 +14,11 @@ import java.io.IOException;
 @WebServlet("/authors")
 public class AuthorServlet extends HttpServlet {
 
-    private AuthorServiceImpl authorService = AuthorServiceImpl.getInstance();
+    private final AuthorServiceImpl authorService;
+
+    public AuthorServlet(AuthorServiceImpl authorService) {
+        this.authorService = authorService;
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

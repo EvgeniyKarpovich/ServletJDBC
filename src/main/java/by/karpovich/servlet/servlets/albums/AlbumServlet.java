@@ -14,7 +14,11 @@ import java.io.IOException;
 @WebServlet("/albums")
 public class AlbumServlet extends HttpServlet {
 
-    private AlbumServiceImpl albumService = AlbumServiceImpl.getInstance();
+    private final AlbumServiceImpl albumService;
+
+    public AlbumServlet(AlbumServiceImpl albumService) {
+        this.albumService = albumService;
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

@@ -19,20 +19,14 @@ import java.util.Optional;
 
 public class AuthorRepositoryImpl implements AuthorRepository {
 
-    private static AuthorRepositoryImpl INSTANCE = new AuthorRepositoryImpl();
-    private AuthorResultSetMapperImpl authorResultSetMapper;
-    private SongResultSetMapperImpl songResultSetMapper;
-    private ConnectionManagerImpl connectionManagerImpl;
+    private final AuthorResultSetMapperImpl authorResultSetMapper;
+    private final SongResultSetMapperImpl songResultSetMapper;
+    private final ConnectionManagerImpl connectionManagerImpl;
 
-    public AuthorRepositoryImpl(ConnectionManagerImpl connectionManagerImpl) {
+    public AuthorRepositoryImpl(AuthorResultSetMapperImpl authorResultSetMapper, SongResultSetMapperImpl songResultSetMapper, ConnectionManagerImpl connectionManagerImpl) {
+        this.authorResultSetMapper = authorResultSetMapper;
+        this.songResultSetMapper = songResultSetMapper;
         this.connectionManagerImpl = connectionManagerImpl;
-    }
-
-    private AuthorRepositoryImpl() {
-    }
-
-    public static AuthorRepositoryImpl getInstance() {
-        return INSTANCE;
     }
 
     public Optional<AuthorEntity> findByAuthorName(String name) {

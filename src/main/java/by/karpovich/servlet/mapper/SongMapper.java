@@ -14,9 +14,15 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class SongMapper {
-    private SingerServiceImpl singerService = SingerServiceImpl.getInstance();
-    private AlbumServiceImpl albumService = AlbumServiceImpl.getInstance();
-    private AuthorRepositoryImpl authorRepository = AuthorRepositoryImpl.getInstance();
+    private final SingerServiceImpl singerService;
+    private final AlbumServiceImpl albumService;
+    private final AuthorRepositoryImpl authorRepository;
+
+    public SongMapper(SingerServiceImpl singerService, AlbumServiceImpl albumService, AuthorRepositoryImpl authorRepository) {
+        this.singerService = singerService;
+        this.albumService = albumService;
+        this.authorRepository = authorRepository;
+    }
 
     public SongEntity mapEntityFromDto(SongDto dto) {
         return Optional.ofNullable(dto)

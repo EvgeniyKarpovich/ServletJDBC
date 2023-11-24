@@ -28,7 +28,7 @@ class AlbumMapperTest {
     @Mock
     private SingerServiceImpl singerService;
     @InjectMocks
-    private AlbumMapper albumMapper = new AlbumMapper();
+    private AlbumMapper albumMapper;
 
     @Test
     void mapEntityFromDto() {

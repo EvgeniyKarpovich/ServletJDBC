@@ -12,7 +12,11 @@ import java.util.Optional;
 import static java.util.stream.Collectors.toList;
 
 public class AuthorMapper {
-    private SongRepositoryImpl songRepository = SongRepositoryImpl.getInstance();
+    private final   SongRepositoryImpl songRepository;
+
+    public AuthorMapper(SongRepositoryImpl songRepository) {
+        this.songRepository = songRepository;
+    }
 
     public AuthorEntity mapEntityFromDto(AuthorDto dto) {
         return Optional.ofNullable(dto)

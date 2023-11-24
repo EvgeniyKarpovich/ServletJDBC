@@ -15,7 +15,11 @@ import java.util.List;
 @WebServlet("/authors/all")
 public class AuthorsAllServlet extends HttpServlet {
 
-    private AuthorServiceImpl authorService = AuthorServiceImpl.getInstance();
+    private final AuthorServiceImpl authorService;
+
+    public AuthorsAllServlet(AuthorServiceImpl authorService) {
+        this.authorService = authorService;
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

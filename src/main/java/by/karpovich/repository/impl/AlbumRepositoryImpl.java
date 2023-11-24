@@ -17,23 +17,16 @@ import java.util.List;
 import java.util.Optional;
 
 public class AlbumRepositoryImpl implements AlbumRepository {
+    private final AlbumResultSetMapperImpl albumResultSetMapper;
+    private final SingerResultSetMapperImpl singerResultSetMapper;
+    private final ConnectionManagerImpl connectionManager;
 
-    private static AlbumRepositoryImpl INSTANCE = new AlbumRepositoryImpl();
-    private AlbumResultSetMapperImpl albumResultSetMapper = new AlbumResultSetMapperImpl();
-    private SingerResultSetMapperImpl singerResultSetMapper = new SingerResultSetMapperImpl();
-
-    private ConnectionManagerImpl connectionManager;
-
-    public AlbumRepositoryImpl(ConnectionManagerImpl connectionManager) {
+    public AlbumRepositoryImpl(AlbumResultSetMapperImpl albumResultSetMapper, SingerResultSetMapperImpl singerResultSetMapper, ConnectionManagerImpl connectionManager) {
+        this.albumResultSetMapper = albumResultSetMapper;
+        this.singerResultSetMapper = singerResultSetMapper;
         this.connectionManager = connectionManager;
     }
 
-    private AlbumRepositoryImpl() {
-    }
-
-    public static AlbumRepositoryImpl getInstance() {
-        return INSTANCE;
-    }
 
     @Override
     public Optional<AlbumEntity> findById(Long id) {

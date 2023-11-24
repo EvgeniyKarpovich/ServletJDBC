@@ -14,15 +14,13 @@ import java.util.Optional;
 
 public class SingerServiceImpl implements SingerService {
 
-    private static SingerServiceImpl INSTANCE = new SingerServiceImpl();
-    private SingerRepositoryImpl singerRepository = SingerRepositoryImpl.getInstance();
-    private SingerMapper singerMapper = new SingerMapper();
 
-    private SingerServiceImpl() {
-    }
+    private final SingerRepositoryImpl singerRepository;
+    private final SingerMapper singerMapper;
 
-    public static SingerServiceImpl getInstance() {
-        return INSTANCE;
+    public SingerServiceImpl(SingerRepositoryImpl singerRepository, SingerMapper singerMapper) {
+        this.singerRepository = singerRepository;
+        this.singerMapper = singerMapper;
     }
 
     @Override

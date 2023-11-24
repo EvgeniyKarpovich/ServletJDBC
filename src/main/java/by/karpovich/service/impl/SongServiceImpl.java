@@ -14,15 +14,12 @@ import java.util.Optional;
 
 public class SongServiceImpl implements SongService {
 
-    private static SongServiceImpl INSTANCE = new SongServiceImpl();
-    private SongMapper songMapper = new SongMapper();
-    private SongRepositoryImpl songRepository = SongRepositoryImpl.getInstance();
+    private final SongMapper songMapper;
+    private final SongRepositoryImpl songRepository;
 
-    private SongServiceImpl() {
-    }
-
-    public static SongServiceImpl getInstance() {
-        return INSTANCE;
+    public SongServiceImpl(SongMapper songMapper, SongRepositoryImpl songRepository) {
+        this.songMapper = songMapper;
+        this.songRepository = songRepository;
     }
 
     @Override

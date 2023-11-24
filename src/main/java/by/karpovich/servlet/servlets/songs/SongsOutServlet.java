@@ -14,7 +14,11 @@ import java.io.IOException;
 @WebServlet("/songs/out")
 public class SongsOutServlet extends HttpServlet {
 
-    private SongServiceImpl songService = SongServiceImpl.getInstance();
+    private final SongServiceImpl songService;
+
+    public SongsOutServlet(SongServiceImpl songService) {
+        this.songService = songService;
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

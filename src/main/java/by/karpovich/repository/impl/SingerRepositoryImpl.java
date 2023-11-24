@@ -19,20 +19,14 @@ import java.util.Optional;
 
 public class SingerRepositoryImpl implements SingerRepository {
 
-    private static SingerRepositoryImpl INSTANCE = new SingerRepositoryImpl();
-    private SingerResultSetMapperImpl singerResultSetMapper = new SingerResultSetMapperImpl();
-    private AlbumResultSetMapperImpl albumResultSetMapper = new AlbumResultSetMapperImpl();
-    private ConnectionManagerImpl connectionManager;
+    private final SingerResultSetMapperImpl singerResultSetMapper;
+    private final AlbumResultSetMapperImpl albumResultSetMapper;
+    private final ConnectionManagerImpl connectionManager;
 
-    public SingerRepositoryImpl(ConnectionManagerImpl connectionManager) {
+    public SingerRepositoryImpl(SingerResultSetMapperImpl singerResultSetMapper, AlbumResultSetMapperImpl albumResultSetMapper, ConnectionManagerImpl connectionManager) {
+        this.singerResultSetMapper = singerResultSetMapper;
+        this.albumResultSetMapper = albumResultSetMapper;
         this.connectionManager = connectionManager;
-    }
-
-    private SingerRepositoryImpl() {
-    }
-
-    public static SingerRepositoryImpl getInstance() {
-        return INSTANCE;
     }
 
     @Override

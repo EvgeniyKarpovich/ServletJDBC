@@ -12,6 +12,7 @@ public class ConnectionManagerImpl {
     private final String username = "db.username";
     private final String url = "db.url";
 
+
     static {
         loadDriver();
     }

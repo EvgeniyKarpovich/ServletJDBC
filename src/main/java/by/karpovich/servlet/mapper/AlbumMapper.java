@@ -9,7 +9,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class AlbumMapper {
-    private SingerServiceImpl singerService = SingerServiceImpl.getInstance();
+    private final SingerServiceImpl singerService;
+
+    public AlbumMapper(SingerServiceImpl singerService) {
+        this.singerService = singerService;
+    }
 
     public AlbumEntity mapEntityFromDto(AlbumDto dto) {
         return Optional.ofNullable(dto)

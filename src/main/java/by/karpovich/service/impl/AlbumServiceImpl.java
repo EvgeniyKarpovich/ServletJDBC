@@ -12,16 +12,12 @@ import java.util.List;
 import java.util.Optional;
 
 public class AlbumServiceImpl implements AlbumService {
+    private final AlbumRepositoryImpl albumRepository;
+    private final AlbumMapper albumMapper;
 
-    private static AlbumServiceImpl INSTANCE = new AlbumServiceImpl();
-    private AlbumRepositoryImpl albumRepository = AlbumRepositoryImpl.getInstance();
-    private AlbumMapper albumMapper = new AlbumMapper();
-
-    private AlbumServiceImpl() {
-    }
-
-    public static AlbumServiceImpl getInstance() {
-        return INSTANCE;
+    public AlbumServiceImpl(AlbumRepositoryImpl albumRepository, AlbumMapper albumMapper) {
+        this.albumRepository = albumRepository;
+        this.albumMapper = albumMapper;
     }
 
     @Override

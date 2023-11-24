@@ -15,7 +15,11 @@ import java.util.List;
 @WebServlet("/songs/all")
 public class SongsAllServlet extends HttpServlet {
 
-    private SongServiceImpl songService = SongServiceImpl.getInstance();
+    private final SongServiceImpl songService;
+
+    public SongsAllServlet(SongServiceImpl songService) {
+        this.songService = songService;
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
