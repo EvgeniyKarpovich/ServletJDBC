@@ -17,12 +17,12 @@ import java.util.List;
 import java.util.Optional;
 
 public class SongRepositoryImpl implements SongRepository {
-    private final SongResultSetMapperImpl songResultSetMapper ;
+    private final SongResultSetMapperImpl songResultSetMapper;
     private final AuthorResultSetMapperImpl authorResultSetMapper;
     private final AlbumResultSetMapperImpl albumResultSetMapper;
     private final SingerResultSetMapperImpl singerResultSetMapper;
 
-    private  final ConnectionManagerImpl connectionManager;
+    private final ConnectionManagerImpl connectionManager;
 
     public SongRepositoryImpl(SongResultSetMapperImpl songResultSetMapper, AuthorResultSetMapperImpl authorResultSetMapper, AlbumResultSetMapperImpl albumResultSetMapper, SingerResultSetMapperImpl singerResultSetMapper, ConnectionManagerImpl connectionManager) {
         this.songResultSetMapper = songResultSetMapper;

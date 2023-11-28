@@ -57,6 +57,11 @@ public class SongEntity {
         this.authors = authors;
     }
 
+    public SongEntity(String name, List<AuthorEntity> authors) {
+        this.name = name;
+        this.authors = authors;
+    }
+
     public Long getId() {
         return id;
     }

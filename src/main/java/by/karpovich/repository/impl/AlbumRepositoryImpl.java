@@ -48,11 +48,11 @@ public class AlbumRepositoryImpl implements AlbumRepository {
         }
     }
 
-    public Optional<AlbumEntity> findByNameAndSingerId(String songName, Long singerId) {
+    public Optional<AlbumEntity> findByNameAndSingerId(String albumName, Long singerId) {
         try (var connection = connectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(AlbumSql.FIND_BY_NAME_AND_SINGER_ID_SQL)) {
 
-            preparedStatement.setString(1, songName);
+            preparedStatement.setString(1, albumName);
             preparedStatement.setLong(2, singerId);
 
             ResultSet resultSet = preparedStatement.executeQuery();
