@@ -32,3 +32,28 @@ CREATE TABLE if not exists song_author(
  CONSTRAINT fk_song FOREIGN KEY (song_id) references songs (id),
  CONSTRAINT fk_author FOREIGN KEY (author_id) references authors (id)
  );
+
+INSERT INTO  singers(surname)
+VALUES ('Singer'),
+       ('Singer Delete'),
+       ('Singer Update');
+
+INSERT INTO  authors (author_name)
+VALUES ('Author'),
+       ('Author Delete'),
+       ('Author Update');
+
+INSERT INTO albums(album_name, singer_id)
+VALUES ('Album', 1),
+       ('Album Delete', 1),
+       ('Album Update', 1);
+
+INSERT INTO  songs(name, singer_id, album_id)
+VALUES ('Song', 1, 1),
+       ('Song Delete', 1, 1),
+       ('Song Update', 1, 1);
+
+INSERT INTO song_author (song_id, author_id)
+VALUES (1, 1),
+       (2, 1),
+       (3, 1);

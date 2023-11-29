@@ -7,6 +7,7 @@ import by.karpovich.repository.mapper.impl.AuthorResultSetMapperImpl;
 import by.karpovich.repository.mapper.impl.SongResultSetMapperImpl;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -44,6 +45,14 @@ class AuthorRepositoryImplTest {
             new PostgreSQLContainer<>("postgres:16")
                     .withInitScript("db-migration.SQL");
 
+    @BeforeEach
+    void setUp() {
+        doAnswer(invocation -> DriverManager.getConnection(
+                container.getJdbcUrl(),
+                container.getUsername(),
+                container.getPassword())).when(connectionManager).getConnection();
+    }
+
     @BeforeAll
     static void beforeAll() {
         container.start();
@@ -59,83 +68,48 @@ class AuthorRepositoryImplTest {
 
     @Test
     void save() {
-        doAnswer(invocation -> DriverManager.getConnection(
-                container.getJdbcUrl(),
-                container.getUsername(),
-                container.getPassword())).when(connectionManager).getConnection();
-
-        AuthorEntity entity = new AuthorEntity("TEST Author");
-        AuthorEntity result = authorRepository.save(entity);
+        AuthorEntity result = authorRepository.save(generateAuthorEntity());
 
         assertNotNull(result.getId());
     }
 
     @Test
     void findById() {
-        doAnswer(invocation -> DriverManager.getConnection(
-                container.getJdbcUrl(),
-                container.getUsername(),
-                container.getPassword())).when(connectionManager).getConnection();
+        AuthorEntity result = authorRepository.findById(1L).get();
 
-        AuthorEntity entity = new AuthorEntity("TEST2 Author");
-
-        AuthorEntity saved = authorRepository.save(entity);
-
-        AuthorEntity result = authorRepository.findById(saved.getId()).get();
-
-        assertEquals(result.getId(), saved.getId());
-        assertEquals(result.getAuthorName(), entity.getAuthorName());
+        assertEquals(result.getId(), 1L);
+        assertEquals(result.getAuthorName(), "Author");
     }
 
     @Test
     void findAll() {
-        doAnswer(invocation -> DriverManager.getConnection(
-                container.getJdbcUrl(),
-                container.getUsername(),
-                container.getPassword())).when(connectionManager).getConnection();
-
-        AuthorEntity author = new AuthorEntity("TEST3 Author");
-        AuthorEntity author2 = new AuthorEntity("TEST4 Author");
-        authorRepository.save(author);
-        authorRepository.save(author2);
-
         List<AuthorEntity> result = authorRepository.findAll();
 
-        assertEquals(2, result.size());
+        assertEquals(3, result.size());
     }
 
     @Test
     void deleteById() {
-        doAnswer(invocation -> DriverManager.getConnection(
-                container.getJdbcUrl(),
-                container.getUsername(),
-                container.getPassword())).when(connectionManager).getConnection();
-
-        AuthorEntity author = new AuthorEntity("TEST5 Author");
-        AuthorEntity save = authorRepository.save(author);
-
-        boolean result = authorRepository.deleteById(save.getId());
+        boolean result = authorRepository.deleteById(2L);
 
         assertTrue(result);
     }
 
     @Test
     void update() {
-        doAnswer(invocation -> DriverManager.getConnection(
-                container.getJdbcUrl(),
-                container.getUsername(),
-                container.getPassword())).when(connectionManager).getConnection();
-
         String updateName = "update name";
+        AuthorEntity entity = authorRepository.findById(3L).get();
+       entity.setAuthorName(updateName);
 
-        AuthorEntity entity = new AuthorEntity("TEST6 Author");
-        authorRepository.save(entity);
-
-        entity.setAuthorName(updateName);
         authorRepository.update(entity);
 
         AuthorEntity result = authorRepository.findById(entity.getId()).get();
 
         assertEquals(result.getAuthorName(), updateName);
     }
+
+    private AuthorEntity generateAuthorEntity() {
+        return new AuthorEntity("Author test");
+    }
+
 }

@@ -224,7 +224,8 @@ public class SongRepositoryImpl implements SongRepository {
                 songEntity.setId(resultSet.getLong("id"));
             }
         } catch (SQLException e) {
-            throw new DaoException("Error during the execution of update");
+//            throw new DaoException("Error during the execution of update");
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

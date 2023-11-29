@@ -7,6 +7,7 @@ import by.karpovich.repository.mapper.impl.AlbumResultSetMapperImpl;
 import by.karpovich.repository.mapper.impl.SingerResultSetMapperImpl;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -35,6 +36,13 @@ class SingerRepositoryImplTest {
 
                     .withInitScript("db-migration.SQL");
 
+    @BeforeEach
+    void setUp() {
+        doAnswer(invocation -> DriverManager.getConnection(
+                container.getJdbcUrl(),
+                container.getUsername(),
+                container.getPassword())).when(connectionManager).getConnection();
+    }
     @BeforeAll
     static void beforeAll() {
         container.start();
@@ -50,80 +58,46 @@ class SingerRepositoryImplTest {
 
     @Test
     void save() {
-        doAnswer(invocation -> DriverManager.getConnection(
-                container.getJdbcUrl(),
-                container.getUsername(),
-                container.getPassword())).when(connectionManager).getConnection();
-
-        SingerEntity entity = new SingerEntity("TEST Singer");
-        SingerEntity result = singerRepository.save(entity);
+        SingerEntity result = singerRepository.save(generateSingerEntity());
 
         assertNotNull(result.getId());
     }
 
     @Test
     void findAll() {
-        doAnswer(invocation -> DriverManager.getConnection(
-                container.getJdbcUrl(),
-                container.getUsername(),
-                container.getPassword())).when(connectionManager).getConnection();
-
-        SingerEntity singer = new SingerEntity("TEST2 SINGER");
-        singerRepository.save(singer);
-
         List<SingerEntity> all = singerRepository.findAll();
 
-        assertEquals(1, all.size());
+        assertEquals(3, all.size());
     }
 
     @Test
     void findById() {
-        doAnswer(invocation -> DriverManager.getConnection(
-                container.getJdbcUrl(),
-                container.getUsername(),
-                container.getPassword())).when(connectionManager).getConnection();
+        SingerEntity actualResult = singerRepository.findById(1L).get();
 
-        SingerEntity entity = new SingerEntity("TEST3 SINGER");
-        SingerEntity saved = singerRepository.save(entity);
-
-        SingerEntity actualResult = singerRepository.findById(saved.getId()).get();
-
-        assertEquals(actualResult.getId(), saved.getId());
-        assertEquals(actualResult.getSurname(), entity.getSurname());
+        assertEquals(actualResult.getId(), 1L);
+        assertEquals(actualResult.getSurname(), "Singer");
     }
 
     @Test
     void deleteById() {
-        doAnswer(invocation -> DriverManager.getConnection(
-                container.getJdbcUrl(),
-                container.getUsername(),
-                container.getPassword())).when(connectionManager).getConnection();
-
-        SingerEntity entity = new SingerEntity("TEST4 SINGER");
-        SingerEntity saved = singerRepository.save(entity);
-
-        boolean actualResult = singerRepository.deleteById(saved.getId());
+        boolean actualResult = singerRepository.deleteById(2L);
 
         assertTrue(actualResult);
     }
 
     @Test
     void update() {
-        doAnswer(invocation -> DriverManager.getConnection(
-                container.getJdbcUrl(),
-                container.getUsername(),
-                container.getPassword())).when(connectionManager).getConnection();
-
         String updateName = "update name";
-
-        SingerEntity entity = new SingerEntity("TEST5 SINGER");
-        singerRepository.save(entity);
-
-        entity.setSurname("update name");
-
+        SingerEntity entity = singerRepository.findById(3L).get();
+        entity.setSurname(updateName);
         singerRepository.update(entity);
+
         SingerEntity result = singerRepository.findById(entity.getId()).get();
 
         assertEquals(result.getSurname(), updateName);
+    }
+
+    private SingerEntity generateSingerEntity() {
+        return new SingerEntity("Singer test");
     }
 }

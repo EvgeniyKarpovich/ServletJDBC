@@ -13,7 +13,7 @@ public class SongSql {
 
     public static final String UPDATE_SQL = """
             UPDATE songs
-            SET surname = ?,
+            SET name = ?,
             singer_id = ?,
             album_id = ?
             WHERE id = ?

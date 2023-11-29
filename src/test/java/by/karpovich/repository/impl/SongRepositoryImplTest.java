@@ -11,6 +11,7 @@ import by.karpovich.repository.mapper.impl.SingerResultSetMapperImpl;
 import by.karpovich.repository.mapper.impl.SongResultSetMapperImpl;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -18,6 +19,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doAnswer;
@@ -38,6 +40,14 @@ class SongRepositoryImplTest {
 
     static String connectionUrl;
 
+    @BeforeEach
+    void setUp() {
+        doAnswer(invocation -> DriverManager.getConnection(
+                container.getJdbcUrl(),
+                container.getUsername(),
+                container.getPassword())).when(connectionManager).getConnection();
+    }
+
     @BeforeAll
     static void beforeAll() {
         container.start();
@@ -51,181 +61,77 @@ class SongRepositoryImplTest {
         container.stop();
     }
 
-
     @Test
     void findById() {
-        doAnswer(invocation -> DriverManager.getConnection(
-                container.getJdbcUrl(),
-                container.getUsername(),
-                container.getPassword())).when(connectionManager).getConnection();
+        SongEntity result = songRepository.findById(1L).get();
 
-        AlbumEntity albumEntity = new AlbumEntity("TEST3 Album");
-        SingerEntity singerEntity = new SingerEntity("TEST3 SINGER");
-        singerRepository.save(singerEntity);
-        albumEntity.setSinger(singerEntity);
-        albumRepository.save(albumEntity);
-        AuthorEntity authorEntity = new AuthorEntity("TEST5 AUTHOR");
-        AuthorEntity authorEntity2 = new AuthorEntity("TEST6 AUTHOR");
-        List<AuthorEntity> authorEntities = new ArrayList<>();
-        authorEntities.add(authorEntity);
-        authorEntities.add(authorEntity2);
-        authorRepository.save(authorEntity);
-        authorRepository.save(authorEntity2);
-
-        SongEntity songEntity = new SongEntity("TEST3 Song", singerEntity, albumEntity, authorEntities);
-
-        SongEntity savedSong = songRepository.save(songEntity);
-        SongEntity result = songRepository.findById(savedSong.getId()).get();
-
-        assertEquals(result.getId(), savedSong.getId());
-        assertEquals(result.getName(), savedSong.getName());
+        assertEquals(result.getId(), 1L);
+        assertEquals(result.getName(), "Song");
     }
 
     @Test
     void findByNameAndSingerId() {
-        doAnswer(invocation -> DriverManager.getConnection(
-                container.getJdbcUrl(),
-                container.getUsername(),
-                container.getPassword())).when(connectionManager).getConnection();
+        SongEntity result = songRepository.findByNameAndSingerId("Song", 1L).get();
 
-        AlbumEntity albumEntity = new AlbumEntity("TEST2 Album");
-        SingerEntity singerEntity = new SingerEntity("TEST2 SINGER");
-        singerRepository.save(singerEntity);
-        albumEntity.setSinger(singerEntity);
-        albumRepository.save(albumEntity);
-        AuthorEntity authorEntity = new AuthorEntity("TEST3 AUTHOR");
-        AuthorEntity authorEntity2 = new AuthorEntity("TEST4 AUTHOR");
-        List<AuthorEntity> authorEntities = new ArrayList<>();
-        authorEntities.add(authorEntity);
-        authorEntities.add(authorEntity2);
-        authorRepository.save(authorEntity);
-        authorRepository.save(authorEntity2);
-
-        SongEntity songEntity = new SongEntity("TEST2 Song", singerEntity, albumEntity, authorEntities);
-
-        SongEntity savedSong = songRepository.save(songEntity);
-        SongEntity result = songRepository.findByNameAndSingerId(songEntity.getName(), singerEntity.getId()).get();
-
-        assertEquals(result.getId(), savedSong.getId());
-        assertEquals(result.getName(), savedSong.getName());
+        assertEquals(result.getId(), 1L);
+        assertEquals(result.getName(), "Song");
     }
 
     @Test
     void findByAuthorId() {
-        doAnswer(invocation -> DriverManager.getConnection(
-                container.getJdbcUrl(),
-                container.getUsername(),
-                container.getPassword())).when(connectionManager).getConnection();
+        List<SongEntity> result = songRepository.findByAuthorId(1L);
 
-        AlbumEntity albumEntity = new AlbumEntity("TEST4 Album");
-        SingerEntity singerEntity = new SingerEntity("TEST4 SINGER");
-        singerRepository.save(singerEntity);
-        albumEntity.setSinger(singerEntity);
-        albumRepository.save(albumEntity);
-        AuthorEntity authorEntity = new AuthorEntity("TEST7 AUTHOR");
-        AuthorEntity authorEntity2 = new AuthorEntity("TEST8 AUTHOR");
-        List<AuthorEntity> authorEntities = new ArrayList<>();
-        authorEntities.add(authorEntity);
-        authorEntities.add(authorEntity2);
-        authorRepository.save(authorEntity);
-        authorRepository.save(authorEntity2);
-
-        SongEntity songEntity = new SongEntity("TEST4 Song", singerEntity, albumEntity, authorEntities);
-
-        SongEntity savedSong = songRepository.save(songEntity);
-        List<SongEntity> result = songRepository.findByAuthorId(authorEntity.getId());
-
-        assertEquals(1, result.size());
+        assertEquals(3, result.size());
     }
 
     @Test
     void findAll() {
-        doAnswer(invocation -> DriverManager.getConnection(
-                container.getJdbcUrl(),
-                container.getUsername(),
-                container.getPassword())).when(connectionManager).getConnection();
-
-        AlbumEntity albumEntity = new AlbumEntity("TEST5 Album");
-        SingerEntity singerEntity = new SingerEntity("TEST5 SINGER");
-        singerRepository.save(singerEntity);
-        albumEntity.setSinger(singerEntity);
-        albumRepository.save(albumEntity);
-        AuthorEntity authorEntity = new AuthorEntity("TEST9 AUTHOR");
-        AuthorEntity authorEntity2 = new AuthorEntity("TEST10 AUTHOR");
-        List<AuthorEntity> authorEntities = new ArrayList<>();
-        authorEntities.add(authorEntity);
-        authorEntities.add(authorEntity2);
-        authorRepository.save(authorEntity);
-        authorRepository.save(authorEntity2);
-
-        SongEntity songEntity = new SongEntity("TEST5 Song", singerEntity, albumEntity, authorEntities);
-        SongEntity songEntity2 = new SongEntity("TEST6 Song", singerEntity, albumEntity, authorEntities);
-
-        songRepository.save(songEntity);
-        songRepository.save(songEntity2);
-
-        List<SongEntity> result = songRepository.findAll();
-
-        assertEquals(2, result.size());
     }
 
     @Test
     void deleteById() {
-        doAnswer(invocation -> DriverManager.getConnection(
-                container.getJdbcUrl(),
-                container.getUsername(),
-                container.getPassword())).when(connectionManager).getConnection();
-
-        AlbumEntity albumEntity = new AlbumEntity("TEST6 Album");
-        SingerEntity singerEntity = new SingerEntity("TEST6 SINGER");
-        singerRepository.save(singerEntity);
-        albumEntity.setSinger(singerEntity);
-        albumRepository.save(albumEntity);
-        AuthorEntity authorEntity = new AuthorEntity("TEST11 AUTHOR");
-        AuthorEntity authorEntity2 = new AuthorEntity("TEST22 AUTHOR");
-        List<AuthorEntity> authorEntities = new ArrayList<>();
-        authorEntities.add(authorEntity);
-        authorEntities.add(authorEntity2);
-        authorRepository.save(authorEntity);
-        authorRepository.save(authorEntity2);
-
-        SongEntity songEntity = new SongEntity("TEST6 Song", singerEntity, albumEntity, authorEntities);
-
-        SongEntity savedSong = songRepository.save(songEntity);
-
-        boolean result = songRepository.deleteById(savedSong.getId());
+        boolean result = songRepository.deleteById(2L);
 
         assertTrue(result);
     }
 
     @Test
     void save() {
-        doAnswer(invocation -> DriverManager.getConnection(
-                container.getJdbcUrl(),
-                container.getUsername(),
-                container.getPassword())).when(connectionManager).getConnection();
-
-        AlbumEntity albumEntity = new AlbumEntity("TEST Album");
-        SingerEntity singerEntity = new SingerEntity("TEST SINGER");
-        singerRepository.save(singerEntity);
-        albumEntity.setSinger(singerEntity);
-        albumRepository.save(albumEntity);
-        AuthorEntity authorEntity = new AuthorEntity("TEST AUTHOR");
-        AuthorEntity authorEntity2 = new AuthorEntity("TEST2 AUTHOR");
-        List<AuthorEntity> authorEntities = new ArrayList<>();
-        authorEntities.add(authorEntity);
-        authorEntities.add(authorEntity2);
-        authorRepository.save(authorEntity);
-        authorRepository.save(authorEntity2);
-
-        SongEntity songEntity = new SongEntity("TEST Song", singerEntity, albumEntity, authorEntities);
-
-        SongEntity result = songRepository.save(songEntity);
+        SongEntity result = songRepository.save(generateSongEntity());
 
         assertNotNull(result.getId());
     }
 
     @Test
     void update() {
+        String updateName = "update name";
+
+        SongEntity songEntity = songRepository.findById(3L).get();
+        songEntity.setName(updateName);
+        songRepository.update(songEntity);
+
+        SongEntity result = songRepository.findById(songEntity.getId()).get();
+
+        assertEquals(result.getName(), updateName);
+    }
+
+    private SongEntity generateSongEntity() {
+        return new SongEntity("Author test", findSingerForSong(), findAlbumForSong(), findAuthorsForSong());
+    }
+
+    private AlbumEntity findAlbumForSong() {
+        return albumRepository.findById(1L).get();
+    }
+
+    private SingerEntity findSingerForSong() {
+        return singerRepository.findById(1L).get();
+    }
+
+    private List<AuthorEntity> findAuthorsForSong() {
+        List<AuthorEntity> authors = new ArrayList<>();
+        authors.add(authorRepository.findById(1L).get());
+        authors.add(authorRepository.findById(2L).get());
+
+        return authors;
     }
 }

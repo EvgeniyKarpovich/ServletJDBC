@@ -8,6 +8,7 @@ import by.karpovich.repository.mapper.impl.AlbumResultSetMapperImpl;
 import by.karpovich.repository.mapper.impl.SingerResultSetMapperImpl;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -32,6 +33,14 @@ class AlbumRepositoryImplTest {
 
     static String connectionUrl;
 
+    @BeforeEach
+    void setUp() {
+        doAnswer(invocation -> DriverManager.getConnection(
+                container.getJdbcUrl(),
+                container.getUsername(),
+                container.getPassword())).when(connectionManager).getConnection();
+    }
+
     @BeforeAll
     static void beforeAll() {
         container.start();
@@ -47,122 +56,61 @@ class AlbumRepositoryImplTest {
 
     @Test
     void findById() {
-        doAnswer(invocation -> DriverManager.getConnection(
-                container.getJdbcUrl(),
-                container.getUsername(),
-                container.getPassword())).when(connectionManager).getConnection();
+        AlbumEntity result = albumRepository.findById(1L).get();
 
-        AlbumEntity entity = new AlbumEntity("TEST Album");
-        SingerEntity singerEntity = new SingerEntity("TEST SINGER");
-        singerRepository.save(singerEntity);
-        entity.setSinger(singerEntity);
-
-        AlbumEntity saved = albumRepository.save(entity);
-
-        AlbumEntity result = albumRepository.findById(saved.getId()).get();
-
-        assertEquals(result.getId(), saved.getId());
-        assertEquals(result.getAlbumName(), entity.getAlbumName());
+        assertEquals(result.getId(), 1L);
+        assertEquals(result.getAlbumName(), "Album");
     }
 
     @Test
     void findByNameAndSingerId() {
-        doAnswer(invocation -> DriverManager.getConnection(
-                container.getJdbcUrl(),
-                container.getUsername(),
-                container.getPassword())).when(connectionManager).getConnection();
+        AlbumEntity result = albumRepository.findByNameAndSingerId("Album", 1L).get();
 
-        AlbumEntity entity = new AlbumEntity("TEST2 Album");
-        SingerEntity singerEntity = new SingerEntity("TEST2 SINGER");
-        SingerEntity savedSinger = singerRepository.save(singerEntity);
-        entity.setSinger(singerEntity);
-        AlbumEntity savedAlbum = albumRepository.save(entity);
-
-        AlbumEntity result = albumRepository.findByNameAndSingerId(entity.getAlbumName(), savedSinger.getId()).get();
-
-        assertEquals(result.getId(), savedAlbum.getId());
-        assertEquals(result.getAlbumName(), savedAlbum.getAlbumName());
+        assertEquals(result.getId(), 1L);
+        assertEquals(result.getAlbumName(), "Album");
     }
 
     @Test
     void findAll() {
-        doAnswer(invocation -> DriverManager.getConnection(
-                container.getJdbcUrl(),
-                container.getUsername(),
-                container.getPassword())).when(connectionManager).getConnection();
-
-        AlbumEntity albumEntity = new AlbumEntity("TEST3 Album");
-        SingerEntity singerEntity = new SingerEntity("TEST3 SINGER");
-        singerRepository.save(singerEntity);
-        albumEntity.setSinger(singerEntity);
-        albumRepository.save(albumEntity);
-
-        AlbumEntity albumEntity2 = new AlbumEntity("TEST4 Album");
-        SingerEntity singerEntity2 = new SingerEntity("TEST4 SINGER");
-        singerRepository.save(singerEntity2);
-        albumEntity2.setSinger(singerEntity2);
-        albumRepository.save(albumEntity2);
-
         List<AlbumEntity> result = albumRepository.findAll();
 
-        assertEquals(2, result.size());
+        assertEquals(3, result.size());
     }
 
     @Test
     void deleteById() {
-        doAnswer(invocation -> DriverManager.getConnection(
-                container.getJdbcUrl(),
-                container.getUsername(),
-                container.getPassword())).when(connectionManager).getConnection();
-
-        AlbumEntity entity = new AlbumEntity("TEST5 Album");
-        SingerEntity singerEntity = new SingerEntity("TEST5 SINGER");
-        singerRepository.save(singerEntity);
-        entity.setSinger(singerEntity);
-        AlbumEntity savedAlbum = albumRepository.save(entity);
-
-        boolean result = albumRepository.deleteById(savedAlbum.getId());
+        boolean result = albumRepository.deleteById(2L);
 
         assertTrue(result);
     }
 
     @Test
     void save() {
-        doAnswer(invocation -> DriverManager.getConnection(
-                container.getJdbcUrl(),
-                container.getUsername(),
-                container.getPassword())).when(connectionManager).getConnection();
-
-        AlbumEntity entity = new AlbumEntity("TEST6 Album");
-        SingerEntity singerEntity = new SingerEntity("TEST6 SINGER");
-        singerRepository.save(singerEntity);
-        entity.setSinger(singerEntity);
-
-        AlbumEntity result = albumRepository.save(entity);
+        AlbumEntity result = albumRepository.save(generateAlbumEntity());
 
         assertNotNull(result.getId());
     }
 
     @Test
     void update() {
-        doAnswer(invocation -> DriverManager.getConnection(
-                container.getJdbcUrl(),
-                container.getUsername(),
-                container.getPassword())).when(connectionManager).getConnection();
-
         String updateName = "update name";
 
-        AlbumEntity albumEntity = new AlbumEntity("TEST7 Album");
-        SingerEntity singerEntity = new SingerEntity("TEST7 SINGER");
-        singerRepository.save(singerEntity);
-        albumEntity.setSinger(singerEntity);
-        albumRepository.save(albumEntity);
+        AlbumEntity albumEntity = albumRepository.findById(3L).get();
         albumEntity.setAlbumName(updateName);
-
         albumRepository.update(albumEntity);
 
         AlbumEntity result = albumRepository.findById(albumEntity.getId()).get();
 
         assertEquals(result.getAlbumName(), updateName);
     }
+
+    private AlbumEntity generateAlbumEntity() {
+
+        return new AlbumEntity("Album test", findSingerForAlbum());
+    }
+
+    private SingerEntity findSingerForAlbum() {
+        return singerRepository.findById(1L).get();
+    }
+
 }
