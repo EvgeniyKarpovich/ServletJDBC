@@ -19,7 +19,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doAnswer;
@@ -86,6 +85,9 @@ class SongRepositoryImplTest {
 
     @Test
     void findAll() {
+        List<SongEntity> result = songRepository.findAll();
+
+        assertEquals(3, result.size());
     }
 
     @Test

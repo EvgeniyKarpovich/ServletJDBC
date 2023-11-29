@@ -2,7 +2,6 @@ package by.karpovich.repository.impl;
 
 import by.karpovich.db.ConnectionManagerImpl;
 import by.karpovich.model.AlbumEntity;
-import by.karpovich.model.AuthorEntity;
 import by.karpovich.model.SingerEntity;
 import by.karpovich.repository.mapper.impl.AlbumResultSetMapperImpl;
 import by.karpovich.repository.mapper.impl.SingerResultSetMapperImpl;
@@ -15,7 +14,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.sql.DriverManager;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doAnswer;

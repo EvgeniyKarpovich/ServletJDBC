@@ -21,7 +21,6 @@ public class SongRepositoryImpl implements SongRepository {
     private final AuthorResultSetMapperImpl authorResultSetMapper;
     private final AlbumResultSetMapperImpl albumResultSetMapper;
     private final SingerResultSetMapperImpl singerResultSetMapper;
-
     private final ConnectionManagerImpl connectionManager;
 
     public SongRepositoryImpl(SongResultSetMapperImpl songResultSetMapper, AuthorResultSetMapperImpl authorResultSetMapper, AlbumResultSetMapperImpl albumResultSetMapper, SingerResultSetMapperImpl singerResultSetMapper, ConnectionManagerImpl connectionManager) {
@@ -91,10 +90,9 @@ public class SongRepositoryImpl implements SongRepository {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             List<SongEntity> songs = new ArrayList<>();
-            SongEntity songEntity = null;
 
             while (resultSet.next()) {
-                songEntity = songResultSetMapper.mapSong(resultSet);
+                SongEntity songEntity = songResultSetMapper.mapSong(resultSet);
                 songs.add(songEntity);
             }
 
@@ -111,10 +109,9 @@ public class SongRepositoryImpl implements SongRepository {
 
             ResultSet resultSet = preparedStatement.executeQuery();
             List<SongEntity> result = new ArrayList<>();
-            SongEntity songEntity = null;
 
             while (resultSet.next()) {
-                songEntity = songResultSetMapper.mapSong(resultSet);
+                SongEntity songEntity = songResultSetMapper.mapSong(resultSet);
                 songEntity.setAlbum(albumResultSetMapper.mapAlbum(resultSet));
                 songEntity.setSinger(singerResultSetMapper.mapSinger(resultSet));
                 result.add(songEntity);
@@ -122,8 +119,7 @@ public class SongRepositoryImpl implements SongRepository {
 
             return result;
         } catch (SQLException e) {
-//            throw new DaoException("Error during the execution of findAll");
-            throw new RuntimeException(e.getMessage());
+            throw new DaoException("Error during the execution of findAll");
         }
     }
 
@@ -224,8 +220,7 @@ public class SongRepositoryImpl implements SongRepository {
                 songEntity.setId(resultSet.getLong("id"));
             }
         } catch (SQLException e) {
-//            throw new DaoException("Error during the execution of update");
-            throw new RuntimeException(e.getMessage());
+            throw new DaoException("Error during the execution of update");
         }
     }
 }

@@ -1,7 +1,6 @@
 package by.karpovich.repository.impl;
 
 import by.karpovich.db.ConnectionManagerImpl;
-import by.karpovich.model.AuthorEntity;
 import by.karpovich.model.SingerEntity;
 import by.karpovich.repository.mapper.impl.AlbumResultSetMapperImpl;
 import by.karpovich.repository.mapper.impl.SingerResultSetMapperImpl;
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.testcontainers.containers.PostgreSQLContainer;
 
@@ -43,6 +41,7 @@ class SingerRepositoryImplTest {
                 container.getUsername(),
                 container.getPassword())).when(connectionManager).getConnection();
     }
+
     @BeforeAll
     static void beforeAll() {
         container.start();

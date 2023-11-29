@@ -12,7 +12,7 @@ import java.util.Optional;
 import static java.util.stream.Collectors.toList;
 
 public class AuthorMapper {
-    private final   SongRepositoryImpl songRepository;
+    private final SongRepositoryImpl songRepository;
 
     public AuthorMapper(SongRepositoryImpl songRepository) {
         this.songRepository = songRepository;
@@ -21,8 +21,7 @@ public class AuthorMapper {
     public AuthorEntity mapEntityFromDto(AuthorDto dto) {
         return Optional.ofNullable(dto)
                 .map(authorDto -> new AuthorEntity(
-                        authorDto.name()/*,
-                        songRepository.findByAuthorName(authorDto.name())*/))
+                        authorDto.name()))
                 .orElse(null);
     }
 
