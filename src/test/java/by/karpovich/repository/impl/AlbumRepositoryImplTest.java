@@ -59,10 +59,10 @@ class AlbumRepositoryImplTest {
 
         AlbumEntity saved = albumRepository.save(entity);
 
-        AlbumEntity actualResult = albumRepository.findById(saved.getId()).get();
+        AlbumEntity result = albumRepository.findById(saved.getId()).get();
 
-        assertEquals(actualResult.getId(), saved.getId());
-        assertEquals(actualResult.getAlbumName(), entity.getAlbumName());
+        assertEquals(result.getId(), saved.getId());
+        assertEquals(result.getAlbumName(), entity.getAlbumName());
     }
 
     @Test

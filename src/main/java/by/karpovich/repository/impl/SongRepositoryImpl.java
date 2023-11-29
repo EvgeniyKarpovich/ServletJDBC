@@ -122,16 +122,20 @@ public class SongRepositoryImpl implements SongRepository {
 
             return result;
         } catch (SQLException e) {
-            throw new DaoException("Error during the execution of findAll");
+//            throw new DaoException("Error during the execution of findAll");
+            throw new RuntimeException(e.getMessage());
         }
     }
 
     @Override
     public boolean deleteById(Long id) {
         try (var connection = connectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SongSql.DELETE_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SongSql.DELETE_SQL);
+             PreparedStatement preparedStatementDeleteSongAuthor = connection.prepareStatement(SongSql.DELETE_SONG_AUTHOR_SQL)) {
 
             preparedStatement.setLong(1, id);
+            preparedStatementDeleteSongAuthor.setLong(1, id);
+            preparedStatementDeleteSongAuthor.executeUpdate();
 
             return preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {

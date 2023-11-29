@@ -27,8 +27,6 @@ public class AuthorEntity {
         this.authorName = authorName;
     }
 
-
-
     public AuthorEntity(String authorName) {
         this.authorName = authorName;
     }

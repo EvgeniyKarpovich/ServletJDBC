@@ -29,7 +29,7 @@ public class SongSql {
             """;
 
     public static final String FIND_ALL_SQL = """
-            SELECT
+            SELECT DISTINCT
             songs.id song_id,
             songs.name song_name,
             singers.id s_id,
@@ -56,6 +56,11 @@ public class SongSql {
     public static final String INSERT_SONG_AUTHOR_SQL = """
             INSERT INTO song_author (song_id, author_id)
             VALUES (?, ?)
+            """;
+
+    public static final String DELETE_SONG_AUTHOR_SQL = """
+            DELETE FROM song_author
+            WHERE song_id = ?
             """;
 
     public static final String FIND_BY_AUTHOR_ID_SQL = """
