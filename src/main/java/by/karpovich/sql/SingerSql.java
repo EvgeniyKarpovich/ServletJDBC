@@ -1,30 +1,28 @@
 package by.karpovich.sql;
 
-public class SingerSql {
-    public static final String SAVE_SQL = """
-            INSERT INTO  singers(surname)
+public enum SingerSql {
+    SAVE_SQL("""
+            INSERT INTO singers(surname)
             VALUES (?)
-            """;
+            """),
+    DELETE_SQL("""
+            DELETE
+            FROM singers WHERE id = ?
+            """),
 
-    public static final String DELETE_SQL = """
-            DELETE FROM singers
-            WHERE id = ?
-            """;
-
-    public static final String UPDATE_SQL = """
+    UPDATE_SQL("""
             UPDATE singers
-            SET surname = ?
-            WHERE id = ?
-            """;
+            SET surname = ? WHERE id = ?
+            """),
 
-    public static final String FIND_ALL_SQL = """
+    FIND_ALL_SQL(""" 
             SELECT
             singers.id s_id,
             singers.surname s_surname
             FROM singers
-            """;
+            """),
 
-    public static final String FIND_BY_ID_SQL = """  
+    FIND_BY_ID_SQL("""
             SELECT
             singers.id s_id,
             singers.surname s_surname,
@@ -34,16 +32,22 @@ public class SingerSql {
             LEFT JOIN albums
                 ON albums.singer_id = singers.id
             WHERE singers.id = ?
-            """;
+            """),
 
-    public static final String FIND_BY_NAME_SQL = """
+    FIND_BY_NAME_SQL("""
             SELECT
             singers.id s_id,
             singers.surname s_surname
             FROM singers
             WHERE surname = ?
-            """;
+            """);
+    private final String sql;
 
-    private SingerSql() {
+    SingerSql(String sql) {
+        this.sql = sql;
+    }
+
+    public String getSql() {
+        return sql;
     }
 }

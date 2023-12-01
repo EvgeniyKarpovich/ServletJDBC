@@ -1,47 +1,59 @@
 package by.karpovich.sql;
 
-public class AlbumSql {
+public enum AlbumSql {
 
-    public static final String SAVE_SQL = """
+    SAVE_SQL("""
             INSERT INTO albums(album_name, singer_id)
             VALUES (?,?)
-            """;
+            """),
 
-    public static final String DELETE_SQL = """
+    DELETE_SQL("""
             DELETE FROM albums
             WHERE id = ?
-            """;
+            """),
 
-    public static final String UPDATE_SQL = """
+
+    UPDATE_SQL("""
             UPDATE albums
             SET album_name = ?,
             singer_id = ?
             WHERE id = ?
-            """;
+            """),
 
-    public static final String FIND_ALL_SQL = """
-            SELECT
-            albums.id al_id,
+
+    FIND_ALL_SQL("""
+            SELECT albums.id al_id,
             albums.album_name al_name,
-            singers.id s_id,
-            singers.surname s_surname
+            singers.id s_id, singers.surname s_surname
             FROM albums
             JOIN singers
                 ON albums.singer_id = singers.id
-            """;
+            """),
 
-    public static final String FIND_BY_ID_SQL = FIND_ALL_SQL + """
-            WHERE albums.id = ?
-            """;
-    public static final String FIND_BY_NAME_AND_SINGER_ID_SQL = """
-            SELECT
-            albums.id al_id,
+
+    FIND_BY_ID_SQL(FIND_ALL_SQL.getSql() +
+            """
+                    WHERE albums.id = ?
+                    """),
+
+
+    FIND_BY_NAME_AND_SINGER_ID_SQL("""
+            SELECT albums.id al_id,
             albums.album_name al_name
             FROM albums
-            WHERE album_name = ?
-            AND singer_id = ?
-            """;
+            WHERE album_name = ? AND singer_id = ?
+            """);
 
-    private AlbumSql() {
+
+    private final String sql;
+
+
+    AlbumSql(String sql) {
+        this.sql = sql;
+    }
+
+
+    public String getSql() {
+        return sql;
     }
 }

@@ -31,7 +31,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
     @Override
     public Optional<AlbumEntity> findById(Long id) {
         try (var connection = connectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(AlbumSql.FIND_BY_ID_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(AlbumSql.FIND_BY_ID_SQL.getSql())) {
             preparedStatement.setLong(1, id);
 
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -50,7 +50,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 
     public Optional<AlbumEntity> findByNameAndSingerId(String albumName, Long singerId) {
         try (var connection = connectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(AlbumSql.FIND_BY_NAME_AND_SINGER_ID_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(AlbumSql.FIND_BY_NAME_AND_SINGER_ID_SQL.getSql())) {
 
             preparedStatement.setString(1, albumName);
             preparedStatement.setLong(2, singerId);
@@ -71,7 +71,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
     @Override
     public List<AlbumEntity> findAll() {
         try (var connection = connectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(AlbumSql.FIND_ALL_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(AlbumSql.FIND_ALL_SQL.getSql())) {
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -92,7 +92,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
     @Override
     public boolean deleteById(Long id) {
         try (var connection = connectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(AlbumSql.DELETE_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(AlbumSql.DELETE_SQL.getSql())) {
 
             preparedStatement.setLong(1, id);
 
@@ -105,7 +105,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
     @Override
     public AlbumEntity save(AlbumEntity albumEntity) {
         try (var connection = connectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(AlbumSql.SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(AlbumSql.SAVE_SQL.getSql(), Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, albumEntity.getAlbumName());
             preparedStatement.setLong(2, albumEntity.getSinger().getId());
@@ -126,7 +126,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
     @Override
     public void update(AlbumEntity albumEntity) {
         try (var connection = connectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(AlbumSql.UPDATE_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(AlbumSql.UPDATE_SQL.getSql())) {
 
             preparedStatement.setString(1, albumEntity.getAlbumName());
             preparedStatement.setLong(2, albumEntity.getSinger().getId());

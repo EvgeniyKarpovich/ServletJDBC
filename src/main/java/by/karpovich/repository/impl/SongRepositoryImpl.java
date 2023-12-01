@@ -34,7 +34,7 @@ public class SongRepositoryImpl implements SongRepository {
     @Override
     public Optional<SongEntity> findById(Long id) {
         try (var connection = connectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SongSql.FIND_BY_ID_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SongSql.FIND_BY_ID_SQL.getSql())) {
             preparedStatement.setLong(1, id);
 
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -66,7 +66,7 @@ public class SongRepositoryImpl implements SongRepository {
 
     public Optional<SongEntity> findByNameAndSingerId(String songName, Long singerId) {
         try (var connection = connectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SongSql.FIND_BY_NAME_AND_SINGER_ID_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SongSql.FIND_BY_NAME_AND_SINGER_ID_SQL.getSql())) {
             preparedStatement.setString(1, songName);
             preparedStatement.setLong(2, singerId);
 
@@ -84,7 +84,7 @@ public class SongRepositoryImpl implements SongRepository {
 
     public List<SongEntity> findByAuthorId(Long authorId) {
         try (var connection = connectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SongSql.FIND_BY_AUTHOR_ID_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SongSql.FIND_BY_AUTHOR_ID_SQL.getSql())) {
             preparedStatement.setLong(1, authorId);
 
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -105,7 +105,7 @@ public class SongRepositoryImpl implements SongRepository {
     @Override
     public List<SongEntity> findAll() {
         try (var connection = connectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SongSql.FIND_ALL_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SongSql.FIND_ALL_SQL.getSql())) {
 
             ResultSet resultSet = preparedStatement.executeQuery();
             List<SongEntity> result = new ArrayList<>();
@@ -126,8 +126,8 @@ public class SongRepositoryImpl implements SongRepository {
     @Override
     public boolean deleteById(Long id) {
         try (var connection = connectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SongSql.DELETE_SQL);
-             PreparedStatement preparedStatementDeleteSongAuthor = connection.prepareStatement(SongSql.DELETE_SONG_AUTHOR_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SongSql.DELETE_SQL.getSql());
+             PreparedStatement preparedStatementDeleteSongAuthor = connection.prepareStatement(SongSql.DELETE_SONG_AUTHOR_SQL.getSql())) {
 
             preparedStatement.setLong(1, id);
             preparedStatementDeleteSongAuthor.setLong(1, id);
@@ -150,7 +150,7 @@ public class SongRepositoryImpl implements SongRepository {
             connection = connectionManager.getConnection();
             connection.setAutoCommit(false);
 
-            preparedStatement = connection.prepareStatement(SongSql.SAVE_SQL, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement = connection.prepareStatement(SongSql.SAVE_SQL.getSql(), Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, songEntity.getName());
             preparedStatement.setLong(2, songEntity.getSinger().getId());
             preparedStatement.setLong(3, songEntity.getAlbum().getId());
@@ -162,7 +162,7 @@ public class SongRepositoryImpl implements SongRepository {
                 songEntity.setId(resultSet.getLong("id"));
             }
 
-            songAuthorStatement = connection.prepareStatement(SongSql.INSERT_SONG_AUTHOR_SQL);
+            songAuthorStatement = connection.prepareStatement(SongSql.INSERT_SONG_AUTHOR_SQL.getSql());
             for (AuthorEntity author : songEntity.getAuthors()) {
                 songAuthorStatement.setLong(1, songEntity.getId());
                 songAuthorStatement.setLong(2, author.getId());
@@ -206,7 +206,7 @@ public class SongRepositoryImpl implements SongRepository {
     @Override
     public void update(SongEntity songEntity) {
         try (var connection = connectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SongSql.UPDATE_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SongSql.UPDATE_SQL.getSql())) {
 
             preparedStatement.setString(1, songEntity.getName());
             preparedStatement.setLong(2, songEntity.getSinger().getId());
